@@ -1,6 +1,8 @@
 package game.client;
 
 import game.Game;
+import game.client.states.PlayingState;
+import game.client.states.StartUpState;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.ScalableGame;
@@ -14,6 +16,7 @@ import java.net.Socket;
 
 public class GameClient extends StateBasedGame {
     int PORT_NUMBER = 8080;
+    String HOST_NAME = "localhost";
     String name;
     int width;
     int height;
@@ -21,6 +24,9 @@ public class GameClient extends StateBasedGame {
     Socket serverSocket;
     DataInputStream input;
     DataOutputStream output;
+
+    public static final int STARTUP_STATE = 0;
+    public static final int PLAYING_STATE = 1;
 
     public GameClient(String name, int width, int height) {
         super(name);
@@ -30,17 +36,17 @@ public class GameClient extends StateBasedGame {
         this.height = height;
 
         loadResources();
-        connect(8080);
+        connectToServer(HOST_NAME, PORT_NUMBER);
 
         exit();
     }
 
     void loadResources() {}
 
-    void connect(int port) {
+    void connectToServer(String hostName, int port) {
         try {
-            InetAddress ip = InetAddress.getByName("localhost");
-            serverSocket = new Socket(ip, PORT_NUMBER);
+            InetAddress ip = InetAddress.getByName(hostName);
+            serverSocket = new Socket(ip, port);
             input = new DataInputStream(serverSocket.getInputStream());
             output = new DataOutputStream(serverSocket.getOutputStream());
         } catch (Exception e) {
@@ -63,7 +69,10 @@ public class GameClient extends StateBasedGame {
     }
 
     @Override
-    public void initStatesList(GameContainer gc) {}
+    public void initStatesList(GameContainer gc) {
+        addState(new StartUpState());
+        addState(new PlayingState());
+    }
 
     public static void main(String[] args) {
         AppGameContainer app;
