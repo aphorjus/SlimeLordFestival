@@ -39,7 +39,6 @@ public class GameServer {
 
         int portNumber = Integer.parseInt(args[0]);
         int expectedPlayerCount = Integer.parseInt(args[1]);
-
         new GameServer(portNumber, expectedPlayerCount);
     }
 }
