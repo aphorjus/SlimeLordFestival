@@ -34,17 +34,13 @@ public class PlayingState extends BasicGameState {
         // Required to update before game process
         inputManager.update();
 
+        // Check the server for any incoming messages
         try {
             if (gameClient.input.available() > 0) {
                 handleServerMessage(new JSONObject(gameClient.input.readUTF()));
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        if (textField.hasFocus()) {
-            textFieldProcess(delta);
-            return;
         }
     }
 
@@ -60,12 +56,5 @@ public class PlayingState extends BasicGameState {
     @Override
     public int getID() {
         return GameClient.PLAYING_STATE;
-    }
-
-    void textFieldProcess(int delta) {
-        if (inputManager.justPressed(Input.KEY_ENTER)) {
-            gameClient.sendMessage(textField.getText());
-            textField.setText("");
-        }
     }
 }

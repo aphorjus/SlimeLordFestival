@@ -4,6 +4,7 @@ import game.Game;
 import game.InputManager;
 import game.client.states.PlayingState;
 import game.client.states.StartUpState;
+import game.entities.slimelord.SlimeLord;
 import org.json.JSONObject;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.StateBasedGame;
@@ -12,6 +13,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.LinkedList;
 
 public class GameClient extends StateBasedGame {
     int PORT_NUMBER = 8080;
@@ -19,8 +21,10 @@ public class GameClient extends StateBasedGame {
     String name;
     int width;
     int height;
-    public InputManager inputManager;
+    int tokens;
+    LinkedList<SlimeLord> slimeLords;
 
+    public InputManager inputManager;
     public Socket serverSocket;
     public DataInputStream input;
     public DataOutputStream output;
