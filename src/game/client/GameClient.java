@@ -8,6 +8,11 @@ import game.entities.slimelord.SlimeLord;
 import org.json.JSONObject;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.GameContainer;
+
+import jig.Entity;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -32,12 +37,30 @@ public class GameClient extends StateBasedGame {
     public static final int STARTUP_STATE = 0;
     public static final int PLAYING_STATE = 1;
 
+    public static int ScreenWidth;
+    public static int ScreenHeight;
+    public static int ImageWidth = 1392;
+    public static int ImageHeight = 800;
+
+    private Board board;
+
+    // For the Board class, which contains the overworld map
+    public Board getBoard() {
+        return board;
+    }
+
     public GameClient(String name, int width, int height) {
         super(name);
 
         this.name = name;
         this.width = width;
         this.height = height;
+
+        ScreenHeight = height;
+        ScreenWidth = width;
+
+        Entity.setCoarseGrainedCollisionBoundary(Entity.AABB);
+        board = new Board();
 
         loadResources();
         connectToServer(HOST_NAME, PORT_NUMBER);
@@ -106,6 +129,7 @@ public class GameClient extends StateBasedGame {
 
     @Override
     public void initStatesList(GameContainer gc) {
+        board.initialize();
         int[] keys = {
                 Input.KEY_W,
                 Input.KEY_S,
@@ -121,8 +145,8 @@ public class GameClient extends StateBasedGame {
 
     public static void main(String[] args) {
         AppGameContainer app;
-        int width = 320;
-        int height = 176;
+        int width = 1000;
+        int height = 500;
 
         try {
             app = new AppGameContainer(new GameClient("SlimeLordFestival", width, height));
