@@ -1,5 +1,7 @@
 package game.client.states;
 
+import game.GameApi;
+import game.GameApiRequest;
 import game.InputManager;
 import game.client.GameClient;
 import org.json.JSONObject;
@@ -21,12 +23,11 @@ public class PlayingState extends BasicGameState {
     public void init(GameContainer gc, StateBasedGame sbg) {
         gameClient = (GameClient)sbg;
         inputManager = gameClient.inputManager;
-        textField = new TextField(gc, gc.getDefaultFont(), 100, 50, 200, 100);
     }
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
-
+        apiTest();
     }
 
     @Override
@@ -37,24 +38,54 @@ public class PlayingState extends BasicGameState {
         // Check the server for any incoming messages
         try {
             if (gameClient.input.available() > 0) {
-                handleServerMessage(new JSONObject(gameClient.input.readUTF()));
+                handleServerRequest(new GameApiRequest(new JSONObject(gameClient.input.readUTF())));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    void handleServerMessage(JSONObject msg) {
-        System.out.println(msg.toString());
-    }
-
     @Override
-    public void render(GameContainer gc, StateBasedGame sbg, Graphics g) {
-        textField.render(gc, g);
-    }
+    public void render(GameContainer gc, StateBasedGame sbg, Graphics g) { }
 
     @Override
     public int getID() {
         return GameClient.PLAYING_STATE;
+    }
+
+    public void apiTest() {
+        gameClient.sendMessage("this is a test message");
+    }
+
+
+    void handleServerRequest(GameApiRequest req) {
+        System.out.println(req.toString());
+
+        if (req.type.equals(GameApi.Message)) {
+            onMessage(req);
+        } else if (req.type.equals(GameApi.CreateEntity)) {
+            onCreateEntity(req);
+        } else if (req.type.equals(GameApi.DeleteEntity)) {
+            onDeleteEntity(req);
+        } else if (req.type.equals(GameApi.AlterGameState)) {
+            onAlterGameState(req);
+        } else if (req.type.equals(GameApi.AlterPlayerState)) {
+            onAlterPlayerState(req);
+        }
+    }
+
+
+    void onAlterGameState(GameApiRequest req) { }
+
+    void onAlterPlayerState(GameApiRequest req) { }
+
+    void onCreateEntity(GameApiRequest req) { }
+
+    void onDeleteEntity(GameApiRequest req) { }
+
+    void onMessage(GameApiRequest req) {
+        String msg = req.body.getString("text");
+
+        System.out.println(msg);
     }
 }
