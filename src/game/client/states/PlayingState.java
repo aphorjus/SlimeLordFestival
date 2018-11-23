@@ -21,7 +21,6 @@ public class PlayingState extends BasicGameState {
     public void init(GameContainer gc, StateBasedGame sbg) {
         gameClient = (GameClient)sbg;
         inputManager = gameClient.inputManager;
-        textField = new TextField(gc, gc.getDefaultFont(), 100, 50, 200, 100);
     }
 
     @Override

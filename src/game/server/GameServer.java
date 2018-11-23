@@ -1,6 +1,6 @@
 package game.server;
 
-import game.Game;
+import game.GameApi;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -53,14 +53,14 @@ public class GameServer {
         System.out.println("handle action");
         System.out.println(type);
 
-        if (type.equals(Game.Api.POST)) {
+        if (type.equals(GameApi.Action.MESSAGE)) {
             System.out.println("post");
             Post(client, req);
         }
     }
 
     void Post(ClientHandler client, JSONObject req) {
-        if (req.getString("actionType").equals(Game.Action.MESSAGE)) {
+        if (req.getString("actionType").equals(GameApi.Action.MESSAGE)) {
             System.out.println("sent");
             sendJson(req);
         }
