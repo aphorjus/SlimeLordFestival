@@ -1,6 +1,7 @@
 package game.server;
 
 import game.GameApi;
+import game.GameApiRequest;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -41,34 +42,21 @@ public class GameServer {
             for (int i = 0; i < playerCount; i++) {
                 JSONObject res;
                 while ((res = clients[i].getActions().poll()) != null) {
-                    handleClientAction(clients[i], res);
+                    handleRequest(clients[i], new GameApiRequest(res));
                 }
             }
         }
     }
 
-    void handleClientAction(ClientHandler client, JSONObject req) {
-        String type = req.getString("type");
-
-        System.out.println("handle action");
-        System.out.println(type);
-
-        if (type.equals(GameApi.Action.MESSAGE)) {
-            System.out.println("post");
-            Post(client, req);
+    void handleRequest(ClientHandler client, GameApiRequest req) {
+        if (req.type.equals(GameApi.Message)) {
+            sendToAll(req);
         }
     }
 
-    void Post(ClientHandler client, JSONObject req) {
-        if (req.getString("actionType").equals(GameApi.Action.MESSAGE)) {
-            System.out.println("sent");
-            sendJson(req);
-        }
-    }
-
-    void sendJson(JSONObject res) {
+    void sendToAll(GameApiRequest req) {
         for (int i = 0; i < clients.length; i++) {
-            clients[i].write(res);
+            clients[i].write(req.toJson());
         }
     }
 

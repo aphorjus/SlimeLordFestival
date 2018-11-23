@@ -3,8 +3,8 @@ package game;
 import org.json.JSONObject;
 
 public class GameApiRequest {
-    String type;
-    JSONObject body;
+    public String type;
+    public JSONObject body;
 
     public GameApiRequest(String actionType) {
         this.type = actionType;
@@ -15,11 +15,17 @@ public class GameApiRequest {
         this.body = body;
     }
 
+    public GameApiRequest(JSONObject json) {
+        type = json.getString("type");
+
+        if (json.has("body")) body = json.getJSONObject("body");
+    }
+
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("type", this.type);
 
-        if (this.body != null) json.put("body", body.toString());
+        if (this.body != null) json.put("body", body);
 
         return json;
     }

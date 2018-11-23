@@ -1,5 +1,7 @@
 package game.client.states;
 
+import game.GameApi;
+import game.GameApiRequest;
 import game.InputManager;
 import game.client.GameClient;
 import org.json.JSONObject;
@@ -25,7 +27,7 @@ public class PlayingState extends BasicGameState {
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
-
+        apiTest();
     }
 
     @Override
@@ -36,24 +38,30 @@ public class PlayingState extends BasicGameState {
         // Check the server for any incoming messages
         try {
             if (gameClient.input.available() > 0) {
-                handleServerMessage(new JSONObject(gameClient.input.readUTF()));
+                handleServerRequest(new JSONObject(gameClient.input.readUTF()));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    void handleServerMessage(JSONObject msg) {
-        System.out.println(msg.toString());
+    void handleServerRequest(JSONObject json) {
+        System.out.println("received a thing");
+        GameApiRequest req = new GameApiRequest(json);
+        System.out.println(req.type);
+        System.out.println(req.body.toString());
     }
 
     @Override
-    public void render(GameContainer gc, StateBasedGame sbg, Graphics g) {
-        textField.render(gc, g);
-    }
+    public void render(GameContainer gc, StateBasedGame sbg, Graphics g) { }
 
     @Override
     public int getID() {
         return GameClient.PLAYING_STATE;
+    }
+
+    public void apiTest() {
+        System.out.println("blah");
+        gameClient.sendMessage("this is a test message");
     }
 }

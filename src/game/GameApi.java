@@ -1,7 +1,5 @@
 package game;
 
-import org.json.JSONObject;
-
 public class GameApi {
     public static String AlterGameState = "alterGameState";
     public static String AlterPlayerState = "alterPlayerState";
