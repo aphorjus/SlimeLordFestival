@@ -1,6 +1,7 @@
 package game.client;
 
-import game.Game;
+import game.GameApi;
+import game.GameApiRequest;
 import game.InputManager;
 import game.client.states.PlayingState;
 import game.client.states.StartUpState;
@@ -95,37 +96,25 @@ public class GameClient extends StateBasedGame {
     }
 
     void sendConnectionConfirmation() {
-        try {
-            JSONObject confirmation = new JSONObject();
-            confirmation.put("type", "CONFIRMATION");
-            output.writeUTF(confirmation.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        sendRequest(new GameApiRequest(GameApi.ConnectionConfirmation));
     }
 
     public void sendMessage(String message) {
+        if (message == null) return;
+
         JSONObject body = new JSONObject();
         body.put("text", message);
-        Post(Game.Action.MESSAGE, body);
+        GameApiRequest req = new GameApiRequest(GameApi.Message, body);
+        sendRequest(req);
     }
 
-    private void Post(String type, JSONObject body) {
-        JSONObject post = new JSONObject();
-        post.put("type", Game.Api.POST);
-        post.put("actionType", type);
-        post.put("body", body.toString());
-
+    void sendRequest(GameApiRequest req) {
         try {
-            output.writeUTF(post.toString());
+            output.writeUTF(req.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    private void Get() {}
-
-    private void Delete() {}
 
     @Override
     public void initStatesList(GameContainer gc) {
