@@ -78,7 +78,7 @@ public class GameClient extends StateBasedGame {
 
     public void sendMessage(String message) {
         if (message == null) return;
-        
+
         JSONObject body = new JSONObject();
         body.put("text", message);
         GameApiRequest req = new GameApiRequest(GameApi.Message, body);
