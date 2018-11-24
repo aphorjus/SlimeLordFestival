@@ -1,8 +1,6 @@
 package game.client.states;
 
-import game.GameApi;
-import game.GameApiRequest;
-import game.InputManager;
+import game.*;
 import game.client.Board;
 import game.client.GameClient;
 import game.server.GameServer;
@@ -18,7 +16,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-public class PlayingState extends BasicGameState {
+public class OverworldState extends BasicGameState {
     InputManager inputManager;
     TextField textField;
     GameClient gameClient;
@@ -86,7 +84,7 @@ public class PlayingState extends BasicGameState {
 
     @Override
     public int getID() {
-        return GameClient.PLAYING_STATE;
+        return GameClient.OVERWORLD_STATE;
     }
 
     public void apiTest() {

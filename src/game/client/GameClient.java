@@ -3,7 +3,7 @@ package game.client;
 import game.GameApi;
 import game.GameApiRequest;
 import game.InputManager;
-import game.client.states.PlayingState;
+import game.client.states.OverworldState;
 import game.client.states.StartUpState;
 import game.entities.slimelord.SlimeLord;
 import org.json.JSONObject;
@@ -36,7 +36,7 @@ public class GameClient extends StateBasedGame {
     public DataOutputStream output;
 
     public static final int STARTUP_STATE = 0;
-    public static final int PLAYING_STATE = 1;
+    public static final int OVERWORLD_STATE = 1;
 
     public static int ScreenWidth;
     public static int ScreenHeight;
@@ -129,7 +129,7 @@ public class GameClient extends StateBasedGame {
 
         inputManager = new InputManager(gc, keys);
         addState(new StartUpState());
-        addState(new PlayingState());
+        addState(new OverworldState());
     }
 
     public static void main(String[] args) {
