@@ -7,10 +7,7 @@ import game.server.GameServer;
 import org.json.JSONObject;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.EXTAbgr;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.GameState;
@@ -79,7 +76,13 @@ public class PlayingState extends BasicGameState {
         }
     }
 
-    void onAlterGameState(GameApiRequest req) { }
+    void onAlterGameState(GameApiRequest req) {
+        if (req.type.equals(GameApi.SetGameStateOverworld)) {
+            // Change game state
+        } else if (req.type.equals(GameApi.SetGameStateBattle)) {
+            // Change game state
+        }
+    }
 
     void onAlterPlayerState(GameApiRequest req) { }
 
