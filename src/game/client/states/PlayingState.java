@@ -5,6 +5,7 @@ import game.GameApiRequest;
 import game.InputManager;
 import game.client.Board;
 import game.client.GameClient;
+import game.server.GameServer;
 import org.json.JSONObject;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.EXTAbgr;
@@ -14,6 +15,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
+import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class PlayingState extends BasicGameState {
@@ -63,7 +65,6 @@ public class PlayingState extends BasicGameState {
         gameClient.sendMessage("this is a test message");
     }
 
-
     void handleServerRequest(GameApiRequest req) {
         System.out.println(req.toString());
 
@@ -80,14 +81,21 @@ public class PlayingState extends BasicGameState {
         }
     }
 
+    void onAlterGameState(GameApiRequest req) {
+        SlimeGameState gameState = new SlimeGameState(req.body.getJSONObject("gameState"));
+    }
 
-    void onAlterGameState(GameApiRequest req) { }
+    void onAlterPlayerState(GameApiRequest req) {
+        PlayerState playerState = new PlayerState(req.body.getJSONObject("playerState"));
+    }
 
-    void onAlterPlayerState(GameApiRequest req) { }
+    void onCreateEntity(GameApiRequest req) {
+        // Create entity logic here
+    }
 
-    void onCreateEntity(GameApiRequest req) { }
-
-    void onDeleteEntity(GameApiRequest req) { }
+    void onDeleteEntity(GameApiRequest req) {
+        int entityId = req.body.getInt("entityId");
+    }
 
     void onMessage(GameApiRequest req) {
         String msg = req.body.getString("text");
