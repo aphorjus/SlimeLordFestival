@@ -7,4 +7,6 @@ public class GameApi {
     public static String CreateEntity = "createEntity";
     public static String DeleteEntity = "deleteEntity";
     public static String Message = "message";
+    public static String SetGameStateOverworld = "setOverworld";
+    public static String SetGameStateBattle = "setBattle";
 }

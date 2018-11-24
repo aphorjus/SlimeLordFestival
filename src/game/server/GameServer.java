@@ -13,7 +13,6 @@ import java.net.Socket;
 public class GameServer {
     ServerSocket server;
     ClientHandler[] clients;
-    SlimeGameState gameState;
     int turnId;
 
     public GameServer(int port, int playerCount) throws Exception {
@@ -51,9 +50,7 @@ public class GameServer {
     }
 
     void handleRequest(ClientHandler client, GameApiRequest req) {
-        if (req.type.equals(GameApi.Message)) {
-            sendToAll(req);
-        }
+        sendToAll(req);
     }
 
     void sendToAll(GameApiRequest req) {

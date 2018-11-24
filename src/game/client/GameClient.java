@@ -99,13 +99,17 @@ public class GameClient extends StateBasedGame {
         sendRequest(new GameApiRequest(GameApi.ConnectionConfirmation));
     }
 
+    public void setGameState(String newState) {
+        if (!newState.equals(GameApi.SetGameStateBattle) || !newState.equals(GameApi.SetGameStateOverworld)) return;
+        sendRequest(new GameApiRequest(newState));
+    }
+
     public void sendMessage(String message) {
         if (message == null) return;
 
         JSONObject body = new JSONObject();
         body.put("text", message);
-        GameApiRequest req = new GameApiRequest(GameApi.Message, body);
-        sendRequest(req);
+        sendRequest(new GameApiRequest(GameApi.Message, body));
     }
 
     void sendRequest(GameApiRequest req) {

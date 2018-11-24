@@ -1,8 +1,6 @@
 package game.client.states;
 
-import game.GameApi;
-import game.GameApiRequest;
-import game.InputManager;
+import game.*;
 import game.client.Board;
 import game.client.GameClient;
 import game.server.GameServer;
@@ -81,13 +79,9 @@ public class PlayingState extends BasicGameState {
         }
     }
 
-    void onAlterGameState(GameApiRequest req) {
-        SlimeGameState gameState = new SlimeGameState(req.body.getJSONObject("gameState"));
-    }
+    void onAlterGameState(GameApiRequest req) { }
 
-    void onAlterPlayerState(GameApiRequest req) {
-        PlayerState playerState = new PlayerState(req.body.getJSONObject("playerState"));
-    }
+    void onAlterPlayerState(GameApiRequest req) { }
 
     void onCreateEntity(GameApiRequest req) {
         // Create entity logic here
