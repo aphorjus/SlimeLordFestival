@@ -1,6 +1,9 @@
 package game.client.states;
 
-import game.*;
+import game.GameApi;
+import game.GameApiRequest;
+import game.InputManager;
+import game.client.Board;
 import game.client.GameClient;
 import game.server.GameServer;
 import org.json.JSONObject;
@@ -9,6 +12,7 @@ import org.lwjgl.opengl.EXTAbgr;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.GameState;
@@ -46,7 +50,11 @@ public class PlayingState extends BasicGameState {
     }
 
     @Override
-    public void render(GameContainer gc, StateBasedGame sbg, Graphics g) { }
+    public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+        GameClient bg = (GameClient)sbg;
+        Board board = bg.getBoard();
+        board.render(gc, sbg, g);
+    }
 
     @Override
     public int getID() {
