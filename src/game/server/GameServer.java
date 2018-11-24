@@ -2,6 +2,7 @@ package game.server;
 
 import game.GameApi;
 import game.GameApiRequest;
+import game.SlimeGameState;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -12,6 +13,7 @@ import java.net.Socket;
 public class GameServer {
     ServerSocket server;
     ClientHandler[] clients;
+    SlimeGameState gameState;
     int turnId;
 
     public GameServer(int port, int playerCount) throws Exception {
