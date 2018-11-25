@@ -1,6 +1,7 @@
 package game.Battles;
 
 
+import game.DijkstraGrid;
 import game.entities.slime.Slime;
 import jig.Vector;
 import org.newdawn.slick.Graphics;
@@ -21,10 +22,14 @@ public class BattleGrid {
     public int xBuffer;
     public int yBuffer;
 
+    DijkstraGrid dijkstraGrid;
+
     private BattleGridTile[][] tileGrid;
 
     public BattleGrid(final int screenHeight, final int screenWidth,
                       int yBuffer, int xBuffer, final int[][] map){
+
+//        System.out.println(map);
 
         this.screenHeight = screenHeight;
         this.yBuffer = yBuffer;
@@ -39,6 +44,7 @@ public class BattleGrid {
         this.gridPixleWidth = screenWidth - (2*xBuffer);
         this.tileWidth = gridPixleWidth / gridWidth;
 
+        dijkstraGrid = new DijkstraGrid(map);
         initBattleGrid(map);
     }
 
@@ -55,9 +61,9 @@ public class BattleGrid {
 
                 this.tileGrid[i][j] = newTile;
 
-                if( map[i][j] == 1 ){
-                    newTile.addOccupent(new Slime(1, tilePosition));
-                }
+//                if( map[i][j] == 1 ){
+//                    newTile.addOccupent(new Slime(1, tilePosition));
+//                }
             }
         }
     }
@@ -75,7 +81,20 @@ public class BattleGrid {
         int i = (int)(position.getX()-xBuffer) / tileSize;
         int j = (int)(position.getY()-yBuffer) / tileSize;
 
+        double[][] dg = dijkstraGrid.getDistanceGrid(i, j);
+
+//        for(int k = 0; k < dg.length; k++) {
+//            for (int l = 0; l < dg[0].length; l++) {
+//
+//                System.out.printf("%f",dg[i][l]);
+//            }
+//            System.out.println();
+//        }
         return this.tileGrid[i][j];
+    }
+
+    public void selectTile(Vector position){
+//        getTile
     }
 
     public void render(Graphics g){
