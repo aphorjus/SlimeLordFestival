@@ -17,8 +17,8 @@ public class GameApi {
     GameApiListener listener;
 
     public GameApi(GameClient gc, GameApiListener listener) {
-        gameClient = gc;
-        listener = (GameApiListener)gameClient;
+        this.gameClient = gc;
+        this.listener = listener;
     }
 
     public void update() {
