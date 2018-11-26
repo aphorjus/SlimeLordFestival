@@ -48,10 +48,12 @@ public class GameServer {
     }
 
     void handleRequest(ClientHandler client, GameApiRequest req) {
-        sendToAll(req);
+        sendToAll(client.id, req);
     }
 
-    void sendToAll(GameApiRequest req) {
+    void sendToAll(int senderId, GameApiRequest req) {
+        req.body.put("senderId", senderId);
+
         for (int i = 0; i < clients.length; i++) {
             clients[i].write(req.toJson());
         }
