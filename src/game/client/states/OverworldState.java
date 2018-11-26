@@ -95,4 +95,9 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     public void onSetStateToBattle() {}
 
     public void onSetStateToOverworld() {}
+
+    public void onEndTurn() {}
+
+    public void onLobbyClientListUpdate(String[] clientNames) {}
+    public void onLobbyIsFull() {}
 }
