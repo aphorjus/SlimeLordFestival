@@ -1,16 +1,11 @@
 package game.client.states;
 
-import game.Battles.BattleGridTile;
-import game.GameApi;
-import game.GameApiRequest;
-import game.client.GameApiListener;
-import game.entities.slime.Slime;
+import game.api.GameApi;
+import game.api.GameApiListener;
 import jig.Vector;
 import game.Battles.BattleGrid;
 import game.InputManager;
 import game.client.GameClient;
-import org.json.JSONObject;
-import org.lwjgl.Sys;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;

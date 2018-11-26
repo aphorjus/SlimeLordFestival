@@ -1,8 +1,6 @@
 package game.server;
 
-import game.GameApi;
-import game.GameApiRequest;
-import game.SlimeGameState;
+import game.api.GameApiRequest;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;

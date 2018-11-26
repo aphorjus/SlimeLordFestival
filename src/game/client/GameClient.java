@@ -1,7 +1,7 @@
 package game.client;
 
-import game.GameApi;
-import game.GameApiRequest;
+import game.api.GameApi;
+import game.api.GameApiRequest;
 import game.InputManager;
 import game.client.states.BattleState;
 import game.client.states.OverworldState;

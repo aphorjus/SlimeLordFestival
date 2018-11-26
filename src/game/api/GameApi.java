@@ -1,6 +1,5 @@
-package game;
+package game.api;
 
-import game.client.GameApiListener;
 import game.client.GameClient;
 import org.json.JSONObject;
 

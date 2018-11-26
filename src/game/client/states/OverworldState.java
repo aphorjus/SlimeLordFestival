@@ -1,17 +1,13 @@
 package game.client.states;
 
 import game.*;
+import game.api.GameApi;
 import game.client.Board;
-import game.client.GameApiListener;
+import game.api.GameApiListener;
 import game.client.GameClient;
-import game.server.GameServer;
-import org.json.JSONObject;
-import org.lwjgl.Sys;
-import org.lwjgl.opengl.EXTAbgr;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
-import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class OverworldState extends BasicGameState implements GameApiListener {
