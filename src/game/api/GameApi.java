@@ -2,9 +2,7 @@ package game.api;
 
 import game.client.GameClient;
 import game.entities.IEntity;
-import netscape.javascript.JSObject;
 import org.json.JSONObject;
-import org.lwjgl.Sys;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,13 +17,18 @@ public class GameApi {
     public static String Message = "message";
     public static String SetGameStateOverworld = "setOverworld";
     public static String SetGameStateBattle = "setBattle";
+    public static String EndTurn = "endTurn";
+
+
+    public static String LobbyClientListUpdate = "lobbyClientListUpdate";
+    public static String LobbyIsFull = "lobbyIsFull";
+    public static String LobbyStartGame ="lobbyStartGame";
 
     GameClient gameClient;
     GameApiListener listener;
     Socket serverSocket;
     DataInputStream input;
     DataOutputStream output;
-
 
     public GameApi(GameClient gc, GameApiListener listener) {
         this.gameClient = gc;
@@ -58,6 +61,20 @@ public class GameApi {
             listener.onSetStateToBattle();
         } else if (req.type.equals(GameApi.SetGameStateOverworld)) {
             listener.onSetStateToOverworld();
+        } else if (req.type.equals(GameApi.EndTurn)) {
+            listener.onEndTurn();
+        } else if (req.type.equals(GameApi.LobbyClientListUpdate)) {
+            String[] clientNames = new String[req.body.getJSONArray("clientNames").length()];
+
+            for (int i = 0; i < clientNames.length; i++) {
+                clientNames[i] = req.body.getJSONArray("clientNames").getString(i);
+            }
+
+            listener.onLobbyClientListUpdate(clientNames);
+
+            if (req.body.getInt("playerCount") == clientNames.length) {
+                listener.onLobbyIsFull();
+            }
         }
     }
 

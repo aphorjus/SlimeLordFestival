@@ -1,6 +1,8 @@
 package game.server;
 
+import game.api.GameApi;
 import game.api.GameApiRequest;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -28,14 +30,31 @@ public class GameServer {
 
             clients[i] = new ClientHandler(i, clientSocket, input, output);
 
+
+
+            String[] clientNames = new String[i + 1];
+            for (int j = 0; j < clientNames.length; j++) {
+                clientNames[j] = clients[j].id + "";
+            }
+
+            JSONObject body = new JSONObject();
+            body.put("clientNames", new JSONArray(clientNames));
+            body.put("playerCount", playerCount);
+
+            for (int j = 0; j < clientNames.length; j++) {
+                System.out.println(clients.length);
+                clients[j].write(new GameApiRequest(GameApi.LobbyClientListUpdate, body).toJson());
+            }
+
+
             System.out.println("Client accepted");
         }
-
-        turnId = 0;
 
         for (int i = 0; i < playerCount; i++) {
             clients[i].start();
         }
+
+        sendToAll(-1, new GameApiRequest(GameApi.LobbyIsFull));
 
         while (true) {
             for (int i = 0; i < playerCount; i++) {

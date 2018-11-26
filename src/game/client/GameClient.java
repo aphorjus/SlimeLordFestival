@@ -71,7 +71,7 @@ public class GameClient extends StateBasedGame {
 
     void loadResources() {}
 
-    void connectToServer(String hostName, int port) {
+    public void connectToServer(String hostName, int port) {
         try {
             InetAddress ip = InetAddress.getByName(hostName);
             serverSocket = new Socket(ip, port);
