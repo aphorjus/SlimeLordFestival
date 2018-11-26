@@ -1,28 +1,32 @@
 package game.client.states;
 
-import game.InputManager;
+import game.*;
+import game.api.GameApi;
+import game.client.Board;
+import game.api.GameApiListener;
 import game.client.GameClient;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
+import game.client.IPlayerState;
+import game.entities.IEntity;
+import org.newdawn.slick.*;
+import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
-import game.client.Board;
 
-public class StartUpState extends BasicGameState {
+public class OverworldState extends BasicGameState implements GameApiListener {
     InputManager inputManager;
+    TextField textField;
+    GameApi gameApi;
+    GameClient gameClient;
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) {
-        GameClient game = (GameClient)sbg;
-        inputManager = game.inputManager;
+        gameClient = (GameClient)sbg;
+        gameApi = new GameApi((GameClient)sbg, this);
+        inputManager = gameClient.inputManager;
     }
 
     @Override
-    public void enter(GameContainer gc, StateBasedGame sbg) {
-        sbg.enterState(GameClient.OVERWORLD_STATE);
-    }
+    public void enter(GameContainer gc, StateBasedGame sbg) { }
 
     @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) {
@@ -56,7 +60,11 @@ public class StartUpState extends BasicGameState {
         if (input.isKeyDown(Input.KEY_S)) {
             board.shiftDown();
         }
+        if (input.isKeyDown(Input.KEY_B)) {
+            bg.enterState(GameClient.BATTLE_STATE);
+        }
 
+        gameApi.update();
     }
 
     @Override
@@ -68,6 +76,16 @@ public class StartUpState extends BasicGameState {
 
     @Override
     public int getID() {
-        return GameClient.STARTUP_STATE;
+        return GameClient.OVERWORLD_STATE;
     }
+
+    public void onAlterGameState(IGameState gameState) { }
+
+    public void onAlterPlayerState(IPlayerState playerState) {}
+
+    public void onCreateEntity(IEntity entity) {}
+
+    public void onDeleteEntity(int entityId) {}
+
+    public void onMessage(int senderId, String message) { }
 }

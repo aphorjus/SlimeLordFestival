@@ -1,7 +1,6 @@
 package game.server;
 
-import game.GameApi;
-import game.GameApiRequest;
+import game.api.GameApiRequest;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -49,9 +48,7 @@ public class GameServer {
     }
 
     void handleRequest(ClientHandler client, GameApiRequest req) {
-        if (req.type.equals(GameApi.Message)) {
-            sendToAll(req);
-        }
+        sendToAll(req);
     }
 
     void sendToAll(GameApiRequest req) {

@@ -1,9 +1,10 @@
 package game.client;
 
-import game.GameApi;
-import game.GameApiRequest;
+import game.api.GameApi;
+import game.api.GameApiRequest;
 import game.InputManager;
-import game.client.states.PlayingState;
+import game.client.states.BattleState;
+import game.client.states.OverworldState;
 import game.client.states.StartUpState;
 import game.entities.slimelord.SlimeLord;
 import org.json.JSONObject;
@@ -36,7 +37,8 @@ public class GameClient extends StateBasedGame {
     public DataOutputStream output;
 
     public static final int STARTUP_STATE = 0;
-    public static final int PLAYING_STATE = 1;
+    public static final int OVERWORLD_STATE = 1;
+    public static final int BATTLE_STATE = 2;
 
     public static int ScreenWidth;
     public static int ScreenHeight;
@@ -99,13 +101,17 @@ public class GameClient extends StateBasedGame {
         sendRequest(new GameApiRequest(GameApi.ConnectionConfirmation));
     }
 
+    public void setGameState(String newState) {
+        if (!newState.equals(GameApi.SetGameStateBattle) || !newState.equals(GameApi.SetGameStateOverworld)) return;
+        sendRequest(new GameApiRequest(newState));
+    }
+
     public void sendMessage(String message) {
         if (message == null) return;
 
         JSONObject body = new JSONObject();
         body.put("text", message);
-        GameApiRequest req = new GameApiRequest(GameApi.Message, body);
-        sendRequest(req);
+        sendRequest(new GameApiRequest(GameApi.Message, body));
     }
 
     void sendRequest(GameApiRequest req) {
@@ -129,7 +135,8 @@ public class GameClient extends StateBasedGame {
 
         inputManager = new InputManager(gc, keys);
         addState(new StartUpState());
-        addState(new PlayingState());
+        addState(new OverworldState());
+        addState(new BattleState());
     }
 
     public static void main(String[] args) {

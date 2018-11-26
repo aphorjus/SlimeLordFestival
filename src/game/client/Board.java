@@ -41,6 +41,7 @@ public class Board {
         float x21 = x2 + xoffset;
         float y21 = y2 + yoffset;
 
+
         g.drawImage(ResourceManager.getImage(OVERWORLD_RSC), x1, y1, x2, y2, x11, y11, x21, y21);
         for(int row = 0; row < NUMROWS; row++) {
             for(int col = 0; col < NUMCOLS; col++) {
