@@ -1,4 +1,4 @@
-package game;
+package game.api;
 
 import org.json.JSONObject;
 
