@@ -52,7 +52,6 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         inputManager.update();
         Input input = gc.getInput();
         GameClient bg = (GameClient)sbg;
-        gameApi.update();
 
         if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
             int mx = input.getMouseX();
@@ -76,6 +75,8 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         if(input.isKeyPressed(Input.KEY_ESCAPE)){
             state = 0;
         }
+
+        gameApi.update();
     }
 
     @Override
@@ -118,4 +119,9 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     }
 
     public void onEndTurn() {}
+
+    public void onLobbyClientListUpdate(String[] clientNames) { }
+    public void onLobbyIsFull() {
+        System.out.println("Lobby is full");
+    }
 }

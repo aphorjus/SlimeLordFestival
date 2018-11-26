@@ -19,6 +19,11 @@ public class GameApi {
     public static String SetGameStateBattle = "setBattle";
     public static String EndTurn = "endTurn";
 
+
+    public static String LobbyClientListUpdate = "lobbyClientListUpdate";
+    public static String LobbyIsFull = "lobbyIsFull";
+    public static String LobbyStartGame ="lobbyStartGame";
+
     GameClient gameClient;
     GameApiListener listener;
     Socket serverSocket;
@@ -58,6 +63,18 @@ public class GameApi {
             listener.onSetStateToOverworld();
         } else if (req.type.equals(GameApi.EndTurn)) {
             listener.onEndTurn();
+        } else if (req.type.equals(GameApi.LobbyClientListUpdate)) {
+            String[] clientNames = new String[req.body.getJSONArray("clientNames").length()];
+
+            for (int i = 0; i < clientNames.length; i++) {
+                clientNames[i] = req.body.getJSONArray("clientNames").getString(i);
+            }
+
+            listener.onLobbyClientListUpdate(clientNames);
+
+            if (req.body.getInt("playerCount") == clientNames.length) {
+                listener.onLobbyIsFull();
+            }
         }
     }
 

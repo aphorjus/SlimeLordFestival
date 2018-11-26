@@ -110,4 +110,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void onSetStateToOverworld() {}
 
     public void onEndTurn() {}
+
+    public void onLobbyClientListUpdate(String[] clientNames) {}
+    public void onLobbyIsFull() {}
 }

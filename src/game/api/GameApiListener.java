@@ -13,4 +13,7 @@ public interface GameApiListener {
     void onSetStateToBattle();
     void onSetStateToOverworld();
     void onEndTurn();
+
+    void onLobbyClientListUpdate(String[] clientNames);
+    void onLobbyIsFull();
 }
