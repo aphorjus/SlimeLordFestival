@@ -76,6 +76,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         inputManager.update();
         Input input = gc.getInput();
         GameClient bg = (GameClient)sbg;
+        gameApi.update();
 
         if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
             int mx = input.getMouseX();
@@ -86,6 +87,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             if(hostButton.checkClick(mx,yx) == true && state == 0){
                 System.out.println("Host Game button clicked");
                 state = 1;
+                gameApi.setGameState(GameApi.SetGameStateOverworld);
                 //bg.enterState(bg.PLAYING_STATE);
             }
             //If join game button gets clicked switch to join game
