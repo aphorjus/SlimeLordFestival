@@ -1,8 +1,6 @@
 package game.client.states;
 
-import game.GameApi;
-import game.GameApiRequest;
-import game.InputManager;
+import game.*;
 import game.client.Board;
 import game.client.GameClient;
 import game.server.GameServer;
