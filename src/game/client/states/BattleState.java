@@ -3,6 +3,7 @@ package game.client.states;
 import game.Battles.BattleGridTile;
 import game.GameApi;
 import game.GameApiRequest;
+import game.client.GameApiListener;
 import game.entities.slime.Slime;
 import jig.Vector;
 import game.Battles.BattleGrid;
@@ -17,7 +18,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-public class BattleState extends BasicGameState {
+public class BattleState extends BasicGameState implements GameApiListener {
     InputManager inputManager;
     BattleGrid battleGrid;
     GameApi gameApi;
@@ -61,7 +62,7 @@ public class BattleState extends BasicGameState {
         GameClient game = (GameClient)sbg;
         gameClient = (GameClient)sbg;
         inputManager = game.inputManager;
-        gameApi = new GameApi((GameClient) sbg);
+        gameApi = new GameApi((GameClient) sbg, this);
 
         this.battleGrid = new BattleGrid(game.ScreenHeight, game.ScreenWidth,
                 30, 200, BattleState.PLAIN_MAP);
@@ -95,4 +96,15 @@ public class BattleState extends BasicGameState {
     public int getID() {
         return GameClient.BATTLE_STATE;
     }
+
+
+    public void onAlterGameState() { }
+
+    public void onAlterPlayerState() {}
+
+    public void onCreateEntity() {}
+
+    public void onDeleteEntity(int entityId) {}
+
+    public void onMessage(int senderId, String message) { }
 }

@@ -1,5 +1,6 @@
 package game;
 
+import game.client.GameApiListener;
 import game.client.GameClient;
 import org.json.JSONObject;
 
@@ -14,9 +15,11 @@ public class GameApi {
     public static String SetGameStateBattle = "setBattle";
 
     GameClient gameClient;
+    GameApiListener listener;
 
-    public GameApi(GameClient gc) {
+    public GameApi(GameClient gc, GameApiListener listener) {
         gameClient = gc;
+        listener = (GameApiListener)gameClient;
     }
 
     public void update() {
@@ -32,46 +35,12 @@ public class GameApi {
 
     void handleServerRequest(GameApiRequest req) {
         if (req.type.equals(GameApi.Message)) {
-            onMessage(req);
+            listener.onMessage(0, "");
         } else if (req.type.equals(GameApi.CreateEntity)) {
-            onCreateEntity(req);
         } else if (req.type.equals(GameApi.DeleteEntity)) {
-            onDeleteEntity(req);
+            listener.onDeleteEntity(req.body.getInt("entityId"));
         } else if (req.type.equals(GameApi.AlterGameState)) {
-            onAlterGameState(req);
         } else if (req.type.equals(GameApi.AlterPlayerState)) {
-            onAlterPlayerState(req);
         }
-    }
-
-    public void DeleteEntity(int id) {
-
-    }
-
-    public void CreateEntity() {}
-
-
-    void onAlterGameState(GameApiRequest req) {
-        if (req.type.equals(GameApi.SetGameStateOverworld)) {
-            // Change game state
-        } else if (req.type.equals(GameApi.SetGameStateBattle)) {
-            // Change game state
-        }
-    }
-
-    void onAlterPlayerState(GameApiRequest req) { }
-
-    void onCreateEntity(GameApiRequest req) {
-        // Create entity logic here
-    }
-
-    void onDeleteEntity(GameApiRequest req) {
-        int entityId = req.body.getInt("entityId");
-    }
-
-    void onMessage(GameApiRequest req) {
-        String msg = req.body.getString("text");
-
-        System.out.println(msg);
     }
 }

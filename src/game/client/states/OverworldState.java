@@ -2,6 +2,7 @@ package game.client.states;
 
 import game.*;
 import game.client.Board;
+import game.client.GameApiListener;
 import game.client.GameClient;
 import game.server.GameServer;
 import org.json.JSONObject;
@@ -13,7 +14,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-public class OverworldState extends BasicGameState {
+public class OverworldState extends BasicGameState implements GameApiListener {
     InputManager inputManager;
     TextField textField;
     GameApi gameApi;
@@ -21,14 +22,12 @@ public class OverworldState extends BasicGameState {
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) {
-        gameApi = new GameApi((GameClient)sbg);
+        gameApi = new GameApi((GameClient)sbg, this);
         inputManager = gameClient.inputManager;
     }
 
     @Override
-    public void enter(GameContainer gc, StateBasedGame sbg) {
-        apiTest();
-    }
+    public void enter(GameContainer gc, StateBasedGame sbg) { }
 
     @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) {
@@ -81,8 +80,13 @@ public class OverworldState extends BasicGameState {
         return GameClient.OVERWORLD_STATE;
     }
 
-    void apiTest() {
-        gameClient.sendMessage("this is a test message");
-    }
+    public void onAlterGameState() { }
 
+    public void onAlterPlayerState() {}
+
+    public void onCreateEntity() {}
+
+    public void onDeleteEntity(int entityId) {}
+
+    public void onMessage(int senderId, String message) { }
 }
