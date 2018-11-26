@@ -8,6 +8,7 @@ public class GameApiRequest {
 
     public GameApiRequest(String actionType) {
         this.type = actionType;
+        this.body = new JSONObject();
     }
 
     public GameApiRequest(String actionType, JSONObject body) {

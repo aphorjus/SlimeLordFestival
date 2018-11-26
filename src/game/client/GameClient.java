@@ -24,7 +24,7 @@ import java.util.LinkedList;
 
 public class GameClient extends StateBasedGame {
     int PORT_NUMBER = 8080;
-    String HOST_NAME = "localhost";
+    String HOST_NAME = "127.0.0.1";
     String name;
     int width;
     int height;
