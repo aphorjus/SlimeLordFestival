@@ -7,6 +7,7 @@ import game.client.states.BattleState;
 import game.client.states.OverworldState;
 import game.client.states.StartUpState;
 import game.entities.slimelord.SlimeLord;
+import game.server.GameServer;
 import org.json.JSONObject;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.StateBasedGame;
@@ -35,6 +36,7 @@ public class GameClient extends StateBasedGame {
     public Socket serverSocket;
     public DataInputStream input;
     public DataOutputStream output;
+    GameServer runningServer;
 
     public static final int STARTUP_STATE = 0;
     public static final int OVERWORLD_STATE = 1;
@@ -104,6 +106,16 @@ public class GameClient extends StateBasedGame {
     void sendRequest(GameApiRequest req) {
         try {
             output.writeUTF(req.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void hostGame(int portNumber, int playerCount) {
+        try {
+            runningServer = new GameServer(portNumber, playerCount);
+            runningServer.start();
+            connectToServer("localhost", portNumber);
         } catch (Exception e) {
             e.printStackTrace();
         }
