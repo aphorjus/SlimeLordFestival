@@ -25,26 +25,28 @@ public class Tile extends Entity {
         this.col = col;
 
         addImageWithBoundingBox(ResourceManager.getImage(Board.TILE_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));
+        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));	// blue
+        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));	// green
+        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));	// orange
+        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));	// red
     }
 
     public void render(Graphics g) {
         float x = getX() - xoffset;
         float y = getY() - yoffset;
-        g.drawImage(ResourceManager.getImage(Board.TILE_RSC), x, y);
-        if (contents.equals("1")) {
+        if(!contents.equals("T")) {
+            g.drawImage(ResourceManager.getImage(Board.TILE_RSC), x, y);
+        }
+        if (contents.equals("1")) {	// blue
             g.drawImage(ResourceManager.getImage(Board.SLIME1_RSC), x+1, y+1);
         }
-        if (contents.equals("2")) {
+        if (contents.equals("2")) { // green
             g.drawImage(ResourceManager.getImage(Board.SLIME2_RSC), x+1, y+1);
         }
-        if (contents.equals("3")) {
+        if (contents.equals("3")) { // orange
             g.drawImage(ResourceManager.getImage(Board.SLIME3_RSC), x+1, y+1);
         }
-        if (contents.equals("4")) {
+        if (contents.equals("4")) { // red
             g.drawImage(ResourceManager.getImage(Board.SLIME4_RSC), x+1, y+1);
         }
 
@@ -106,13 +108,12 @@ public class Tile extends Entity {
         this.down = down;
     }
 
-    //public void update(final int delta) {
+    public void update(final int delta) {
 
-   // }
+    }
 
     public void setOffsets(float xoffset, float yoffset) {
         this.xoffset = xoffset;
         this.yoffset = yoffset;
     }
 }
-

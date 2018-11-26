@@ -1,7 +1,6 @@
 package game.server;
 
-import game.GameApi;
-import game.GameApiRequest;
+import game.api.GameApiRequest;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -49,12 +48,12 @@ public class GameServer {
     }
 
     void handleRequest(ClientHandler client, GameApiRequest req) {
-        if (req.type.equals(GameApi.Message)) {
-            sendToAll(req);
-        }
+        sendToAll(client.id, req);
     }
 
-    void sendToAll(GameApiRequest req) {
+    void sendToAll(int senderId, GameApiRequest req) {
+        req.body.put("senderId", senderId);
+
         for (int i = 0; i < clients.length; i++) {
             clients[i].write(req.toJson());
         }
