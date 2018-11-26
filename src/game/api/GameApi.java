@@ -53,6 +53,7 @@ public class GameApi {
         if (req.type.equals(GameApi.Message)) {
             listener.onMessage(req.body.getInt("senderId"), req.body.getString("message"));
         } else if (req.type.equals(GameApi.CreateEntity)) {
+            listener.onCreateEntity(loadEntity(req.body.getString("entityType"), req.body));
         } else if (req.type.equals(GameApi.DeleteEntity)) {
             listener.onDeleteEntity(req.body.getInt("entityId"));
         } else if (req.type.equals(GameApi.AlterGameState)) {
@@ -106,6 +107,13 @@ public class GameApi {
             output.writeUTF(req.toString());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    IEntity loadEntity(String entityType, JSONObject entityData) {
+        switch (entityType) {
+            default:
+                return null;
         }
     }
 }

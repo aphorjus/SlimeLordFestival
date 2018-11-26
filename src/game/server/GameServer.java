@@ -63,7 +63,6 @@ public class GameServer {
     }
 
     void handleRequest(ClientHandler client, GameApiRequest req) {
-        System.out.println(client.id);
         sendToAll(client.id, req);
     }
 
