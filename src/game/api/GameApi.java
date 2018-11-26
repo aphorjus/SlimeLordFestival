@@ -4,6 +4,7 @@ import game.client.GameClient;
 import game.entities.IEntity;
 import netscape.javascript.JSObject;
 import org.json.JSONObject;
+import org.lwjgl.Sys;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -79,7 +80,7 @@ public class GameApi {
     }
 
     public void setGameState(String newState) {
-        if (!newState.equals(GameApi.SetGameStateBattle) || !newState.equals(GameApi.SetGameStateOverworld)) return;
+        if (!newState.equals(GameApi.SetGameStateBattle) && !newState.equals(GameApi.SetGameStateOverworld)) return;
         sendRequest(new GameApiRequest(newState));
     }
 
