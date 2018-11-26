@@ -64,6 +64,9 @@ public class OverworldState extends BasicGameState {
         if (input.isKeyDown(Input.KEY_S)) {
             board.shiftDown();
         }
+        if (input.isKeyDown(Input.KEY_B)) {
+            bg.enterState(GameClient.BATTLE_STATE);
+        }
 
         // Check the server for any incoming messages
         try {

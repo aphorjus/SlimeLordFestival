@@ -3,6 +3,7 @@ package game.Battles;
 
 import game.DijkstraGrid;
 import game.entities.slime.Slime;
+import jig.Entity;
 import jig.Vector;
 import org.newdawn.slick.Graphics;
 
@@ -22,14 +23,19 @@ public class BattleGrid {
     public int xBuffer;
     public int yBuffer;
 
-    DijkstraGrid dijkstraGrid;
+    private int[][] gridState;
+
+    private DijkstraGrid dijkstraGrid;
+    private double[][] distanceGrid;
 
     private BattleGridTile[][] tileGrid;
+    private BattleGridTile seletedTile;
 
     public BattleGrid(final int screenHeight, final int screenWidth,
                       int yBuffer, int xBuffer, final int[][] map){
 
 //        System.out.println(map);
+        this.gridState = map;
 
         this.screenHeight = screenHeight;
         this.yBuffer = yBuffer;
@@ -44,13 +50,15 @@ public class BattleGrid {
         this.gridPixleWidth = screenWidth - (2*xBuffer);
         this.tileWidth = gridPixleWidth / gridWidth;
 
-        dijkstraGrid = new DijkstraGrid(map);
+        dijkstraGrid = new DijkstraGrid(this.gridState);
         initBattleGrid(map);
     }
 
     private void initBattleGrid(int[][] map){
 
         this.tileGrid = new BattleGridTile[this.gridWidth][this.gridHeight];
+        this.dijkstraGrid = new DijkstraGrid(map);
+
 
         for(int i =0; i < this.gridWidth; i++){
             for(int j = 0; j < this.gridHeight; j++){
@@ -61,9 +69,11 @@ public class BattleGrid {
 
                 this.tileGrid[i][j] = newTile;
 
-//                if( map[i][j] == 1 ){
-//                    newTile.addOccupent(new Slime(1, tilePosition));
-//                }
+                // TEMP
+                if( map[i][j] == 2 ){
+                    newTile.addOccupent(new Slime(1, tilePosition, 1));
+                }
+                // TEMP
             }
         }
     }
@@ -76,25 +86,125 @@ public class BattleGrid {
         return new Vector(x,y);
     }
 
+    private int getTileX(BattleGridTile tile){
+        return (int)( tile.getX() - xBuffer ) / tileSize;
+    }
+    private int getTileY(BattleGridTile tile){
+        return (int)( tile.getY() - yBuffer ) / tileSize;
+    }
+
     public BattleGridTile getTile(Vector position){
 
         int i = (int)(position.getX()-xBuffer) / tileSize;
         int j = (int)(position.getY()-yBuffer) / tileSize;
 
-        double[][] dg = dijkstraGrid.getDistanceGrid(i, j);
-
-//        for(int k = 0; k < dg.length; k++) {
-//            for (int l = 0; l < dg[0].length; l++) {
-//
-//                System.out.printf("%f",dg[i][l]);
-//            }
-//            System.out.println();
-//        }
         return this.tileGrid[i][j];
     }
 
+    private boolean tileSelected(){
+        return this.seletedTile != null;
+    }
+
     public void selectTile(Vector position){
-//        getTile
+
+        BattleGridTile tile = getTile(position);
+        selectTile(tile);
+
+    }
+    public void selectTile(BattleGridTile tile){
+
+        int x = getTileX( tile );
+        int y = getTileY( tile );
+
+        if( this.tileSelected() ){
+            if(inRange( this.seletedTile, x, y )) {
+                moveOccupent(this.seletedTile, tile);
+                deselectTile();
+            }
+        }
+        else {
+            if( tile.hasOccupent() ) {
+                distanceGrid = dijkstraGrid.getDistanceGrid( x, y );
+                seletedTile = tile;
+                shadeInRange();
+            }
+        }
+    }
+
+    public void activateTile(Vector position){
+        BattleGridTile tile = getTile(position);
+
+        if( seletedTile != null && !seletedTile.hasOccupent() ){
+            selectTile(tile);
+        }
+    }
+
+    public void deselectTile(){
+        seletedTile = null;
+        shadeInRange();
+    }
+
+    private boolean inRange( BattleGridTile tile, int x, int y ){
+
+//        BattleGridTile tile = tileGrid[x][y];
+//
+        if(tile == null){
+            return false;
+        }
+
+        if(!tile.hasOccupent()){
+            throw new IllegalArgumentException("Cannot call inRange on tile with no occupant");
+        }
+        if(!(tile.getOccupent() instanceof Slime)){
+            throw new IllegalArgumentException("Cannot call inRange on tile with non-slime occupant");
+        }
+
+        System.out.println(((Slime) tile.getOccupent()).speed +", "+ distanceGrid[x][y] );
+
+        if( ((Slime) tile.getOccupent()).speed >= distanceGrid[x][y] ){
+            return true;
+        }
+        return false;
+    }
+
+    private void shadeInRange(){
+
+        for(int i = 0; i < gridWidth; i++){
+            for(int j = 0; j < gridHeight; j++){
+                tileGrid[i][j].setShaded(inRange(seletedTile, i, j));
+            }
+        }
+    }
+
+    public void moveOccupent(BattleGridTile a, BattleGridTile b){
+
+        Slime movingSlime;
+
+        if(!a.hasOccupent()){
+            throw new IllegalArgumentException("Cannot move occupant from tile with no occupant");
+        }
+        if(!(a.getOccupent() instanceof Slime)){
+            System.err.println("Error: Only slimes can move");
+            return;
+        }
+        if(b.hasOccupent()){
+            if(b.getOccupent() instanceof Slime &&
+                    ((Slime) b.getOccupent()).clientID == ((Slime) a.getOccupent()).clientID){
+
+                movingSlime = ((Slime) b.getOccupent()).combine((Slime) a.getOccupent());
+
+            }
+            else{
+                System.err.println("Error: invalid move");
+                return;
+            }
+        }
+        else{
+            movingSlime = (Slime) a.getOccupent();
+        }
+        a.removeOccupent();
+        b.removeOccupent();
+        b.addOccupent(movingSlime);
     }
 
     public void render(Graphics g){

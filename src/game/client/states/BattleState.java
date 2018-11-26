@@ -20,7 +20,7 @@ public class BattleState extends BasicGameState {
 
     public static int[][] PLAIN_MAP =
             {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+             {1,1,1,2,1,1,1,1,1,1,2,1,1,1,1},
              {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
              {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
              {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -68,16 +68,13 @@ public class BattleState extends BasicGameState {
 
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
             Vector mousePosition = new Vector(input.getMouseX(), input.getMouseY());
-            BattleGridTile tile = this.battleGrid.getTile(mousePosition);
-//            System.out.println(this.battleGrid);
-            if(!tile.hasOccupent()){
-                tile.addOccupent(new Slime(1, new Vector(0,0)));
-            }
-            else{
-                tile.removeOccupent();
-            }
-            System.out.println(mousePosition);
-            System.out.println(tile.getPosition());
+            this.battleGrid.selectTile(mousePosition);
+
+        }
+        if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)){
+//            Vector mousePosition = new Vector(input.getMouseX(), input.getMouseY());
+//            this.battleGrid.selectTile(mousePosition);
+            this.battleGrid.deselectTile();
         }
     }
 

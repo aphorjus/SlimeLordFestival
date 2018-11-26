@@ -19,6 +19,7 @@ public class DijkstraGrid {
     public DijkstraGrid(int[][] weights){
         gridWidth = weights.length;
         gridHeight = weights[0].length;
+        distanceGrid = new double[gridWidth][gridHeight];
 
         initTileGrid(weights);
     }
@@ -124,7 +125,6 @@ public class DijkstraGrid {
 
         while(!Queue.isEmpty()){
             DijkstraTile u = Queue.poll();
-//            System.out.println(u.getDistance());
 
             DijkstraTile[] ajacent = getAjacent(u);
             for(int i = 0; i < ajacent.length; i++){
@@ -134,9 +134,10 @@ public class DijkstraGrid {
 
                     if (tempDist < ajacent[i].getDistance()){
                         ajacent[i].setDistance(tempDist);
+                        this.distanceGrid[ajacent[i].getXPosition()]
+                                [ajacent[i].getYPosition()] = tempDist;
                         ajacent[i].setNext(u);
                         u.setPrevious(ajacent[i]);
-//                        System.out.println(ajacent[i].getDistance()+" added");
                         Queue.add(ajacent[i]);
                     }
                 }
@@ -146,22 +147,14 @@ public class DijkstraGrid {
 
     public double[][] getDistanceGrid(int x, int y){
 
-
         dijkstra(x,y);
 
-        distanceGrid = new double[gridWidth][gridHeight];
-
-        for(int i = 0; i < gridWidth; i++){
-            for(int j = 0; j < gridHeight; j++){
-                distanceGrid[i][j] = tileGrid[i][j].getDistance();
-            }
-        }
-//        printDistanceGrid();
         return distanceGrid;
 
     }
 
     public void printDistanceGrid(){
+
         for(int i = 0; i < distanceGrid.length; i++) {
             for (int j = 0; j < distanceGrid[0].length; j++) {
                 double dist = distanceGrid[i][j];
