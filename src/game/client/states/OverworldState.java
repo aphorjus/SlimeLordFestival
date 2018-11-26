@@ -16,11 +16,12 @@ import org.newdawn.slick.state.StateBasedGame;
 public class OverworldState extends BasicGameState {
     InputManager inputManager;
     TextField textField;
+    GameApi gameApi;
     GameClient gameClient;
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) {
-        gameClient = (GameClient)sbg;
+        gameApi = new GameApi((GameClient)sbg);
         inputManager = gameClient.inputManager;
     }
 
@@ -65,14 +66,7 @@ public class OverworldState extends BasicGameState {
             bg.enterState(GameClient.BATTLE_STATE);
         }
 
-        // Check the server for any incoming messages
-        try {
-            if (gameClient.input.available() > 0) {
-                handleServerRequest(new GameApiRequest(new JSONObject(gameClient.input.readUTF())));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        gameApi.update();
     }
 
     @Override
@@ -87,47 +81,8 @@ public class OverworldState extends BasicGameState {
         return GameClient.OVERWORLD_STATE;
     }
 
-    public void apiTest() {
+    void apiTest() {
         gameClient.sendMessage("this is a test message");
     }
 
-    void handleServerRequest(GameApiRequest req) {
-        System.out.println(req.toString());
-
-        if (req.type.equals(GameApi.Message)) {
-            onMessage(req);
-        } else if (req.type.equals(GameApi.CreateEntity)) {
-            onCreateEntity(req);
-        } else if (req.type.equals(GameApi.DeleteEntity)) {
-            onDeleteEntity(req);
-        } else if (req.type.equals(GameApi.AlterGameState)) {
-            onAlterGameState(req);
-        } else if (req.type.equals(GameApi.AlterPlayerState)) {
-            onAlterPlayerState(req);
-        }
-    }
-
-    void onAlterGameState(GameApiRequest req) {
-        if (req.type.equals(GameApi.SetGameStateOverworld)) {
-            // Change game state
-        } else if (req.type.equals(GameApi.SetGameStateBattle)) {
-            // Change game state
-        }
-    }
-
-    void onAlterPlayerState(GameApiRequest req) { }
-
-    void onCreateEntity(GameApiRequest req) {
-        // Create entity logic here
-    }
-
-    void onDeleteEntity(GameApiRequest req) {
-        int entityId = req.body.getInt("entityId");
-    }
-
-    void onMessage(GameApiRequest req) {
-        String msg = req.body.getString("text");
-
-        System.out.println(msg);
-    }
 }

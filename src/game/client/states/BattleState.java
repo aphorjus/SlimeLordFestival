@@ -1,11 +1,14 @@
 package game.client.states;
 
 import game.Battles.BattleGridTile;
+import game.GameApi;
+import game.GameApiRequest;
 import game.entities.slime.Slime;
 import jig.Vector;
 import game.Battles.BattleGrid;
 import game.InputManager;
 import game.client.GameClient;
+import org.json.JSONObject;
 import org.lwjgl.Sys;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -17,6 +20,8 @@ import org.newdawn.slick.state.StateBasedGame;
 public class BattleState extends BasicGameState {
     InputManager inputManager;
     BattleGrid battleGrid;
+    GameApi gameApi;
+    GameClient gameClient;
 
     public static int[][] PLAIN_MAP =
             {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -54,9 +59,9 @@ public class BattleState extends BasicGameState {
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) {
         GameClient game = (GameClient)sbg;
+        gameClient = (GameClient)sbg;
         inputManager = game.inputManager;
-
-
+        gameApi = new GameApi((GameClient) sbg);
 
         this.battleGrid = new BattleGrid(game.ScreenHeight, game.ScreenWidth,
                 30, 200, BattleState.PLAIN_MAP);
@@ -76,6 +81,8 @@ public class BattleState extends BasicGameState {
 //            this.battleGrid.selectTile(mousePosition);
             this.battleGrid.deselectTile();
         }
+
+        gameApi.update();
     }
 
     @Override
@@ -88,5 +95,4 @@ public class BattleState extends BasicGameState {
     public int getID() {
         return GameClient.BATTLE_STATE;
     }
-
 }
