@@ -17,6 +17,7 @@ public class StartUpState extends BasicGameState {
     public static final String HOSTGAME = "game/client/resource/HostGame.png";
     Button joinButton = null;
     Button hostButton = null;
+    int state = 0; // 0 is title screen, 1 is HostGame screen, 2 is JoinGame screen
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -46,29 +47,38 @@ public class StartUpState extends BasicGameState {
             int mx = input.getMouseX();
             int yx = input.getMouseY();
             System.out.println("Mouse X:" + input.getMouseX() + " Mouse Y:" + input.getMouseY());
-            if(hostButton.checkClick(mx,yx) == true){
+            //If host game button gets clicked switch to host state
+            if(hostButton.checkClick(mx,yx) == true && state == 0){
                 System.out.println("Host Game button clicked");
-                bg.enterState(bg.PLAYING_STATE);
+                state = 1;
+                //bg.enterState(bg.PLAYING_STATE);
             }
-            if(joinButton.checkClick(mx,yx) == true){
+            //If join game button gets clicked switch to join game
+            if(joinButton.checkClick(mx,yx) == true && state == 0){
                 System.out.println("Join Game button clicked");
-                bg.enterState(bg.PLAYING_STATE);
+                state = 2;
+                //bg.enterState(bg.PLAYING_STATE);
             }
         }
-
+        if(input.isKeyPressed(Input.KEY_ESCAPE)){
+            state = 0;
+        }
     }
 
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         GameClient bg = (GameClient)sbg;
-        g.drawImage(ResourceManager.getImage(TITLE),
-                0, 0);
-        //g.drawImage(ResourceManager.getImage(JOINGAME),
-        //        60, 440);
-        //g.drawImage(ResourceManager.getImage(HOSTGAME),
-        //       640, 440);
-        joinButton.render(g);
-        hostButton.render(g);
+
+        if (state == 0){
+            g.drawImage(ResourceManager.getImage(TITLE),
+                    0, 0);
+            joinButton.render(g);
+            hostButton.render(g);
+        }else if(state == 1){
+            g.drawString("You are Hosting a game at 192.181.1.3",300,83);
+        }else if(state == 2){
+            g.drawString("Enter IP of game you want to join",300,83);
+        }
 
     }
 
