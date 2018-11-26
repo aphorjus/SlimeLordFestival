@@ -94,6 +94,8 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             if(hostButton.checkClick(mx,yx) == true && state == 0){
                 System.out.println("Host Game button clicked");
                 state = 1;
+                gameClient.hostGame(8080, 2);
+
                 if(connected == true){
                     gameApi.setGameState(GameApi.SetGameStateOverworld);
                 }
