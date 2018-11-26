@@ -21,7 +21,7 @@ public class StartUpState extends BasicGameState {
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
-        sbg.enterState(GameClient.PLAYING_STATE);
+        sbg.enterState(GameClient.OVERWORLD_STATE);
     }
 
     @Override

@@ -13,7 +13,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-public class PlayingState extends BasicGameState {
+public class OverworldState extends BasicGameState {
     InputManager inputManager;
     TextField textField;
     GameClient gameClient;
@@ -33,6 +33,37 @@ public class PlayingState extends BasicGameState {
     public void update(GameContainer gc, StateBasedGame sbg, int delta) {
         // Required to update before game process
         inputManager.update();
+        Input input = gc.getInput();
+        GameClient bg = (GameClient)sbg;
+        Board board = bg.getBoard();
+        if (input.isKeyDown(Input.KEY_LEFT)){
+            board.moveLeft();
+        }
+        if (input.isKeyDown(Input.KEY_RIGHT)){
+            board.moveRight();
+        }
+        if (input.isKeyDown(Input.KEY_UP)){
+            board.moveUp();
+        }
+        if (input.isKeyDown(Input.KEY_DOWN)){
+            board.moveDown();
+        }
+        board.update(delta);
+        if (input.isKeyDown(Input.KEY_A)) {
+            board.shiftLeft();
+        }
+        if (input.isKeyDown(Input.KEY_D)) {
+            board.shiftRight();
+        }
+        if (input.isKeyDown(Input.KEY_W)) {
+            board.shiftUp();
+        }
+        if (input.isKeyDown(Input.KEY_S)) {
+            board.shiftDown();
+        }
+        if (input.isKeyDown(Input.KEY_B)) {
+            bg.enterState(GameClient.BATTLE_STATE);
+        }
 
         // Check the server for any incoming messages
         try {
@@ -53,7 +84,7 @@ public class PlayingState extends BasicGameState {
 
     @Override
     public int getID() {
-        return GameClient.PLAYING_STATE;
+        return GameClient.OVERWORLD_STATE;
     }
 
     public void apiTest() {
