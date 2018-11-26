@@ -27,10 +27,7 @@ public class GameServer {
             Socket clientSocket = server.accept();
             DataInputStream input = new DataInputStream(clientSocket.getInputStream());
             DataOutputStream output = new DataOutputStream(clientSocket.getOutputStream());
-
             clients[i] = new ClientHandler(i, clientSocket, input, output);
-
-
 
             String[] clientNames = new String[i + 1];
             for (int j = 0; j < clientNames.length; j++) {
@@ -42,7 +39,6 @@ public class GameServer {
             body.put("playerCount", playerCount);
 
             for (int j = 0; j < clientNames.length; j++) {
-                System.out.println(clients.length);
                 clients[j].write(new GameApiRequest(GameApi.LobbyClientListUpdate, body).toJson());
             }
 
@@ -67,6 +63,7 @@ public class GameServer {
     }
 
     void handleRequest(ClientHandler client, GameApiRequest req) {
+        System.out.println(client.id);
         sendToAll(client.id, req);
     }
 
