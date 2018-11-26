@@ -91,4 +91,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         System.out.println(senderId);
         System.out.println(message);
     }
+
+    public void onSetStateToBattle() {}
+
+    public void onSetStateToOverworld() {}
 }

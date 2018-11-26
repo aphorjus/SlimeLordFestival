@@ -10,4 +10,6 @@ public interface GameApiListener {
     void onCreateEntity(IEntity entity);
     void onDeleteEntity(int id);
     void onMessage(int senderId, String message);
+    void onSetStateToBattle();
+    void onSetStateToOverworld();
 }

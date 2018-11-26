@@ -95,7 +95,6 @@ public class BattleState extends BasicGameState implements GameApiListener {
         return GameClient.BATTLE_STATE;
     }
 
-
     public void onAlterGameState(IGameState gameState) { }
 
     public void onAlterPlayerState(IPlayerState playerState) {}
@@ -105,4 +104,8 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void onDeleteEntity(int entityId) {}
 
     public void onMessage(int senderId, String message) { }
+
+    public void onSetStateToBattle() {}
+
+    public void onSetStateToOverworld() {}
 }

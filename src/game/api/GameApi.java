@@ -53,6 +53,10 @@ public class GameApi {
             listener.onDeleteEntity(req.body.getInt("entityId"));
         } else if (req.type.equals(GameApi.AlterGameState)) {
         } else if (req.type.equals(GameApi.AlterPlayerState)) {
+        } else if (req.type.equals(GameApi.SetGameStateBattle)) {
+            listener.onSetStateToBattle();
+        } else if (req.type.equals(GameApi.SetGameStateOverworld)) {
+            listener.onSetStateToOverworld();
         }
     }
 
