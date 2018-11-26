@@ -19,6 +19,7 @@ public class GameApiRequest {
         type = json.getString("type");
 
         if (json.has("body")) body = json.getJSONObject("body");
+        else body = new JSONObject();
     }
 
     public JSONObject toJson() {

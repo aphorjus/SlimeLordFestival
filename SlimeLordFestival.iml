@@ -10,5 +10,8 @@
     <orderEntry type="library" exported="" name="slick" level="project" />
     <orderEntry type="library" exported="" name="lwjgl" level="project" />
     <orderEntry type="library" exported="" name="json-20180813" level="project" />
+    <orderEntry type="library" name="jar" level="project" />
+    <orderEntry type="library" name="jar1" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>
