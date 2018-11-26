@@ -26,7 +26,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     }
 
     @Override
-    public void enter(GameContainer gc, StateBasedGame sbg) { }
+    public void enter(GameContainer gc, StateBasedGame sbg) {
+
+        gameApi = new GameApi((GameClient)sbg, this);
+    }
 
     @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) {

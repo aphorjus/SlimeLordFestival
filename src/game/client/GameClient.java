@@ -66,7 +66,7 @@ public class GameClient extends StateBasedGame {
         board = new Board();
 
         loadResources();
-        connectToServer(HOST_NAME, PORT_NUMBER);
+        //connectToServer(HOST_NAME, PORT_NUMBER);
     }
 
     void loadResources() {}
