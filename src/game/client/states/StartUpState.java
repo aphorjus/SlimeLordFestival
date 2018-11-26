@@ -114,14 +114,12 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     public void onSetStateToBattle() {}
 
     public void onSetStateToOverworld() {
-        System.out.println("setting overworld");
         gameClient.enterState(GameClient.OVERWORLD_STATE);
     }
 
     public void onEndTurn() {}
 
     public void onLobbyClientListUpdate(String[] clientNames) { }
-    public void onLobbyIsFull() {
-        System.out.println("Lobby is full");
-    }
+
+    public void onLobbyIsFull() { }
 }
