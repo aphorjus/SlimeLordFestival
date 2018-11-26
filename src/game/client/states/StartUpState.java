@@ -1,7 +1,12 @@
 package game.client.states;
 
+import game.IGameState;
 import game.InputManager;
+import game.api.GameApi;
+import game.api.GameApiListener;
 import game.client.GameClient;
+import game.client.IPlayerState;
+import game.entities.IEntity;
 import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
@@ -10,18 +15,21 @@ import game.client.Board;
 import org.newdawn.slick.Image;
 import game.client.Button;
 
-public class StartUpState extends BasicGameState {
+public class StartUpState extends BasicGameState implements GameApiListener {
     InputManager inputManager;
     public static final String TITLE = "game/client/resource/title.png";
     public static final String JOINGAME = "game/client/resource/JoinGame.png";
     public static final String HOSTGAME = "game/client/resource/HostGame.png";
     Button joinButton = null;
     Button hostButton = null;
+    GameClient gameClient;
+    GameApi gameApi;
     int state = 0; // 0 is title screen, 1 is HostGame screen, 2 is JoinGame screen
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         GameClient game = (GameClient)sbg;
+        gameClient = (GameClient)sbg;
         inputManager = game.inputManager;
         ResourceManager.loadImage(TITLE);
         ResourceManager.loadImage(HOSTGAME);
@@ -30,6 +38,7 @@ public class StartUpState extends BasicGameState {
         Image hostGame = new Image(HOSTGAME);
         joinButton = new Button(60,440,joinGame);
         hostButton = new Button(640,440,hostGame);
+        gameApi = new GameApi((GameClient) sbg, this);
     }
 
     @Override
@@ -43,6 +52,8 @@ public class StartUpState extends BasicGameState {
         inputManager.update();
         Input input = gc.getInput();
         GameClient bg = (GameClient)sbg;
+        gameApi.update();
+
         if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
             int mx = input.getMouseX();
             int yx = input.getMouseY();
@@ -57,9 +68,11 @@ public class StartUpState extends BasicGameState {
             if(joinButton.checkClick(mx,yx) == true && state == 0){
                 System.out.println("Join Game button clicked");
                 state = 2;
+                gameApi.setGameState(GameApi.SetGameStateOverworld);
                 //bg.enterState(bg.PLAYING_STATE);
             }
         }
+
         if(input.isKeyPressed(Input.KEY_ESCAPE)){
             state = 0;
         }
@@ -85,5 +98,22 @@ public class StartUpState extends BasicGameState {
     @Override
     public int getID() {
         return GameClient.STARTUP_STATE;
+    }
+
+    public void onAlterGameState(IGameState gameState) { }
+
+    public void onAlterPlayerState(IPlayerState playerState) {}
+
+    public void onCreateEntity(IEntity entity) {}
+
+    public void onDeleteEntity(int entityId) {}
+
+    public void onMessage(int senderId, String message) { }
+
+    public void onSetStateToBattle() {}
+
+    public void onSetStateToOverworld() {
+        System.out.println("setting overworld");
+        gameClient.enterState(GameClient.OVERWORLD_STATE);
     }
 }
