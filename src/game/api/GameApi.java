@@ -1,6 +1,8 @@
 package game.api;
 
 import game.client.GameClient;
+import game.entities.IEntity;
+import netscape.javascript.JSObject;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -60,6 +62,16 @@ public class GameApi {
         JSONObject body = new JSONObject();
         body.put("message", message);
         sendRequest(new GameApiRequest(GameApi.Message, body));
+    }
+
+    public void createEntity(IEntity entity) {
+        sendRequest(new GameApiRequest(GameApi.CreateEntity, entity.toJson()));
+    }
+
+    public void deleteEntity(int entityId) {
+        JSONObject body = new JSONObject();
+        body.put("entityId", entityId);
+        sendRequest(new GameApiRequest(GameApi.DeleteEntity, body));
     }
 
     public void setGameState(String newState) {
