@@ -110,7 +110,7 @@ public class GameClient extends StateBasedGame {
         if (message == null) return;
 
         JSONObject body = new JSONObject();
-        body.put("text", message);
+        body.put("message", message);
         sendRequest(new GameApiRequest(GameApi.Message, body));
     }
 

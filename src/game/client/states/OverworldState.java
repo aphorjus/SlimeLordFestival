@@ -87,5 +87,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     public void onDeleteEntity(int entityId) {}
 
-    public void onMessage(int senderId, String message) { }
+    public void onMessage(int senderId, String message) {
+        System.out.println(senderId);
+        System.out.println(message);
+    }
 }

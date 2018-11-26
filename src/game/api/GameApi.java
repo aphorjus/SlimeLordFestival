@@ -34,7 +34,7 @@ public class GameApi {
 
     void handleServerRequest(GameApiRequest req) {
         if (req.type.equals(GameApi.Message)) {
-            listener.onMessage(0, "");
+            listener.onMessage(req.body.getInt("senderId"), req.body.getString("message"));
         } else if (req.type.equals(GameApi.CreateEntity)) {
         } else if (req.type.equals(GameApi.DeleteEntity)) {
             listener.onDeleteEntity(req.body.getInt("entityId"));
