@@ -2,9 +2,7 @@ package game.api;
 
 import game.client.GameClient;
 import game.entities.IEntity;
-import netscape.javascript.JSObject;
 import org.json.JSONObject;
-import org.lwjgl.Sys;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,13 +17,13 @@ public class GameApi {
     public static String Message = "message";
     public static String SetGameStateOverworld = "setOverworld";
     public static String SetGameStateBattle = "setBattle";
+    public static String EndTurn = "endTurn";
 
     GameClient gameClient;
     GameApiListener listener;
     Socket serverSocket;
     DataInputStream input;
     DataOutputStream output;
-
 
     public GameApi(GameClient gc, GameApiListener listener) {
         this.gameClient = gc;
@@ -58,6 +56,8 @@ public class GameApi {
             listener.onSetStateToBattle();
         } else if (req.type.equals(GameApi.SetGameStateOverworld)) {
             listener.onSetStateToOverworld();
+        } else if (req.type.equals(GameApi.EndTurn)) {
+            listener.onEndTurn();
         }
     }
 

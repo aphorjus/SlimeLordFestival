@@ -116,4 +116,6 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         System.out.println("setting overworld");
         gameClient.enterState(GameClient.OVERWORLD_STATE);
     }
+
+    public void onEndTurn() {}
 }

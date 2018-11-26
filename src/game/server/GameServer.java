@@ -31,8 +31,6 @@ public class GameServer {
             System.out.println("Client accepted");
         }
 
-        turnId = 0;
-
         for (int i = 0; i < playerCount; i++) {
             clients[i].start();
         }
