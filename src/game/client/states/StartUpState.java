@@ -17,6 +17,8 @@ import org.newdawn.slick.Image;
 import game.client.Button;
 import org.w3c.dom.Text;
 
+import java.util.List;
+
 public class StartUpState extends BasicGameState implements GameApiListener {
     InputManager inputManager;
     public static final String TITLE = "game/client/resource/title.png";
@@ -29,7 +31,9 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     TextField ipAdd;
     TextField portNum;
     boolean failedConnect;
-    int state = 0; // 0 is title screen, 1 is HostGame screen, 2 is JoinGame screen
+    boolean connected;
+    String[] clientList;
+    int state = 0; // 0 is title screen, 1 is HostGame screen, 2 is JoinGame screen, 3 is join lobby
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -45,6 +49,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         hostButton = new Button(640,440,hostGame);
         gameApi = new GameApi((GameClient) sbg, this);
         failedConnect = false;
+        connected = false;
 
         //Creating text field for IP address
         ipAdd = new TextField(gc, gc.getDefaultFont(), 300, 130, 150, 40);
@@ -76,7 +81,9 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         inputManager.update();
         Input input = gc.getInput();
         GameClient bg = (GameClient)sbg;
-        gameApi.update();
+        if (connected == true){
+            gameApi.update();
+        }
 
         if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
             int mx = input.getMouseX();
@@ -87,7 +94,11 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             if(hostButton.checkClick(mx,yx) == true && state == 0){
                 System.out.println("Host Game button clicked");
                 state = 1;
-                gameApi.setGameState(GameApi.SetGameStateOverworld);
+                gameClient.hostGame(8080, 2);
+
+                if(connected == true){
+                    gameApi.setGameState(GameApi.SetGameStateOverworld);
+                }
                 //bg.enterState(bg.PLAYING_STATE);
             }
             //If join game button gets clicked switch to join game
@@ -103,12 +114,15 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             System.out.println("Attempting to join: " + ipAdd.getText() + " with port number: " + portNum.getText());
             try{
                 gameClient.connectToServer(ipAdd.getText(),Integer.parseInt(portNum.getText()));
+                gameApi =  new GameApi(gameClient, this);
+                connected = true;
+                state = 3;
             }catch (Exception e) {
                 e.printStackTrace();
                 failedConnect = true;
+                connected = false;
+                state = 2;
             }
-            //gameApi.update();
-            //gameApi.setGameState(GameApi.SetGameStateOverworld);
         }
 
         if(input.isKeyPressed(Input.KEY_ESCAPE)){
@@ -116,7 +130,6 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             failedConnect = false;
         }
 
-        gameApi.update();
     }
 
     @Override
@@ -138,6 +151,13 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             portNum.render(gc,g);
             if(failedConnect == true){
                 g.drawString("Could not connect please try again",300,40);
+            }
+        }else if (state == 3){
+            g.drawString("Waiting on host to start game", 300,40);
+            if (clientList != null){
+                for (int i = 0; i < clientList.length; i++) {
+                    g.drawString("Client: "+clientList[i]+ " in Lobby", (20 + (250 * i)),240);
+                }
             }
         }
 
@@ -166,7 +186,9 @@ public class StartUpState extends BasicGameState implements GameApiListener {
 
     public void onEndTurn() {}
 
-    public void onLobbyClientListUpdate(String[] clientNames) { }
+    public void onLobbyClientListUpdate(String[] clientNames) {
+        clientList = clientNames;
+    }
 
     public void onLobbyIsFull() { }
 }
