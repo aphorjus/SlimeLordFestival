@@ -31,6 +31,7 @@ public class GameClient extends StateBasedGame {
     int height;
     int tokens;
     LinkedList<SlimeLord> slimeLords;
+    public Player[] players;
 
     public InputManager inputManager;
     public Socket serverSocket;

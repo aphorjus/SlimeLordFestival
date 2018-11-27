@@ -5,7 +5,7 @@ import game.api.GameApi;
 import game.client.Board;
 import game.api.GameApiListener;
 import game.client.GameClient;
-import game.client.IPlayerState;
+import game.client.Player;
 import game.entities.IEntity;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
@@ -84,7 +84,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     public void onAlterGameState(IGameState gameState) { }
 
-    public void onAlterPlayerState(IPlayerState playerState) {}
+    public void onAlterPlayerState(Player player) {}
 
     public void onCreateEntity(IEntity entity) {}
 
