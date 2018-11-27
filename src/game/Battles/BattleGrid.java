@@ -3,6 +3,7 @@ package game.Battles;
 
 import game.DijkstraGrid;
 import game.entities.slime.Slime;
+import game.api.GameApi;
 import jig.Entity;
 import jig.Vector;
 import org.newdawn.slick.Graphics;
@@ -23,19 +24,22 @@ public class BattleGrid {
     public int xBuffer;
     public int yBuffer;
 
+    public GameApi gameApi;
+
     private int[][] gridState;
 
     private DijkstraGrid dijkstraGrid;
     private double[][] distanceGrid;
 
-    private BattleGridTile[][] tileGrid;
+    public BattleGridTile[][] tileGrid;
     private BattleGridTile seletedTile;
 
     public BattleGrid(final int screenHeight, final int screenWidth,
-                      int yBuffer, int xBuffer, final int[][] map){
+                      int yBuffer, GameApi gameApi, final int[][] map){
 
 //        System.out.println(map);
         this.gridState = map;
+        this.gameApi = gameApi;
 
         this.screenHeight = screenHeight;
         this.yBuffer = yBuffer;
@@ -65,7 +69,7 @@ public class BattleGrid {
 
                 Vector tilePosition = initTilePosition(i,j);
 
-                BattleGridTile newTile = new BattleGridTile(tilePosition);
+                BattleGridTile newTile = new BattleGridTile(tilePosition);//, i, j);
 
                 this.tileGrid[i][j] = newTile;
 
@@ -99,6 +103,14 @@ public class BattleGrid {
         int j = (int)(position.getY()-yBuffer) / tileSize;
 
         return this.tileGrid[i][j];
+    }
+
+    public void replaceTile(BattleGridTile newTile){
+        tileGrid[getTileX(newTile)][getTileY(newTile)] = newTile;
+    }
+
+    public void setTile( int x, int y, BattleGridTile tile ){
+        tileGrid[x][y] = tile;
     }
 
     private boolean tileSelected(){
@@ -202,9 +214,16 @@ public class BattleGrid {
         else{
             movingSlime = (Slime) a.getOccupent();
         }
-        a.removeOccupent();
-        b.removeOccupent();
-        b.addOccupent(movingSlime);
+        BattleGridTile ta = new BattleGridTile( a.position );
+//        ta.removeOccupent();
+        gameApi.createEntity(ta);
+
+        BattleGridTile tb = new BattleGridTile( b.position );
+//        tb.
+//        tb.removeOccupent();
+        tb.addOccupent(movingSlime);
+
+        gameApi.createEntity(b);
     }
 
     public void render(Graphics g){

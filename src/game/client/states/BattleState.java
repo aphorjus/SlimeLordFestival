@@ -7,6 +7,7 @@ import game.client.IPlayerState;
 import game.entities.IEntity;
 import jig.Vector;
 import game.Battles.BattleGrid;
+import game.Battles.BattleGridTile;
 import game.InputManager;
 import game.client.GameClient;
 import org.newdawn.slick.GameContainer;
@@ -63,7 +64,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
         gameApi = new GameApi((GameClient) sbg, this);
 
         this.battleGrid = new BattleGrid(game.ScreenHeight, game.ScreenWidth,
-                30, 200, BattleState.PLAIN_MAP);
+                30, gameApi, BattleState.PLAIN_MAP);
     }
 
     @Override
@@ -99,11 +100,17 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
     public void onAlterPlayerState(IPlayerState playerState) {}
 
-    public void onCreateEntity(IEntity entity) {}
+    public void onCreateEntity(IEntity entity) {
+
+        BattleGridTile tile = (BattleGridTile) entity;
+        System.out.println(tile.occupent.toJson());
+        battleGrid.replaceTile(tile);
+
+    }
 
     public void onDeleteEntity(int entityId) {}
 
-    public void onMessage(int senderId, String message) { }
+    public void onMessage(int senderId, String message) {}
 
     public void onSetStateToBattle() {}
 
@@ -112,5 +119,6 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void onEndTurn() {}
 
     public void onLobbyClientListUpdate(String[] clientNames) {}
+
     public void onLobbyIsFull() {}
 }
