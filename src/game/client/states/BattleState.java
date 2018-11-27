@@ -68,6 +68,11 @@ public class BattleState extends BasicGameState implements GameApiListener {
     }
 
     @Override
+    public void enter(GameContainer gc, StateBasedGame sbg) {
+        gameApi = new GameApi(gameClient, this);
+    }
+
+    @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) {
         Input input = gc.getInput();
 

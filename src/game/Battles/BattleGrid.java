@@ -37,7 +37,6 @@ public class BattleGrid {
     public BattleGrid(final int screenHeight, final int screenWidth,
                       int yBuffer, GameApi gameApi, final int[][] map){
 
-//        System.out.println(map);
         this.gridState = map;
         this.gameApi = gameApi;
 
@@ -171,8 +170,6 @@ public class BattleGrid {
             throw new IllegalArgumentException("Cannot call inRange on tile with non-slime occupant");
         }
 
-        System.out.println(((Slime) tile.getOccupent()).speed +", "+ distanceGrid[x][y] );
-
         if( ((Slime) tile.getOccupent()).speed >= distanceGrid[x][y] ){
             return true;
         }
@@ -214,16 +211,19 @@ public class BattleGrid {
         else{
             movingSlime = (Slime) a.getOccupent();
         }
-        BattleGridTile ta = new BattleGridTile( a.position );
-//        ta.removeOccupent();
-        gameApi.createEntity(ta);
 
-        BattleGridTile tb = new BattleGridTile( b.position );
-//        tb.
-//        tb.removeOccupent();
-        tb.addOccupent(movingSlime);
+//        a.removeOccupent();
+//        b.removeOccupent();
+//        b.addOccupent(movingSlime);
 
-        gameApi.createEntity(b);
+        BattleGridTile newTileA = new BattleGridTile( a.position );
+        System.out.println(newTileA.toJson());
+        gameApi.createEntity(newTileA);
+
+        BattleGridTile newTileB = new BattleGridTile( b.position );
+        newTileB.addOccupent(movingSlime);
+        System.out.println(newTileB.toJson());
+        gameApi.createEntity(newTileB);
     }
 
     public void render(Graphics g){

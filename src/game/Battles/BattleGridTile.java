@@ -33,6 +33,7 @@ public class BattleGridTile extends Entity implements IEntity {
         if( jasonTile.has("occupent") ){
             // CHANGE DONSE NOT SUPPORT OTHER OCCUPENT TYPES
             this.occupent = new Slime(jasonTile.getJSONObject("occupent"));
+            System.out.println(occupent.getEntityType());
         }
         this.shaded = jasonTile.getBoolean("shaded");
     }
@@ -52,7 +53,7 @@ public class BattleGridTile extends Entity implements IEntity {
         jasonTile.put("xPosition", position.getX());
         jasonTile.put("yPosition", position.getY());
         jasonTile.put("shaded", shaded);
-        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
+//        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
 
         return jasonTile;
     }
