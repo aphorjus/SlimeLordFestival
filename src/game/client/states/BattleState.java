@@ -69,7 +69,8 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
-        gameApi = new GameApi(gameClient, this);
+        this.gameApi = new GameApi(gameClient, this);
+        this.battleGrid.setGameApi(gameApi);
     }
 
     @Override

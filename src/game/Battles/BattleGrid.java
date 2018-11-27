@@ -57,6 +57,10 @@ public class BattleGrid {
         initBattleGrid(map);
     }
 
+    public void setGameApi(GameApi gameApi) {
+        this.gameApi = gameApi;
+    }
+
     private void initBattleGrid(int[][] map){
 
         this.tileGrid = new BattleGridTile[this.gridWidth][this.gridHeight];
