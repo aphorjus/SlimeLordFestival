@@ -1,35 +1,34 @@
 package game.client.states;
 
 import game.*;
+import game.api.GameApi;
 import game.client.Board;
+import game.api.GameApiListener;
 import game.client.GameClient;
-import game.server.GameServer;
-import org.json.JSONObject;
-import org.lwjgl.Sys;
-import org.lwjgl.opengl.EXTAbgr;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import game.client.Player;
+import game.entities.IEntity;
+import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
-import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-public class OverworldState extends BasicGameState {
+public class OverworldState extends BasicGameState implements GameApiListener {
     InputManager inputManager;
     TextField textField;
+    GameApi gameApi;
     GameClient gameClient;
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) {
         gameClient = (GameClient)sbg;
+        gameApi = new GameApi((GameClient)sbg, this);
         inputManager = gameClient.inputManager;
     }
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
-        apiTest();
+
+        gameApi = new GameApi((GameClient)sbg, this);
     }
 
     @Override
@@ -64,15 +63,11 @@ public class OverworldState extends BasicGameState {
         if (input.isKeyDown(Input.KEY_S)) {
             board.shiftDown();
         }
-
-        // Check the server for any incoming messages
-        try {
-            if (gameClient.input.available() > 0) {
-                handleServerRequest(new GameApiRequest(new JSONObject(gameClient.input.readUTF())));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (input.isKeyDown(Input.KEY_B)) {
+            bg.enterState(GameClient.BATTLE_STATE);
         }
+
+        gameApi.update();
     }
 
     @Override
@@ -87,45 +82,25 @@ public class OverworldState extends BasicGameState {
         return GameClient.OVERWORLD_STATE;
     }
 
-    public void apiTest() {
-        gameClient.sendMessage("this is a test message");
+    public void onAlterGameState(IGameState gameState) { }
+
+    public void onAlterPlayerState(Player player) {}
+
+    public void onCreateEntity(IEntity entity) {}
+
+    public void onDeleteEntity(int entityId) {}
+
+    public void onMessage(int senderId, String message) {
+        System.out.println(senderId);
+        System.out.println(message);
     }
 
-    void handleServerRequest(GameApiRequest req) {
-        System.out.println(req.toString());
+    public void onSetStateToBattle() {}
 
-        if (req.type.equals(GameApi.Message)) {
-            onMessage(req);
-        } else if (req.type.equals(GameApi.CreateEntity)) {
-            onCreateEntity(req);
-        } else if (req.type.equals(GameApi.DeleteEntity)) {
-            onDeleteEntity(req);
-        } else if (req.type.equals(GameApi.AlterGameState)) {
-            onAlterGameState(req);
-        } else if (req.type.equals(GameApi.AlterPlayerState)) {
-            onAlterPlayerState(req);
-        }
-    }
+    public void onSetStateToOverworld() {}
 
-    void onAlterGameState(GameApiRequest req) {
-        SlimeGameState gameState = new SlimeGameState(req.body.getJSONObject("gameState"));
-    }
+    public void onEndTurn() {}
 
-    void onAlterPlayerState(GameApiRequest req) {
-        PlayerState playerState = new PlayerState(req.body.getJSONObject("playerState"));
-    }
-
-    void onCreateEntity(GameApiRequest req) {
-        // Create entity logic here
-    }
-
-    void onDeleteEntity(GameApiRequest req) {
-        int entityId = req.body.getInt("entityId");
-    }
-
-    void onMessage(GameApiRequest req) {
-        String msg = req.body.getString("text");
-
-        System.out.println(msg);
-    }
+    public void onLobbyClientListUpdate(String[] clientNames) {}
+    public void onLobbyIsFull() {}
 }

@@ -1,4 +1,4 @@
-package game;
+package game.api;
 
 import org.json.JSONObject;
 
@@ -8,6 +8,7 @@ public class GameApiRequest {
 
     public GameApiRequest(String actionType) {
         this.type = actionType;
+        this.body = new JSONObject();
     }
 
     public GameApiRequest(String actionType, JSONObject body) {
@@ -19,6 +20,7 @@ public class GameApiRequest {
         type = json.getString("type");
 
         if (json.has("body")) body = json.getJSONObject("body");
+        else body = new JSONObject();
     }
 
     public JSONObject toJson() {
