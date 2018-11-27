@@ -1,8 +1,10 @@
 package game.api;
 
+import game.Battles.BattleGridTile;
 import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
+import game.entities.slime.Slime;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -118,8 +120,11 @@ public class GameApi {
 
     IEntity loadEntity(String entityType, JSONObject entityData) {
         switch (entityType) {
-            default:
-                return null;
+            case "BattleGridTile": return new BattleGridTile(entityData);
+
+            case "Slime": return new Slime(entityData);
+
+            default: return null;
         }
     }
 }

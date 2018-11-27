@@ -10,6 +10,7 @@ import game.Battles.BattleGrid;
 import game.Battles.BattleGridTile;
 import game.InputManager;
 import game.client.GameClient;
+import org.lwjgl.Sys;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -109,7 +110,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void onCreateEntity(IEntity entity) {
 
         BattleGridTile tile = (BattleGridTile) entity;
-        System.out.println(tile.occupent.toJson());
+        System.out.println(tile.toJson());
         battleGrid.replaceTile(tile);
 
     }

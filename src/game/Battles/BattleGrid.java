@@ -6,6 +6,7 @@ import game.entities.slime.Slime;
 import game.api.GameApi;
 import jig.Entity;
 import jig.Vector;
+import org.lwjgl.Sys;
 import org.newdawn.slick.Graphics;
 
 public class BattleGrid {
@@ -221,12 +222,12 @@ public class BattleGrid {
 //        b.addOccupent(movingSlime);
 
         BattleGridTile newTileA = new BattleGridTile( a.position );
-        System.out.println(newTileA.toJson());
+//        System.out.println(newTileA.toJson());
         gameApi.createEntity(newTileA);
 
         BattleGridTile newTileB = new BattleGridTile( b.position );
         newTileB.addOccupent(movingSlime);
-        System.out.println(newTileB.toJson());
+//        System.out.println(newTileB.toJson());
         gameApi.createEntity(newTileB);
     }
 

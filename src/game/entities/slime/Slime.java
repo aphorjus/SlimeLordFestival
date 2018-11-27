@@ -21,15 +21,17 @@ public class Slime extends Entity implements IEntity {
         this.size = size;
         this.speed = (int)((10/size) + 1);
         this.hp = 10*size;
+
         this.addImage(ResourceManager.getImage(Board.SLIME1_RSC));
     }
 
     public Slime(JSONObject jsonSlime){
 
-        jsonSlime.getInt("clientID");
-        jsonSlime.getInt("hp");
-        jsonSlime.getInt("speed");
-        jsonSlime.getInt("size");
+        this.clientID = jsonSlime.getInt("clientID");
+        this.hp = jsonSlime.getInt("hp");
+        this.speed = jsonSlime.getInt("speed");
+        this.size = jsonSlime.getInt("size");
+
         this.addImage(ResourceManager.getImage(Board.SLIME1_RSC));
 
     }
@@ -43,6 +45,7 @@ public class Slime extends Entity implements IEntity {
 
         JSONObject jsonSlime = new JSONObject();
 
+        jsonSlime.put("entityType", getEntityType());
         jsonSlime.put("clientID", clientID);
         jsonSlime.put("hp", hp);
         jsonSlime.put("speed", speed);
