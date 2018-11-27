@@ -3,7 +3,7 @@ package game.client.states;
 import game.IGameState;
 import game.api.GameApi;
 import game.api.GameApiListener;
-import game.client.IPlayerState;
+import game.client.Player;
 import game.entities.IEntity;
 import jig.Vector;
 import game.Battles.BattleGrid;
@@ -98,7 +98,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
     public void onAlterGameState(IGameState gameState) { }
 
-    public void onAlterPlayerState(IPlayerState playerState) {}
+    public void onAlterPlayerState(Player player) {}
 
     public void onCreateEntity(IEntity entity) {
 
