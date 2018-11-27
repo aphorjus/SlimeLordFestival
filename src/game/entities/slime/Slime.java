@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 public class Slime extends Entity implements IEntity {
 
+    public String entityType = "Slime";
     public int clientID;
     public int hp;
     public int speed;
@@ -36,10 +37,6 @@ public class Slime extends Entity implements IEntity {
 
     }
 
-    public Slime combine(Slime slime){
-        return new Slime(this.size + slime.size, slime.getPosition(), this.clientID );
-    }
-
     @Override
     public JSONObject toJson() {
 
@@ -56,7 +53,12 @@ public class Slime extends Entity implements IEntity {
 
     @Override
     public String getEntityType() {
-        return "Slime";
+        return entityType;
+    }
+
+    public Slime combine(Slime slime){
+
+        return new Slime(this.size + slime.size, slime.getPosition(), this.clientID );
     }
 }
 

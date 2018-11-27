@@ -5,6 +5,7 @@ import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
 import game.entities.slime.Slime;
+import game.entities.slimefactory.SlimeFactory;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -123,6 +124,8 @@ public class GameApi {
             case "BattleGridTile": return new BattleGridTile(entityData);
 
             case "Slime": return new Slime(entityData);
+
+            case "Factory": return new SlimeFactory(entityData);
 
             default: return null;
         }

@@ -2,12 +2,15 @@ package game.Battles;
 
 
 import game.DijkstraGrid;
+import game.entities.IEntity;
 import game.entities.slime.Slime;
 import game.api.GameApi;
 import jig.Entity;
 import jig.Vector;
 import org.lwjgl.Sys;
 import org.newdawn.slick.Graphics;
+
+import java.util.ArrayList;
 
 public class BattleGrid {
 
@@ -18,8 +21,8 @@ public class BattleGrid {
     public int gridPixleHeight;
     public int gridPixleWidth;
 
-    public int tileHeight;
-    public int tileWidth;
+//    public int tileHeight;
+//    public int tileWidth;
     public int tileSize;
 
     public int xBuffer;
@@ -52,7 +55,7 @@ public class BattleGrid {
         this.gridWidth = map.length;
         this.xBuffer = ( screenWidth - ( gridWidth*tileSize )) / 2;
         this.gridPixleWidth = screenWidth - (2*xBuffer);
-        this.tileWidth = gridPixleWidth / gridWidth;
+//        this.tileWidth = gridPixleWidth / gridWidth;
 
         dijkstraGrid = new DijkstraGrid(this.gridState);
         initBattleGrid(map);
@@ -139,7 +142,7 @@ public class BattleGrid {
             }
         }
         else {
-            if( tile.hasOccupent() ) {
+            if( tile.hasOccupent() && tile.getOccupent() instanceof Slime ) {
                 distanceGrid = dijkstraGrid.getDistanceGrid( x, y );
                 seletedTile = tile;
                 shadeInRange();
@@ -167,7 +170,6 @@ public class BattleGrid {
         if(tile == null){
             return false;
         }
-
         if(!tile.hasOccupent()){
             throw new IllegalArgumentException("Cannot call inRange on tile with no occupant");
         }
@@ -216,19 +218,26 @@ public class BattleGrid {
         else{
             movingSlime = (Slime) a.getOccupent();
         }
-
-//        a.removeOccupent();
-//        b.removeOccupent();
-//        b.addOccupent(movingSlime);
-
         BattleGridTile newTileA = new BattleGridTile( a.position );
-//        System.out.println(newTileA.toJson());
         gameApi.createEntity(newTileA);
 
         BattleGridTile newTileB = new BattleGridTile( b.position );
         newTileB.addOccupent(movingSlime);
-//        System.out.println(newTileB.toJson());
         gameApi.createEntity(newTileB);
+    }
+
+    public ArrayList<IEntity> getEntityList(){
+        ArrayList<IEntity> entityList = new ArrayList<>();
+
+        for(int i = 0; i < gridWidth; i++){
+            for(int j = 0; j < gridHeight; j++){
+                BattleGridTile tile = tileGrid[i][j];
+                if(tile.hasOccupent()){
+                    entityList.add(tile.occupent);
+                }
+            }
+        }
+        return entityList;
     }
 
     public void render(Graphics g){

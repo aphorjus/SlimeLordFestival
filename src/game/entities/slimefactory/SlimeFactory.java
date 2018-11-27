@@ -6,7 +6,7 @@ import jig.Entity;
 import org.json.JSONObject;
 
 public class SlimeFactory extends Entity implements IEntity {
-    String entityType = "factory";
+    String entityType = "Factory";
     int clientID;
     int id;
     int hp;
@@ -19,10 +19,6 @@ public class SlimeFactory extends Entity implements IEntity {
         hp = data.getInt("hp");
     }
 
-    public String getEntityType() {
-        return entityType;
-    }
-
     public JSONObject toJson() {
         JSONObject data = new JSONObject();
         data.put("entityType", entityType);
@@ -32,4 +28,10 @@ public class SlimeFactory extends Entity implements IEntity {
 
         return data;
     }
+
+    public String getEntityType() {
+        return entityType;
+    }
+
+
 }
