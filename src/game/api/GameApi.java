@@ -1,6 +1,7 @@
 package game.api;
 
 import game.client.GameClient;
+import game.client.Player;
 import game.entities.IEntity;
 import org.json.JSONObject;
 
@@ -58,6 +59,7 @@ public class GameApi {
             listener.onDeleteEntity(req.body.getInt("entityId"));
         } else if (req.type.equals(GameApi.AlterGameState)) {
         } else if (req.type.equals(GameApi.AlterPlayerState)) {
+            listener.onAlterPlayerState(new Player(req.body));
         } else if (req.type.equals(GameApi.SetGameStateBattle)) {
             listener.onSetStateToBattle();
         } else if (req.type.equals(GameApi.SetGameStateOverworld)) {
@@ -95,6 +97,10 @@ public class GameApi {
         JSONObject body = new JSONObject();
         body.put("entityId", entityId);
         sendRequest(new GameApiRequest(GameApi.DeleteEntity, body));
+    }
+
+    public void updatePlayerState(Player player) {
+        sendRequest(new GameApiRequest(GameApi.AlterPlayerState, player.toJson()));
     }
 
     public void setGameState(String newState) {

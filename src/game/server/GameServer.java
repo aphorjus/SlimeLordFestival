@@ -47,6 +47,7 @@ public class GameServer extends Thread {
                 DataInputStream input = new DataInputStream(clientSocket.getInputStream());
                 DataOutputStream output = new DataOutputStream(clientSocket.getOutputStream());
                 clients[i] = new ClientHandler(i, clientSocket, input, output);
+                clients[i].start();
 
                 String[] clientNames = new String[i + 1];
                 for (int j = 0; j < clientNames.length; j++) {
@@ -64,11 +65,16 @@ public class GameServer extends Thread {
                 System.out.println("Client accepted");
             }
 
-            for (int i = 0; i < playerCount; i++) {
-                clients[i].start();
+
+            String[] clientNames = new String[clients.length];
+            for (int j = 0; j < clients.length; j++) {
+                clientNames[j] = clients[j].id + "";
             }
 
-            sendToAllClients(-1, new GameApiRequest(GameApi.LobbyIsFull));
+            JSONObject body = new JSONObject();
+            body.put("clientNames", new JSONArray(clientNames));
+            body.put("playerCount", playerCount);
+            sendToAllClients(-1, new GameApiRequest(GameApi.LobbyClientListUpdate, body));
 
             while (true) {
                 for (int i = 0; i < playerCount; i++) {

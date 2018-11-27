@@ -5,19 +5,15 @@ import game.InputManager;
 import game.api.GameApi;
 import game.api.GameApiListener;
 import game.client.GameClient;
-import game.client.IPlayerState;
+import game.client.Player;
 import game.entities.IEntity;
 import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import game.client.Board;
 import org.newdawn.slick.Image;
 import game.client.Button;
-import org.w3c.dom.Text;
-
-import java.util.List;
 
 public class StartUpState extends BasicGameState implements GameApiListener {
     InputManager inputManager;
@@ -170,7 +166,9 @@ public class StartUpState extends BasicGameState implements GameApiListener {
 
     public void onAlterGameState(IGameState gameState) { }
 
-    public void onAlterPlayerState(IPlayerState playerState) {}
+    public void onAlterPlayerState(Player player) {
+        System.out.println(player.toJson().toString());
+    }
 
     public void onCreateEntity(IEntity entity) {}
 
@@ -190,5 +188,13 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         clientList = clientNames;
     }
 
-    public void onLobbyIsFull() { }
+    public void onLobbyIsFull() {
+        gameClient.players = new Player[clientList.length];
+
+        for (int i = 0; i < gameClient.players.length; i++) {
+            gameClient.players[i] = new Player();
+        }
+
+        gameApi.updatePlayerState(gameClient.players[0]);
+    }
 }
