@@ -3,6 +3,7 @@ package game.Battles;
 import game.client.Board;
 import game.entities.IEntity;
 import game.entities.slime.Slime;
+import game.entities.slimefactory.SlimeFactory;
 import jig.Entity;
 import jig.ResourceManager;
 import jig.Vector;
@@ -11,35 +12,43 @@ import org.newdawn.slick.Graphics;
 
 public class BattleGridTile extends Entity implements IEntity {
 
-    public IEntity occupent;
-    public Vector position;
-//    public int xIndex;
-//    public int yIndex;
-    public boolean shaded;
+    private IEntity occupent;
+//    public Vector position;
+    private int xIndex;
+    private int yIndex;
+    private boolean shaded;
 
-    public BattleGridTile(Vector position){//, int x, int y){
+    public BattleGridTile(Vector position, int x, int y){
         super(position);
-        this.position = position;
+//        this.position = position;
+        this.xIndex = x;
+        this.yIndex = y;
         this.occupent = null;
         this.shaded = false;
-        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
+//        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
     }
 
-    public BattleGridTile(JSONObject jasonTile){
+    public BattleGridTile(JSONObject jsonTile){
 
-        super(new Vector( jasonTile.getFloat("xPosition"),
-                jasonTile.getFloat("yPosition") ));
+//        super(new Vector( jsonTile.getFloat("xPosition"), jsonTile.getFloat("yPosition") ));
+//
+//        this.position = getPosition();
+        this.xIndex = jsonTile.getInt("xIndex");
+        this.yIndex = jsonTile.getInt("yIndex");
+        this.shaded = jsonTile.getBoolean("shaded");
 
-        this.position = getPosition();
-        if( jasonTile.has("occupent") ){
-            // CHANGE DONSE NOT SUPPORT OTHER OCCUPENT TYPES
-            this.addOccupent( new Slime(jasonTile.getJSONObject("occupent")) );
-
-            System.out.println(occupent.getEntityType());
+        if( jsonTile.has("occupent") ){
+            if( jsonTile.getJSONObject("occupent").getString("entityType").equals("Slime") ) {
+                this.addOccupent(new Slime(jsonTile.getJSONObject("occupent")));
+            }
+            else if( jsonTile.getJSONObject("occupent").getString("entityType").equals("Factory") ){
+                this.addOccupent(new SlimeFactory(jsonTile.getJSONObject("occupent")));
+            }
+            else {
+                System.err.println(occupent.getEntityType()+" is not a valid type for 'occupent'");
+            }
         }
-        this.shaded = jasonTile.getBoolean("shaded");
-
-        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
+//        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
     }
 
     @Override
@@ -49,18 +58,29 @@ public class BattleGridTile extends Entity implements IEntity {
 
     @Override
     public JSONObject toJson() {
-        JSONObject jasonTile = new JSONObject();
+        JSONObject jsonTile = new JSONObject();
 
-        jasonTile.put("entityType", getEntityType());
+        jsonTile.put("entityType", getEntityType());
         if( this.hasOccupent() ) {
-            jasonTile.put("occupent", occupent.toJson());
+            jsonTile.put("occupent", occupent.toJson());
         }
-        jasonTile.put("xPosition", position.getX());
-        jasonTile.put("yPosition", position.getY());
-        jasonTile.put("shaded", shaded);
-//        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
+        jsonTile.put("xPosition", this.getPosition().getX());
+        jsonTile.put("yPosition", this.getPosition().getY());
 
-        return jasonTile;
+        jsonTile.put("xIndex", xIndex);
+        jsonTile.put("yIndex", yIndex);
+        jsonTile.put("shaded", shaded);
+
+
+        return jsonTile;
+    }
+
+    public int getxIndex() {
+        return xIndex;
+    }
+
+    public int getyIndex() {
+        return yIndex;
     }
 
     public IEntity getOccupent(){
@@ -87,7 +107,7 @@ public class BattleGridTile extends Entity implements IEntity {
     public boolean addOccupent(IEntity newOccupent){
         if( !this.hasOccupent() ) {
             this.occupent = newOccupent;
-            ((Entity)this.occupent).setPosition(this.position);
+            ((Entity)this.occupent).setPosition(this.getPosition());
             return true;
         }
         return false;
@@ -96,6 +116,13 @@ public class BattleGridTile extends Entity implements IEntity {
     public void removeOccupent(){
         if( this.hasOccupent() ){
             this.occupent = null;
+        }
+    }
+
+    public void setOccupent(IEntity occupent){
+        this.occupent = occupent;
+        if(hasOccupent()){
+            ((Entity)this.occupent).setPosition(this.getPosition());
         }
     }
 
