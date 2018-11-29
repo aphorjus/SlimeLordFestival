@@ -108,11 +108,9 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void onAlterPlayerState(Player player) {}
 
     public void onCreateEntity(IEntity entity) {
-
         BattleGridTile tile = (BattleGridTile) entity;
         System.out.println(tile.toJson());
         battleGrid.replaceTile(tile);
-
     }
 
     public void onDeleteEntity(int entityId) {}

@@ -92,6 +92,10 @@ public class GameApi {
         sendRequest(new GameApiRequest(GameApi.Message, body));
     }
 
+    public void endTurn() {
+        sendRequest(new GameApiRequest(GameApi.EndTurn));
+    }
+
     public void createEntity(IEntity entity) {
         sendRequest(new GameApiRequest(GameApi.CreateEntity, entity.toJson()));
     }
