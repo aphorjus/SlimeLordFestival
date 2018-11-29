@@ -5,6 +5,7 @@ import game.api.GameApi;
 import game.api.GameApiListener;
 import game.client.Player;
 import game.entities.IEntity;
+import game.entities.slimelord.SlimeLord;
 import jig.Vector;
 import game.Battles.BattleGrid;
 import game.Battles.BattleGridTile;
@@ -117,7 +118,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
     public void onMessage(int senderId, String message) {}
 
-    public void onSetStateToBattle() {}
+    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {}
 
     public void onSetStateToOverworld() {}
 
