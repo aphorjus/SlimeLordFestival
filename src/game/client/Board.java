@@ -8,6 +8,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import jig.ResourceManager;
+import game.DijkstraGrid;
 import game.client.GameClient;
 import game.client.Tile;
 
@@ -75,7 +76,7 @@ public class Board {
                         0, 10, 5,
                         3, 10, 0,
                         2, 8, 0,
-                        1, 3, 0,
+                        1, 4, 0,
                         0, 20, 11,
                         3, 14, 0,
                         4, 6, 0,
@@ -152,9 +153,6 @@ public class Board {
                         4, 9, 0,
                 };
 
-        place("T", 16, 13);
-        place("1", 11, 5);
-
         for (int i = 0; i < placement.length / 3; i++) {
             int type = placement[3*i + 0];
             int r = placement[3*i + 1];
@@ -178,7 +176,17 @@ public class Board {
             }
         }
 
+        place("T:0", 16, 13);         // tent
+        place("1", 10, 5);  // blue
+        place("2", 4, 76);  // green
+        place("3", 39, 81);  // orange
+        place("4", 39, 5);  // red
+
+        // generatePaths();
     }
+
+
+
     public boolean place(String contents, int row, int col) {
         boolean isPlaced = false;
         if(tiles[row][col] == null) {
@@ -319,11 +327,8 @@ public class Board {
         }
         return false;
     }
-    public boolean moveLeft() {
-        return moveLeft(slimeID);
-    }
 
-    public boolean moveLeft(int id) {
+    public boolean moveLeft() {
         if(!acceptKeyboard) {
             return false;
         }
@@ -331,7 +336,11 @@ public class Board {
         if(current.getLeft() != null) {
             current.setContents("");
             current = current.getLeft();
-            current.setContents("" + id);
+            if(isTent()) {
+                current = current.getRight();
+            } else {
+                current.setContents("" + slimeID);
+            }
             return true;
         }
         return false;
@@ -346,7 +355,11 @@ public class Board {
         if(current.getRight() != null) {
             current.setContents("");
             current = current.getRight();
-            current.setContents("" + slimeID);
+            if(isTent()) {
+                current = current.getLeft();
+            } else {
+                current.setContents("" + slimeID);
+            }
             return true;
         }
         return false;
@@ -360,19 +373,35 @@ public class Board {
         if(current.getUp() != null) {
             current.setContents("");
             current = current.getUp();
-            if(current.getContents().equals("T")) {
-                JOptionPane.showMessageDialog(null, "in tent");
+            if(isTent()) {
                 current = current.getDown();
+            } else {
                 current.setContents("" + slimeID);
-                return true;
             }
-            current.setContents("" + slimeID);
             return true;
         }
         return false;
 
     }
+    private boolean isTent() {
+        boolean isTent = current.getContents().startsWith("T");
+        if(isTent){
+            String[] split = current.getContents().split(":");
+            int id = Integer.parseInt(split[1]);
+            if(id == 0){
+                JOptionPane.showMessageDialog(null, "You now own this tent.");
+                current.setContents("T:" + slimeID);
+            } else if(id != slimeID){
+                JOptionPane.showMessageDialog(null, "tent is already owned by " + id);
+            } else {
+                JOptionPane.showMessageDialog(null, "You own this tent.");
 
+            }
+            acceptKeyboard = false;
+        }
+
+        return isTent;
+    }
     public boolean moveDown() {
         if(!acceptKeyboard) {
             return false;
@@ -381,7 +410,11 @@ public class Board {
         if(current.getDown() != null) {
             current.setContents("");
             current = current.getDown();
-            current.setContents("" + slimeID);
+            if(isTent()) {
+                current = current.getUp();
+            } else {
+                current.setContents("" + slimeID);
+            }
             return true;
         }
         return false;
@@ -431,5 +464,47 @@ public class Board {
             acceptKeyboard = true;
         }
     }
+
+    /*
+    // Dijkstras
+    public void generatePaths() {
+        // int size = NUMROWS * NUMCOLS;
+        int[][]weights = new int[NUMROWS][NUMCOLS];    // weights
+        for(int row = 0; row < NUMROWS; row++){
+            for(int col = 0; col < NUMCOLS; col++){
+                int n = NUMCOLS * row + col;
+                int up = row - 1;
+                int down = row + 1;
+                int left = col - 1;
+                int right = col + 1;
+                int n_up = NUMCOLS * up + col;
+                int n_down = NUMCOLS * down + col;
+                int n_left = NUMCOLS * row + left;
+                int n_right = NUMCOLS * row + right;
+                if(tiles[row][col] == null){
+
+                // defining the weight between two connected tiles
+                // where there is a path, and the weight is 1.
+                } else if(up >= 0 && tiles[up][col] != null){
+                    weights [up][col] = 1;
+                    // weights [n_up][n] = 1;
+                } else if(down < NUMROWS && tiles[down][col] != null){
+                    weights [down][col] = 1;
+                    // weights [n_down][n] = 1;
+                }  else if(left >= 0 && tiles[row][left] != null){
+                    weights [row][left] = 1;
+                    // weights [n_left][n] = 1;
+                } else if(right < NUMCOLS && tiles[row][right] != null){
+                    weights [row][right] = 1;
+                    // weights [n_right][n] = 1;
+                }
+            }
+
+        }
+        DijkstraGrid grid = new DijkstraGrid(weights);
+        grid.printDistanceGrid();
+    }
+    */
+
 }
 

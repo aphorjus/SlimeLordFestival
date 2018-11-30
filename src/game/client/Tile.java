@@ -34,7 +34,7 @@ public class Tile extends Entity {
     public void render(Graphics g) {
         float x = getX() - xoffset;
         float y = getY() - yoffset;
-        if(!contents.equals("T")) {
+        if(!contents.startsWith("T")) {
             g.drawImage(ResourceManager.getImage(Board.TILE_RSC), x, y);
         }
         if (contents.equals("1")) {	// blue
