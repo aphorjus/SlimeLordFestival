@@ -25,10 +25,10 @@ public class Tile extends Entity {
         this.col = col;
 
         addImageWithBoundingBox(ResourceManager.getImage(Board.TILE_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));	// blue
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));	// green
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));	// orange
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));	// red
+        addImageWithBoundingBox(ResourceManager.getImage(Board.BLUE_SLIMELORD_RSC));	// blue
+        addImageWithBoundingBox(ResourceManager.getImage(Board.GREEN_SLIMELORD_RSC));	// green
+        addImageWithBoundingBox(ResourceManager.getImage(Board.ORANGE_SLIMELORD_RSC));	// orange
+        addImageWithBoundingBox(ResourceManager.getImage(Board.RED_SLIMELORD_RSC));	    // red
     }
 
     public void render(Graphics g) {
