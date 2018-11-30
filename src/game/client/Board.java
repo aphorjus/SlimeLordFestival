@@ -175,8 +175,30 @@ public class Board {
                     break;
             }
         }
+        // BLUE SLIME AREA
+        place("T:0", 16, 13);           // tent
+        place("T:0", 3, 31);            // tent
+        // place("T:0", 16, 31);                          // shop
 
-        place("T:0", 16, 13);         // tent
+        // RED SLIME AREA
+        place("T:0", 27, 6);             // tent
+        place("T:0", 44, 18);            // tent
+        place("T:0", 34, 22);            // tent
+        place("T:0", 27, 31);            // tent
+       // place("T:0", 33, 31);                            // shop
+
+        // ORANGE SLIME AREA
+        place("T:0", 47, 48);           // path leading right tent DOES NOT WORK
+        //  place("T:0", 38, 54);                         // shop
+        place("T:0", 37, 66);           // tent
+        place("T:0", 29, 82);           // tent
+
+        // GREEN SLIME AREA
+        place("T:0", 15, 76);           // tent
+        place("T:0", 5, 65);            // tent
+        place("T:0", 22, 57);           // tent
+        // place("T:0", 11, 54);                          // shop
+
         place("1", 10, 5);  // blue
         place("2", 4, 76);  // green
         place("3", 39, 81);  // orange
@@ -369,6 +391,7 @@ public class Board {
         if(!acceptKeyboard) {
             return false;
         }
+        // System.out.println(current.getRow() + " " + current.getCol());
         acceptKeyboard = false;
         if(current.getUp() != null) {
             current.setContents("");
