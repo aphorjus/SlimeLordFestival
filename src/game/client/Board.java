@@ -534,7 +534,6 @@ public class Board {
                     // weights [n_right][n] = 1;
                 }
             }
-
         }
         DijkstraGrid grid = new DijkstraGrid(weights);
         grid.printDistanceGrid();
