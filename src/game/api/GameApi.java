@@ -6,6 +6,7 @@ import game.client.Player;
 import game.entities.IEntity;
 import game.entities.slime.Slime;
 import game.entities.slimefactory.SlimeFactory;
+import game.entities.slimelord.SlimeLord;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -64,7 +65,9 @@ public class GameApi {
         } else if (req.type.equals(GameApi.AlterPlayerState)) {
             listener.onAlterPlayerState(new Player(req.body));
         } else if (req.type.equals(GameApi.SetGameStateBattle)) {
-            listener.onSetStateToBattle();
+            SlimeLord slimeLordOne = new SlimeLord(req.body.getJSONObject("slimeLordOne"));
+            SlimeLord slimeLordTwo = new SlimeLord(req.body.getJSONObject("slimeLordTwo"));
+            listener.onSetStateToBattle(slimeLordOne, slimeLordTwo);
         } else if (req.type.equals(GameApi.SetGameStateOverworld)) {
             listener.onSetStateToOverworld();
         } else if (req.type.equals(GameApi.EndTurn)) {
@@ -90,6 +93,17 @@ public class GameApi {
         JSONObject body = new JSONObject();
         body.put("message", message);
         sendRequest(new GameApiRequest(GameApi.Message, body));
+    }
+
+    public void endTurn() {
+        sendRequest(new GameApiRequest(GameApi.EndTurn));
+    }
+
+    public void startBattle(SlimeLord slimeLordOne, SlimeLord slimeLordTwo) {
+        JSONObject body = new JSONObject();
+        body.put("slimeLordOne", slimeLordOne.toJson());
+        body.put("slimeLordTwo", slimeLordTwo.toJson());
+        sendRequest(new GameApiRequest(GameApi.SetGameStateBattle, body));
     }
 
     public void createEntity(IEntity entity) {

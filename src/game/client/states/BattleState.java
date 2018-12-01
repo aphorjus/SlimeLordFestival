@@ -7,6 +7,7 @@ import game.client.Player;
 import game.entities.IEntity;
 import game.entities.slime.Slime;
 import game.entities.slimefactory.SlimeFactory;
+import game.entities.slimelord.SlimeLord;
 import jig.Vector;
 import game.Battles.BattleGrid;
 import game.Battles.BattleGridTile;
@@ -160,18 +161,16 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void onAlterPlayerState(Player player) {}
 
     public void onCreateEntity(IEntity entity) {
-
         BattleGridTile tile = (BattleGridTile) entity;
         System.out.println(tile.toJson());
         battleGrid.replaceTile(tile);
-
     }
 
     public void onDeleteEntity(int entityId) {}
 
     public void onMessage(int senderId, String message) {}
 
-    public void onSetStateToBattle() {}
+    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {}
 
     public void onSetStateToOverworld() {}
 
