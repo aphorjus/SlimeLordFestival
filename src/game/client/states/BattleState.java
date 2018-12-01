@@ -114,7 +114,8 @@ public class BattleState extends BasicGameState implements GameApiListener {
         }
 
         if (input.isKeyPressed(Input.KEY_E)){
-            endTurn();
+//            endTurn();
+            gameApi.endTurn();
         }
 
         gameApi.update();
