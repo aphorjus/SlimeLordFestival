@@ -36,7 +36,7 @@ public class BattleGrid {
     private double[][] distanceGrid;
 
     public BattleGridTile[][] tileGrid;
-    private BattleGridTile seletedTile;
+    private BattleGridTile selectedTile;
 
     private Color shaded = new Color(0,0,0,50);
 
@@ -194,15 +194,15 @@ public class BattleGrid {
         tileGrid[x][y] = tile;
     }
 
-    private boolean tileSelected(){
-        return this.seletedTile != null;
+    public boolean tileSelected(){
+        return this.selectedTile != null;
     }
 
     public void selectTile(Vector position){
 
         BattleGridTile tile = getTile(position);
         if(tile != null) {
-            if( seletedTile == tile ){
+            if( selectedTile == tile ){
                 deselectTile();
             }
             else {
@@ -217,30 +217,34 @@ public class BattleGrid {
         int y = getTileY( tile );
 
         if( this.tileSelected() ){
-            if(inRange( this.seletedTile, x, y )) {
-                moveOccupent(this.seletedTile, tile);
+            if(inRange( this.selectedTile, x, y )) {
+                moveOccupent(this.selectedTile, tile);
                 deselectTile();
             }
         }
         else {
             if( tile.hasOccupent() && tile.getOccupent() instanceof Slime ) {
                 distanceGrid = dijkstraGrid.getDistanceGrid( x, y );
-                seletedTile = tile;
+                selectedTile = tile;
                 shadeInRange();
             }
         }
     }
 
+    public BattleGridTile getSelectedTile(){
+        return selectedTile;
+    }
+
     public void activateTile(Vector position){
         BattleGridTile tile = getTile(position);
 
-        if( seletedTile != null && !seletedTile.hasOccupent() ){
+        if( selectedTile != null && !selectedTile.hasOccupent() ){
             selectTile(tile);
         }
     }
 
     public void deselectTile(){
-        seletedTile = null;
+        selectedTile = null;
         shadeInRange();
     }
 
@@ -266,7 +270,7 @@ public class BattleGrid {
 
         for(int i = 0; i < gridWidth; i++){
             for(int j = 0; j < gridHeight; j++){
-                getTile(i, j).setShaded(inRange(seletedTile, i, j));
+                getTile(i, j).setShaded(inRange(selectedTile, i, j));
             }
         }
     }

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class SlimeFactory extends Entity implements IEntity {
     String entityType = "Factory";
-    int clientID;
+    public int clientID;
     String id;
     int hp;
     Slime slime;

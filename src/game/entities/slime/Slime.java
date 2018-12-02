@@ -16,6 +16,7 @@ public class Slime extends Entity implements IEntity {
     public int clientID;
     public String id;
     public int hp;
+    public int damage;
     public int speed;
     public int size;
     public int cooldown = 2;
@@ -62,10 +63,10 @@ public class Slime extends Entity implements IEntity {
 
     private void setRec(){
         switch(clientID) {
-            case 1: this.addImage(ResourceManager.getImage(Board.SLIME1_RSC)); break;
-            case 2: this.addImage(ResourceManager.getImage(Board.SLIME2_RSC)); break;
-            case 3: this.addImage(ResourceManager.getImage(Board.SLIME3_RSC)); break;
-            case 4: this.addImage(ResourceManager.getImage(Board.SLIME4_RSC)); break;
+            case 0: this.addImage(ResourceManager.getImage(Board.SLIME1_RSC)); break;
+            case 1: this.addImage(ResourceManager.getImage(Board.SLIME2_RSC)); break;
+            case 2: this.addImage(ResourceManager.getImage(Board.SLIME3_RSC)); break;
+            case 3: this.addImage(ResourceManager.getImage(Board.SLIME4_RSC)); break;
         }
     }
 
