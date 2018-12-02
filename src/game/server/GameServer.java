@@ -42,6 +42,15 @@ public class GameServer extends Thread {
         }
     }
 
+    //Close the server
+    public void end(){
+        try {
+            server.close();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
         try {
