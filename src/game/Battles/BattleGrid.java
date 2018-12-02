@@ -5,6 +5,7 @@ import game.DijkstraGrid;
 import game.entities.IEntity;
 import game.entities.slime.Slime;
 import game.api.GameApi;
+import game.entities.slimefactory.SlimeFactory;
 import jig.Entity;
 import jig.Vector;
 import org.lwjgl.Sys;
@@ -36,6 +37,8 @@ public class BattleGrid {
 
     public BattleGridTile[][] tileGrid;
     private BattleGridTile seletedTile;
+
+    private Color shaded = new Color(0,0,0,50);
 
     public BattleGrid(final int screenHeight, final int screenWidth,
                       int yBuffer, GameApi gameApi, final int[][] map){
@@ -79,10 +82,10 @@ public class BattleGrid {
                 this.tileGrid[i][j] = newTile;
 
                 // TEMP
-                if( map[i][j] == 2 ){
-//                    newTile.addOccupent(new Slime(1, 1));
-                    addOccupentTo(newTile, new Slime(1,1));
-                }
+//                if( map[i][j] == 2 ){
+////                    newTile.addOccupent(new Slime(1, 1));
+//                    addOccupentTo(newTile, new SlimeFactory(1));
+//                }
                 // TEMP
             }
         }
@@ -96,8 +99,42 @@ public class BattleGrid {
         return new Vector(x,y);
     }
 
+    public ArrayList<BattleGridTile> getAjacent(BattleGridTile tile){
+
+        ArrayList<BattleGridTile> ajacent = new ArrayList<>();
+        int x = tile.getxIndex();
+        int y = tile.getyIndex();
+
+        for (int xOffset = -1; xOffset <= 1; xOffset++){
+            for (int yOffset = -1; yOffset <= 1; yOffset++){
+
+                if( yOffset == 0 && xOffset == 0 ){
+                    continue;
+                }
+                if( x+xOffset >= 0 && y+yOffset >= 0 &&
+                        x+xOffset < gridWidth && y+yOffset < gridHeight ){
+
+                    ajacent.add(getTile(x+xOffset, y+yOffset ));
+                }
+            }
+        }
+        return ajacent;
+    }
+
+    public void addOccupentTo(int x, int y, IEntity occupent){
+
+        addOccupentTo(getTile(x, y), occupent);
+
+    }
+
     private void addOccupentTo(BattleGridTile tile, IEntity occupent){
-        tile.addOccupent(occupent);
+        if( occupent.getEntityType().equals("Slime") ) {
+            tile.addOccupent(occupent);
+        }
+        else if ( occupent.getEntityType().equals("Factory") ){
+            tile.addOccupent(occupent);
+            ((SlimeFactory)occupent).setSpawnableTiles(getAjacent(tile));
+        }
 //        gridState[tile.getxIndex()][tile.getyIndex()] = 0;
     }
 
@@ -122,11 +159,6 @@ public class BattleGrid {
 
     public BattleGridTile getTile(Vector position){
 
-//        if(!withinGrid(position)){
-//            System.err.println("Error: attempting to get BattleGridTile out of range of BattleGrid");
-//            return null;
-//        }
-
         int i = (int)(position.getX()-xBuffer) / tileSize;
         int j = (int)(position.getY()-yBuffer) / tileSize;
 
@@ -134,7 +166,11 @@ public class BattleGrid {
             return null;
         }
 
-        return this.tileGrid[i][j];
+        return getTile(i, j);
+    }
+
+    public BattleGridTile getTile(int x, int y){
+        return this.tileGrid[x][y];
     }
 
     public void replaceTile(BattleGridTile newTile){
@@ -144,6 +180,13 @@ public class BattleGrid {
         if(newTile.hasOccupent()){
             ((Entity)newTile.getOccupent()).setPosition(newTile.getPosition());
         }
+    }
+
+    public void replaceOccupent(BattleGridTile newTile){
+
+//        newTile.setPosition( tileGrid[ newTile.getxIndex() ][ newTile.getyIndex() ].getPosition() );
+        BattleGridTile tileInGrid = getTile( newTile.getxIndex(), newTile.getyIndex() );
+        tileInGrid.replaceOccupent(newTile.getOccupent());
 
     }
 
@@ -159,7 +202,12 @@ public class BattleGrid {
 
         BattleGridTile tile = getTile(position);
         if(tile != null) {
-            selectTile(tile);
+            if( seletedTile == tile ){
+                deselectTile();
+            }
+            else {
+                selectTile(tile);
+            }
         }
 
     }
@@ -218,7 +266,7 @@ public class BattleGrid {
 
         for(int i = 0; i < gridWidth; i++){
             for(int j = 0; j < gridHeight; j++){
-                tileGrid[i][j].setShaded(inRange(seletedTile, i, j));
+                getTile(i, j).setShaded(inRange(seletedTile, i, j));
             }
         }
     }
@@ -294,7 +342,15 @@ public class BattleGrid {
                 BattleGridTile tile = this.tileGrid[i][j];
 
                 tile.render(g);
+                if( tile.isShaded() ){
+                    Color c = g.getColor();
+                    g.setColor(shaded);
+                    g.fillRect(tile.getX()-tileSize/2, tile.getY()-tileSize/2,
+                            tileSize, tileSize);
+                    g.setColor(c);
+                }
                 tile.renderOccupent(g);
+
             }
         }
         this.drawGrid(g);

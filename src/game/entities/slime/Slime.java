@@ -29,7 +29,7 @@ public class Slime extends Entity implements IEntity {
         this.speed = (int)((10/size) + 1);
         this.hp = 10*size;
 
-        this.addImage(ResourceManager.getImage(Board.SLIME1_RSC));
+        setRec();
     }
 
     public Slime(JSONObject jsonSlime){
@@ -40,7 +40,7 @@ public class Slime extends Entity implements IEntity {
         this.speed = jsonSlime.getInt("speed");
         this.size = jsonSlime.getInt("size");
 
-        this.addImage(ResourceManager.getImage(Board.SLIME1_RSC));
+        this.setRec();
     }
 
     @Override
@@ -55,7 +55,18 @@ public class Slime extends Entity implements IEntity {
         jsonSlime.put("speed", speed);
         jsonSlime.put("size", size);
 
+        setRec();
+
         return jsonSlime;
+    }
+
+    private void setRec(){
+        switch(clientID) {
+            case 1: this.addImage(ResourceManager.getImage(Board.SLIME1_RSC)); break;
+            case 2: this.addImage(ResourceManager.getImage(Board.SLIME2_RSC)); break;
+            case 3: this.addImage(ResourceManager.getImage(Board.SLIME3_RSC)); break;
+            case 4: this.addImage(ResourceManager.getImage(Board.SLIME4_RSC)); break;
+        }
     }
 
     @Override
