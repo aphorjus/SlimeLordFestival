@@ -250,4 +250,5 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void onLobbyClientListUpdate(String[] clientNames) {}
 
     public void onLobbyIsFull() {}
+    public void onConnectionConfirmation(int myId) { }
 }

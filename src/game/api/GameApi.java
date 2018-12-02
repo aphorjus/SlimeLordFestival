@@ -84,6 +84,8 @@ public class GameApi {
             if (req.body.getInt("playerCount") == clientNames.length) {
                 listener.onLobbyIsFull();
             }
+        } else if (req.type.equals(GameApi.ConnectionConfirmation)) {
+            listener.onConnectionConfirmation(req.body.getInt("myId"));
         }
     }
 

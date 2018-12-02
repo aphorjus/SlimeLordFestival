@@ -9,6 +9,7 @@ import game.client.Player;
 import game.entities.IEntity;
 import game.entities.slimelord.SlimeLord;
 import jig.ResourceManager;
+import org.lwjgl.Sys;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
@@ -239,5 +240,12 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         }
 
         gameApi.updatePlayerState(gameClient.players[0]);
+    }
+
+    public void onConnectionConfirmation(int myId) {
+        if (gameClient.myId == -1) {
+            gameClient.myId = myId;
+            System.out.println("MyId is: " + myId);
+        }
     }
 }

@@ -14,6 +14,7 @@ public interface GameApiListener {
     void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo);
     void onSetStateToOverworld();
     void onEndTurn();
+    void onConnectionConfirmation(int myId);
 
     void onLobbyClientListUpdate(String[] clientNames);
     void onLobbyIsFull();
