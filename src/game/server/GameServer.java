@@ -23,7 +23,14 @@ public class GameServer extends Thread {
         this.playerCount = playerCount;
     }
 
-    void handleRequest(ClientHandler client, GameApiRequest req) {
+    void handleRequest(ClientHandler client, GameApiRequest req, int i) {
+        if (req.type.equals(GameApi.ConnectionConfirmation)) {
+            if (req.body == null) req.body = new JSONObject();
+            req.body.put("myId", i);
+            client.write(req.toJson());
+            return;
+        }
+
         sendToAllClients(client.id, req);
     }
 
@@ -80,7 +87,7 @@ public class GameServer extends Thread {
                 for (int i = 0; i < playerCount; i++) {
                     JSONObject res;
                     while ((res = clients[i].getActions().poll()) != null) {
-                        handleRequest(clients[i], new GameApiRequest(res));
+                        handleRequest(clients[i], new GameApiRequest(res), i);
                     }
                 }
             }
