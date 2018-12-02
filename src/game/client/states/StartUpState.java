@@ -7,7 +7,9 @@ import game.api.GameApiListener;
 import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
+import game.entities.slimelord.SlimeLord;
 import jig.ResourceManager;
+import org.lwjgl.Sys;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
@@ -218,7 +220,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
 
     public void onMessage(int senderId, String message) { }
 
-    public void onSetStateToBattle() {}
+    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {}
 
     public void onSetStateToOverworld() {
         gameClient.enterState(GameClient.OVERWORLD_STATE);
@@ -238,5 +240,12 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         }
 
         gameApi.updatePlayerState(gameClient.players[0]);
+    }
+
+    public void onConnectionConfirmation(int myId) {
+        if (gameClient.myId == -1) {
+            gameClient.myId = myId;
+            System.out.println("MyId is: " + myId);
+        }
     }
 }

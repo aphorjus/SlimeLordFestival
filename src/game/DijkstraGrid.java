@@ -45,9 +45,9 @@ public class DijkstraGrid {
         return false;
     }
 
-    private double getEdgeWeight(DijkstraTile a, DijkstraTile b, int orentaion){
+    private double getEdgeWeight(DijkstraTile a, DijkstraTile b, int orentation){
 
-        if( isCorner(orentaion) ){
+        if( isCorner(orentation) ){
             return Math.sqrt((a.getWeight()*b.getWeight()) + (b.getWeight()*b.getWeight()));
         }
         return (a.getWeight()/2) + (b.getWeight()/2);
