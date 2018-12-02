@@ -5,8 +5,9 @@ import game.api.GameApi;
 import game.client.Board;
 import game.api.GameApiListener;
 import game.client.GameClient;
-import game.client.IPlayerState;
+import game.client.Player;
 import game.entities.IEntity;
+import game.entities.slimelord.SlimeLord;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
@@ -26,7 +27,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     }
 
     @Override
-    public void enter(GameContainer gc, StateBasedGame sbg) { }
+    public void enter(GameContainer gc, StateBasedGame sbg) {
+
+        gameApi = new GameApi((GameClient)sbg, this);
+    }
 
     @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) {
@@ -81,7 +85,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     public void onAlterGameState(IGameState gameState) { }
 
-    public void onAlterPlayerState(IPlayerState playerState) {}
+    public void onAlterPlayerState(Player player) {}
 
     public void onCreateEntity(IEntity entity) {}
 
@@ -92,7 +96,14 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         System.out.println(message);
     }
 
-    public void onSetStateToBattle() {}
+    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {}
 
     public void onSetStateToOverworld() {}
+
+    public void onEndTurn() {}
+
+    public void onLobbyClientListUpdate(String[] clientNames) {}
+    public void onLobbyIsFull() {}
+    public void onConnectionConfirmation(int myId) {}
+
 }

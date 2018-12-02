@@ -1,8 +1,12 @@
 package game.api;
 
+import game.Battles.BattleGridTile;
 import game.client.GameClient;
+import game.client.Player;
 import game.entities.IEntity;
-import netscape.javascript.JSObject;
+import game.entities.slime.Slime;
+import game.entities.slimefactory.SlimeFactory;
+import game.entities.slimelord.SlimeLord;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -18,13 +22,18 @@ public class GameApi {
     public static String Message = "message";
     public static String SetGameStateOverworld = "setOverworld";
     public static String SetGameStateBattle = "setBattle";
+    public static String EndTurn = "endTurn";
+
+
+    public static String LobbyClientListUpdate = "lobbyClientListUpdate";
+    public static String LobbyIsFull = "lobbyIsFull";
+    public static String LobbyStartGame ="lobbyStartGame";
 
     GameClient gameClient;
     GameApiListener listener;
     Socket serverSocket;
     DataInputStream input;
     DataOutputStream output;
-
 
     public GameApi(GameClient gc, GameApiListener listener) {
         this.gameClient = gc;
@@ -49,14 +58,34 @@ public class GameApi {
         if (req.type.equals(GameApi.Message)) {
             listener.onMessage(req.body.getInt("senderId"), req.body.getString("message"));
         } else if (req.type.equals(GameApi.CreateEntity)) {
+            listener.onCreateEntity(loadEntity(req.body.getString("entityType"), req.body));
         } else if (req.type.equals(GameApi.DeleteEntity)) {
             listener.onDeleteEntity(req.body.getInt("entityId"));
         } else if (req.type.equals(GameApi.AlterGameState)) {
         } else if (req.type.equals(GameApi.AlterPlayerState)) {
+            listener.onAlterPlayerState(new Player(req.body));
         } else if (req.type.equals(GameApi.SetGameStateBattle)) {
-            listener.onSetStateToBattle();
+            SlimeLord slimeLordOne = new SlimeLord(req.body.getJSONObject("slimeLordOne"));
+            SlimeLord slimeLordTwo = new SlimeLord(req.body.getJSONObject("slimeLordTwo"));
+            listener.onSetStateToBattle(slimeLordOne, slimeLordTwo);
         } else if (req.type.equals(GameApi.SetGameStateOverworld)) {
             listener.onSetStateToOverworld();
+        } else if (req.type.equals(GameApi.EndTurn)) {
+            listener.onEndTurn();
+        } else if (req.type.equals(GameApi.LobbyClientListUpdate)) {
+            String[] clientNames = new String[req.body.getJSONArray("clientNames").length()];
+
+            for (int i = 0; i < clientNames.length; i++) {
+                clientNames[i] = req.body.getJSONArray("clientNames").getString(i);
+            }
+
+            listener.onLobbyClientListUpdate(clientNames);
+
+            if (req.body.getInt("playerCount") == clientNames.length) {
+                listener.onLobbyIsFull();
+            }
+        } else if (req.type.equals(GameApi.ConnectionConfirmation)) {
+            listener.onConnectionConfirmation(req.body.getInt("myId"));
         }
     }
 
@@ -66,6 +95,17 @@ public class GameApi {
         JSONObject body = new JSONObject();
         body.put("message", message);
         sendRequest(new GameApiRequest(GameApi.Message, body));
+    }
+
+    public void endTurn() {
+        sendRequest(new GameApiRequest(GameApi.EndTurn));
+    }
+
+    public void startBattle(SlimeLord slimeLordOne, SlimeLord slimeLordTwo) {
+        JSONObject body = new JSONObject();
+        body.put("slimeLordOne", slimeLordOne.toJson());
+        body.put("slimeLordTwo", slimeLordTwo.toJson());
+        sendRequest(new GameApiRequest(GameApi.SetGameStateBattle, body));
     }
 
     public void createEntity(IEntity entity) {
@@ -78,8 +118,12 @@ public class GameApi {
         sendRequest(new GameApiRequest(GameApi.DeleteEntity, body));
     }
 
+    public void updatePlayerState(Player player) {
+        sendRequest(new GameApiRequest(GameApi.AlterPlayerState, player.toJson()));
+    }
+
     public void setGameState(String newState) {
-        if (!newState.equals(GameApi.SetGameStateBattle) || !newState.equals(GameApi.SetGameStateOverworld)) return;
+        if (!newState.equals(GameApi.SetGameStateBattle) && !newState.equals(GameApi.SetGameStateOverworld)) return;
         sendRequest(new GameApiRequest(newState));
     }
 
@@ -88,6 +132,18 @@ public class GameApi {
             output.writeUTF(req.toString());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    IEntity loadEntity(String entityType, JSONObject entityData) {
+        switch (entityType) {
+            case "BattleGridTile": return new BattleGridTile(entityData);
+
+            case "Slime": return new Slime(entityData);
+
+            case "Factory": return new SlimeFactory(entityData);
+
+            default: return null;
         }
     }
 }

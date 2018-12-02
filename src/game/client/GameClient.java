@@ -7,6 +7,7 @@ import game.client.states.BattleState;
 import game.client.states.OverworldState;
 import game.client.states.StartUpState;
 import game.entities.slimelord.SlimeLord;
+import game.server.GameServer;
 import org.json.JSONObject;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.StateBasedGame;
@@ -24,17 +25,19 @@ import java.util.LinkedList;
 
 public class GameClient extends StateBasedGame {
     int PORT_NUMBER = 8080;
-    String HOST_NAME = "localhost";
+    String HOST_NAME = "127.0.0.1";
     String name;
     int width;
     int height;
     int tokens;
     LinkedList<SlimeLord> slimeLords;
+    public Player[] players;
 
     public InputManager inputManager;
     public Socket serverSocket;
     public DataInputStream input;
     public DataOutputStream output;
+    GameServer runningServer;
 
     public static final int STARTUP_STATE = 0;
     public static final int OVERWORLD_STATE = 1;
@@ -44,6 +47,8 @@ public class GameClient extends StateBasedGame {
     public static int ScreenHeight;
     public static int ImageWidth = 1392;
     public static int ImageHeight = 800;
+
+    public int myId = -1;
 
     private Board board;
 
@@ -66,12 +71,12 @@ public class GameClient extends StateBasedGame {
         board = new Board();
 
         loadResources();
-        connectToServer(HOST_NAME, PORT_NUMBER);
+        //connectToServer(HOST_NAME, PORT_NUMBER);
     }
 
     void loadResources() {}
 
-    void connectToServer(String hostName, int port) {
+    public void connectToServer(String hostName, int port) {
         try {
             InetAddress ip = InetAddress.getByName(hostName);
             serverSocket = new Socket(ip, port);
@@ -104,6 +109,16 @@ public class GameClient extends StateBasedGame {
     void sendRequest(GameApiRequest req) {
         try {
             output.writeUTF(req.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void hostGame(int portNumber, int playerCount) {
+        try {
+            runningServer = new GameServer(portNumber, playerCount);
+            runningServer.start();
+            connectToServer("localhost", portNumber);
         } catch (Exception e) {
             e.printStackTrace();
         }
