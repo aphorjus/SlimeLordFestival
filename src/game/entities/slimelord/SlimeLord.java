@@ -7,22 +7,37 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.LinkedList;
+import java.util.UUID;
 
 public class SlimeLord extends Entity implements IEntity {
     String entityType = "slime_lord";
-    int id;
+    public int clientID;
+    public String id;
     String name;
     int totalMovement;
     int remainingMovement;
     LinkedList<SlimeLordAbility> abilities;
     LinkedList<SlimeFactory> factories;
 
+    public SlimeLord(int clientID){
+        this.clientID = clientID;
+        this.id = UUID.randomUUID().toString();
+        this.totalMovement = 10;
+        this.remainingMovement = totalMovement;
+        this.abilities = new LinkedList<SlimeLordAbility>();
+
+        this.factories = new LinkedList<SlimeFactory>();
+        this.factories.add(new SlimeFactory(clientID));
+        this.factories.add(new SlimeFactory(clientID));
+    }
+
     public SlimeLord(JSONObject data) {
         abilities = new LinkedList<>();
         factories = new LinkedList<>();
 
         entityType = data.getString("entityType");
-        id = data.getInt("id");
+        clientID = data.getInt("clientID");
+        id = data.getString("id");
         name = data.getString("name");
         totalMovement = data.getInt("totalMovement");
         remainingMovement = data.getInt("remainingMovement");
@@ -52,6 +67,7 @@ public class SlimeLord extends Entity implements IEntity {
         JSONObject data = new JSONObject();
 
         data.put("entityType", entityType);
+        data.put("clientID", clientID);
         data.put("id", id);
         data.put("name", name);
         data.put("totalMovement", totalMovement);

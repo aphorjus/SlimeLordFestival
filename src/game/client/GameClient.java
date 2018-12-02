@@ -48,6 +48,8 @@ public class GameClient extends StateBasedGame {
     public static int ImageWidth = 1392;
     public static int ImageHeight = 800;
 
+    public int myId = -1;
+
     private Board board;
 
     // For the Board class, which contains the overworld map
