@@ -36,9 +36,13 @@ public class Board {
     private float xoffset = 0;
     private float yoffset = 0;
     private int slimeID = 1;
+    private Turn turn;
 
     public Board() {
+
         tiles = new Tile[NUMROWS][NUMCOLS];
+        turn = new Turn();
+
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -219,8 +223,6 @@ public class Board {
         // generatePaths();
     }
 
-
-
     public boolean place(String contents, int row, int col) {
         boolean isPlaced = false;
         if(tiles[row][col] == null) {
@@ -353,6 +355,13 @@ public class Board {
         return true;
     }
 
+    public boolean isMyTurn() {
+        if(slimeID == turn.getCurrentPlayer()){
+            return turn.makeMove();
+        }
+        return false;
+    }
+
     // move function called by the network
     public boolean move(int id, int row, int col) {
         if(tiles[row][col] != null) {
@@ -368,6 +377,9 @@ public class Board {
         }
         acceptKeyboard = false;
         if(current.getLeft() != null) {
+            if(!isMyTurn()){
+                return false;
+            }
             current.setContents("");
             current = current.getLeft();
             if(isTent()) {
@@ -387,6 +399,9 @@ public class Board {
         }
         acceptKeyboard = false;
         if(current.getRight() != null) {
+            if(!isMyTurn()){
+                return false;
+            }
             current.setContents("");
             current = current.getRight();
             if(isTent()) {
@@ -406,6 +421,9 @@ public class Board {
         // System.out.println(current.getRow() + " " + current.getCol());
         acceptKeyboard = false;
         if(current.getUp() != null) {
+            if(!isMyTurn()){
+                return false;
+            }
             current.setContents("");
             current = current.getUp();
             if(isTent()) {
@@ -418,6 +436,29 @@ public class Board {
         return false;
 
     }
+
+    public boolean moveDown() {
+        if(!acceptKeyboard) {
+            return false;
+        }
+        acceptKeyboard = false;
+        if(current.getDown() != null) {
+            if(!isMyTurn()){
+                return false;
+            }
+            current.setContents("");
+            current = current.getDown();
+            if(isTent()) {
+                current = current.getUp();
+            } else {
+                current.setContents("" + slimeID);
+            }
+            return true;
+        }
+        return false;
+
+    }
+
     private boolean isTent() {
         boolean isTent = current.getContents().startsWith("T");
         if(isTent){
@@ -437,24 +478,7 @@ public class Board {
 
         return isTent;
     }
-    public boolean moveDown() {
-        if(!acceptKeyboard) {
-            return false;
-        }
-        acceptKeyboard = false;
-        if(current.getDown() != null) {
-            current.setContents("");
-            current = current.getDown();
-            if(isTent()) {
-                current = current.getUp();
-            } else {
-                current.setContents("" + slimeID);
-            }
-            return true;
-        }
-        return false;
 
-    }
 
     public boolean shiftRight() {
         if(!acceptKeyboard) {
@@ -534,7 +558,6 @@ public class Board {
                     // weights [n_right][n] = 1;
                 }
             }
-
         }
         DijkstraGrid grid = new DijkstraGrid(weights);
         grid.printDistanceGrid();
