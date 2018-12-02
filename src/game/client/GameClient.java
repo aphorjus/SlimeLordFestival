@@ -114,7 +114,7 @@ public class GameClient extends StateBasedGame {
         }
     }
 
-    public void hostGame(int portNumber, int playerCount) {
+    public GameServer hostGame(int portNumber, int playerCount) {
         try {
             runningServer = new GameServer(portNumber, playerCount);
             runningServer.start();
@@ -122,6 +122,7 @@ public class GameClient extends StateBasedGame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return runningServer;
     }
 
     @Override

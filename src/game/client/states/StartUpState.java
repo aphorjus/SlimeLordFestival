@@ -8,6 +8,7 @@ import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
 import game.entities.slimelord.SlimeLord;
+import game.server.GameServer;
 import jig.ResourceManager;
 import org.lwjgl.Sys;
 import org.newdawn.slick.*;
@@ -26,6 +27,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     Button joinButton = null;
     Button hostButton = null;
     Button startButton = null;
+    GameServer currentGameServer = null;
     GameClient gameClient;
     GameApi gameApi;
     TextField ipAdd;
@@ -145,7 +147,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             //If in host state attempt to host server with given inputs
             else if(state == 4){
                 System.out.println("Creating Server");
-                gameClient.hostGame(Integer.parseInt(portNum.getText()), Integer.parseInt(playerNumb.getText()));
+                currentGameServer = gameClient.hostGame(Integer.parseInt(portNum.getText()), Integer.parseInt(playerNumb.getText()));
                 host = true;
                 state = 3;
                 connected = true;
@@ -157,6 +159,12 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         if(input.isKeyPressed(Input.KEY_ESCAPE)){
             state = 0;
             failedConnect = false;
+            connected = false;
+
+            //if you are hosting a game stop it
+            if(currentGameServer!=null){
+                currentGameServer.end();
+            }
         }
 
     }
