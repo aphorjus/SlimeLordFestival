@@ -7,6 +7,7 @@ import game.api.GameApiListener;
 import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
+import game.entities.slimelord.SlimeLord;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
@@ -95,7 +96,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         System.out.println(message);
     }
 
-    public void onSetStateToBattle() {}
+    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {}
 
     public void onSetStateToOverworld() {}
 
@@ -103,4 +104,6 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     public void onLobbyClientListUpdate(String[] clientNames) {}
     public void onLobbyIsFull() {}
+    public void onConnectionConfirmation(int myId) {}
+
 }
