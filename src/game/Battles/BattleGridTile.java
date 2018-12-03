@@ -71,7 +71,6 @@ public class BattleGridTile extends Entity implements IEntity {
         jsonTile.put("yIndex", yIndex);
         jsonTile.put("shaded", shaded);
 
-
         return jsonTile;
     }
 
@@ -92,20 +91,12 @@ public class BattleGridTile extends Entity implements IEntity {
     }
 
     public void setShaded( boolean shaded ){
-        if(this.shaded == shaded){
-            return;
-        }
+
         this.shaded = shaded;
-        if( shaded ){
-            this.addImage(ResourceManager.getImage(Board.SLIME2_RSC));
-        }
-        else{
-            this.removeImage(ResourceManager.getImage(Board.SLIME2_RSC));
-        }
     }
 
     public boolean addOccupent(IEntity newOccupent){
-        if( !this.hasOccupent() ) {
+        if( !this.hasOccupent() && newOccupent != null ) {
             this.occupent = newOccupent;
             ((Entity)this.occupent).setPosition(this.getPosition());
             return true;
