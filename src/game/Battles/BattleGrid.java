@@ -245,7 +245,6 @@ public class BattleGrid {
                 }
             }
         }
-
     }
 
     public void selectTile(int x, int y){
@@ -274,6 +273,9 @@ public class BattleGrid {
 
         if( inRange( this.currentlySelectedTile, x, y )){
 
+            if(((Slime)this.currentlySelectedTile.getOccupent()).hasAttacked()){
+                return;
+            }
             ArrayList<IntVector> pattern = ((Slime)this.currentlySelectedTile.getOccupent()).getAttackPattern(x,y);
             BattleGridTile effectedTile;
             Slime attackingSlime = ((Slime) currentlySelectedTile.getOccupent());
