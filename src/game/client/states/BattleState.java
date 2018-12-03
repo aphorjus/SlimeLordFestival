@@ -170,7 +170,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
             this.battleGrid.deselectTile();
         }
 
-        if (input.isKeyPressed(Input.KEY_E)){// && isMyTurn()){
+        if (input.isKeyPressed(Input.KEY_E) && isMyTurn()){
             gameApi.endTurn();
         }
 
