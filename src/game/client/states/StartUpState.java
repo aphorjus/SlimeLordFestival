@@ -8,6 +8,7 @@ import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
 import game.entities.slimelord.SlimeLord;
+import game.server.GameServer;
 import jig.ResourceManager;
 import org.lwjgl.Sys;
 import org.newdawn.slick.*;
@@ -26,6 +27,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     Button joinButton = null;
     Button hostButton = null;
     Button startButton = null;
+    GameServer currentGameServer = null;
     GameClient gameClient;
     GameApi gameApi;
     TextField ipAdd;
@@ -34,6 +36,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     boolean failedConnect;
     boolean connected;
     boolean host;
+    boolean isLobbyFull;
     String[] clientList;
     int state = 0; // 0 is title screen, 1 is HostGame screen, 2 is JoinGame screen, 3 is join lobby
 
@@ -145,7 +148,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             //If in host state attempt to host server with given inputs
             else if(state == 4){
                 System.out.println("Creating Server");
-                gameClient.hostGame(Integer.parseInt(portNum.getText()), Integer.parseInt(playerNumb.getText()));
+                currentGameServer = gameClient.hostGame(Integer.parseInt(portNum.getText()), Integer.parseInt(playerNumb.getText()));
                 host = true;
                 state = 3;
                 connected = true;
@@ -155,8 +158,17 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         }
 
         if(input.isKeyPressed(Input.KEY_ESCAPE)){
+            //resetting all variables
             state = 0;
             failedConnect = false;
+            connected = false;
+            isLobbyFull = false;
+
+            //if you are hosting a game stop it
+            if(currentGameServer!=null){
+                currentGameServer.end();
+                currentGameServer = null;
+            }
         }
 
     }
@@ -165,14 +177,14 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         GameClient bg = (GameClient)sbg;
 
-        if (state == 0){
+        if (state == 0){ //MAIN MENU
             g.drawImage(ResourceManager.getImage(TITLE),
                     0, 0);
             joinButton.render(g);
             hostButton.render(g);
-        }else if(state == 1){
+        }else if(state == 1){ //DEPRECATED Host state
             g.drawString("You are Hosting a game at 192.181.1.3",300,83);
-        }else if(state == 2){ //Join game state
+        }else if(state == 2){ //JOIN GAME MENU
             g.drawString("Enter IP address and portnumber then press enter to join game",300,83);
             g.drawString("IP ADDRESS:",200,130);
             g.drawString("PORT NUMBER:",190,200);
@@ -181,10 +193,12 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             if(failedConnect == true){
                 g.drawString("Could not connect please try again",300,40);
             }
-        }else if (state == 3){ //Lobby state
+        }else if (state == 3){ //LOBBY
             if (host == true){
                 g.drawString("GAME LOBBY: You are the host", 300,40);
-                startButton.render(g);
+                if(isLobbyFull == true){
+                    startButton.render(g);
+                }
             }else{
                 g.drawString("GAME LOBBY: Waiting on host", 300,40);
             }
@@ -193,7 +207,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
                     g.drawString("Client: "+clientList[i]+ " in Lobby", (20 + (250 * i)),240);
                 }
             }
-        }else if(state == 4) { //Host Game State
+        }else if(state == 4) { //HOST GAME MENU
             g.drawString("Enter Port Number and Player Count then press enter to host", 300, 83);
             g.drawString("PLAYER COUNT:", 180, 330);
             g.drawString("PORT NUMBER:", 190, 200);
@@ -234,7 +248,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
 
     public void onLobbyIsFull() {
         gameClient.players = new Player[clientList.length];
-
+        isLobbyFull = true;
         for (int i = 0; i < gameClient.players.length; i++) {
             gameClient.players[i] = new Player();
         }
