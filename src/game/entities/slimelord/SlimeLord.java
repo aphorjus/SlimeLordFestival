@@ -17,7 +17,7 @@ public class SlimeLord extends Entity implements IEntity {
     int totalMovement;
     int remainingMovement;
     LinkedList<SlimeLordAbility> abilities;
-    LinkedList<SlimeFactory> factories;
+    public LinkedList<SlimeFactory> factories;
 
     public SlimeLord(int clientID){
         this.clientID = clientID;
@@ -27,8 +27,8 @@ public class SlimeLord extends Entity implements IEntity {
         this.abilities = new LinkedList<SlimeLordAbility>();
 
         this.factories = new LinkedList<SlimeFactory>();
-        this.factories.add(new SlimeFactory(clientID));
-        this.factories.add(new SlimeFactory(clientID));
+        this.factories.add(new SlimeFactory(this.clientID));
+        this.factories.add(new SlimeFactory(this.clientID));
     }
 
     public SlimeLord(JSONObject data) {

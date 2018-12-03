@@ -1,5 +1,7 @@
 package game.entities.slimefactory;
 
+import game.Battles.BattleGrid;
+import game.Battles.BattleGridTile;
 import game.client.Board;
 import game.entities.IEntity;
 import game.entities.slime.Slime;
@@ -7,14 +9,16 @@ import jig.Entity;
 import jig.ResourceManager;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class SlimeFactory extends Entity implements IEntity {
     String entityType = "Factory";
-    int clientID;
+    public int clientID;
     String id;
     int hp;
     Slime slime;
+    ArrayList<BattleGridTile> spawnableTiles;
 
     public SlimeFactory(int clientID){
         this.clientID = clientID;
@@ -43,6 +47,11 @@ public class SlimeFactory extends Entity implements IEntity {
         return data;
     }
 
+    public void setSpawnableTiles(ArrayList<BattleGridTile> ajacentTiles){
+
+        this.spawnableTiles = ajacentTiles;
+    }
+
     public String getEntityType() {
         return entityType;
     }
@@ -51,8 +60,19 @@ public class SlimeFactory extends Entity implements IEntity {
         return id.equals(factory.id);
     }
 
-    public void onNextTurn(){
+    public BattleGridTile spawnSlime(){
 
+        BattleGridTile tile = null;
+
+        for( int i = 0; i < spawnableTiles.size(); i++ ){
+            if( !spawnableTiles.get(i).hasOccupent() ){
+                spawnableTiles.get(i).addOccupent( new Slime(1, clientID) );
+                tile = spawnableTiles.get(i);
+                System.out.println(((Slime)tile.getOccupent()).clientID);
+                break;
+            }
+        }
+        return tile;
     }
 
 }
