@@ -1,5 +1,6 @@
 package game.entities.slime;
 
+import game.Battles.BattleEntity;
 import game.Battles.BattleGridTile;
 import game.IntVector;
 import game.entities.IEntity;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.Vector;
 
-public class Slime extends Entity implements IEntity {
+public class Slime extends Entity implements IEntity, BattleEntity {
 
     public String entityType = "Slime";
     public int clientID;
@@ -154,6 +155,7 @@ public class Slime extends Entity implements IEntity {
         setHasAttacked(true);
     }
 
+    @Override
     public void onNextTurn(){
 
         if(hasMoved() || hasAttacked()){
@@ -166,5 +168,14 @@ public class Slime extends Entity implements IEntity {
         }
     }
 
+    @Override
+    public void takeDamage(int amount) {
+        currentHP -= amount;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return currentHP > 0;
+    }
 }
 

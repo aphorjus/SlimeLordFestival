@@ -139,17 +139,17 @@ public class BattleGrid {
         return ajacent;
     }
 
-    public void addOccupentTo(int x, int y, IEntity occupent){
+    public void addOccupentTo(int x, int y, BattleEntity occupent){
 
         addOccupentTo(getTile(x, y), occupent);
 
     }
 
-    private void addOccupentTo(BattleGridTile tile, IEntity occupent){
-        if( occupent.getEntityType().equals("Slime") ) {
+    private void addOccupentTo(BattleGridTile tile, BattleEntity occupent){
+        if( occupent instanceof Slime ) {
             tile.addOccupent(occupent);
         }
-        else if ( occupent.getEntityType().equals("Factory") ){
+        else if ( occupent instanceof SlimeFactory ){
             tile.addOccupent(occupent);
             ((SlimeFactory)occupent).setSpawnableTiles(getAjacent(tile));
         }
@@ -245,7 +245,6 @@ public class BattleGrid {
                 }
             }
         }
-
     }
 
     public void selectTile(int x, int y){
@@ -274,21 +273,22 @@ public class BattleGrid {
 
         if( inRange( this.currentlySelectedTile, x, y )){
 
+            if(((Slime)this.currentlySelectedTile.getOccupent()).hasAttacked()){
+                return;
+            }
             ArrayList<IntVector> pattern = ((Slime)this.currentlySelectedTile.getOccupent()).getAttackPattern(x,y);
             BattleGridTile effectedTile;
             Slime attackingSlime = ((Slime) currentlySelectedTile.getOccupent());
-            Slime deffendingSlime;
+            BattleEntity defender;
 
-            for(int i = 0; i < pattern.size(); i++){
-                effectedTile = getTile(pattern.get(i).x, pattern.get(i).y);
+            for( int i = 0; i < pattern.size(); i++ ){
+                effectedTile = getTile( pattern.get(i).x, pattern.get(i).y );
 
-                if( effectedTile.hasOccupent() && effectedTile.getOccupent() instanceof Slime ){ //CHANGE
-                    deffendingSlime = ((Slime) effectedTile.getOccupent());
-                    deffendingSlime.currentHP -= attackingSlime.damage;
+                if( effectedTile.hasOccupent() ){ //CHANGE
+                    defender = effectedTile.getOccupent();
+                    defender.takeDamage(attackingSlime.damage);
 
-                    System.out.println(deffendingSlime.currentHP);
-
-                    if( deffendingSlime.currentHP <= 0 ){
+                    if( !defender.isAlive() ){
                         effectedTile.removeOccupent();
                         gameApi.createEntity(effectedTile);
                     }
@@ -388,7 +388,7 @@ public class BattleGrid {
             for(int j = 0; j < gridHeight; j++){
                 BattleGridTile tile = tileGrid[i][j];
                 if(tile.hasOccupent()){
-                    entityList.add(tile.getOccupent());
+                    entityList.add( (IEntity) tile.getOccupent() );
                 }
             }
         }
