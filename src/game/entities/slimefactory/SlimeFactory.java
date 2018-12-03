@@ -48,6 +48,7 @@ public class SlimeFactory extends Entity implements IEntity {
     }
 
     public void setSpawnableTiles(ArrayList<BattleGridTile> ajacentTiles){
+
         this.spawnableTiles = ajacentTiles;
     }
 

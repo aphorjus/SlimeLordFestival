@@ -1,7 +1,7 @@
 package game.Battles;
 
-
 import game.DijkstraGrid;
+import game.IntVector;
 import game.entities.IEntity;
 import game.entities.slime.Slime;
 import game.api.GameApi;
@@ -15,6 +15,10 @@ import org.newdawn.slick.Graphics;
 import java.util.ArrayList;
 
 public class BattleGrid {
+
+    public static final int MOVMENT_MODE = 1;
+    public static final int ATTACK_MODE = 2;
+    public int mode = MOVMENT_MODE;
 
     public int gridHeight;
     public int gridWidth;
@@ -36,9 +40,10 @@ public class BattleGrid {
     private double[][] distanceGrid;
 
     public BattleGridTile[][] tileGrid;
-    private BattleGridTile selectedTile;
+    private BattleGridTile currentlySelectedTile;
 
     private Color shaded = new Color(0,0,0,50);
+    private Color highlight = new Color(0,0,0,75);
 
     public BattleGrid(final int screenHeight, final int screenWidth,
                       int yBuffer, GameApi gameApi, final int[][] map){
@@ -66,6 +71,26 @@ public class BattleGrid {
         this.gameApi = gameApi;
     }
 
+    public void setMode(int mode){
+        if(mode == ATTACK_MODE || mode == MOVMENT_MODE){
+            this.mode = mode;
+        }
+        else{
+            System.err.println("Error: invalid mode type "+mode);
+        }
+    }
+
+    public void switchMode(){
+
+        if(mode == MOVMENT_MODE){
+            mode = ATTACK_MODE;
+        }
+        else if(mode == ATTACK_MODE){
+            mode = MOVMENT_MODE;
+        }
+        deselectTile();
+    }
+
     private void initBattleGrid(int[][] map){
 
         this.tileGrid = new BattleGridTile[this.gridWidth][this.gridHeight];
@@ -80,13 +105,6 @@ public class BattleGrid {
                 BattleGridTile newTile = new BattleGridTile(tilePosition, i, j);
 
                 this.tileGrid[i][j] = newTile;
-
-                // TEMP
-//                if( map[i][j] == 2 ){
-////                    newTile.addOccupent(new Slime(1, 1));
-//                    addOccupentTo(newTile, new SlimeFactory(1));
-//                }
-                // TEMP
             }
         }
     }
@@ -145,6 +163,12 @@ public class BattleGrid {
         return (int)( tile.getY() - yBuffer ) / tileSize;
     }
 
+    private IntVector getTileIndex(BattleGridTile tile){
+
+        return new IntVector(getTileX(tile), getTileY(tile));
+
+    }
+
     private boolean withinGrid(Vector position){
 
         float x = position.getX();
@@ -170,6 +194,7 @@ public class BattleGrid {
     }
 
     public BattleGridTile getTile(int x, int y){
+
         return this.tileGrid[x][y];
     }
 
@@ -195,61 +220,98 @@ public class BattleGrid {
     }
 
     public boolean tileSelected(){
-        return this.selectedTile != null;
+
+        return this.currentlySelectedTile != null;
     }
 
     public void selectTile(Vector position){
 
         BattleGridTile tile = getTile(position);
         if(tile != null) {
-            if( selectedTile == tile ){
-                deselectTile();
+
+            int x = getTileX( tile );
+            int y = getTileY( tile );
+
+            if( !tileSelected() ){
+                selectTile(x,y);
             }
             else {
-                selectTile(tile);
+                if (currentlySelectedTile == tile) {
+                    deselectTile();
+                } else if (mode == MOVMENT_MODE) {
+                    moveSelect(x,y);
+                } else if (mode == ATTACK_MODE) {
+                    attackSelect(x,y);
+                }
             }
         }
 
     }
-    public void selectTile(BattleGridTile tile){
 
-        int x = getTileX( tile );
-        int y = getTileY( tile );
+    public void selectTile(int x, int y){
 
-        if( this.tileSelected() ){
-            if(inRange( this.selectedTile, x, y )) {
-                moveOccupent(this.selectedTile, tile);
-                deselectTile();
-            }
-        }
-        else {
-            if( tile.hasOccupent() && tile.getOccupent() instanceof Slime ) {
-                distanceGrid = dijkstraGrid.getDistanceGrid( x, y );
-                selectedTile = tile;
-                shadeInRange();
-            }
-        }
-    }
-
-    public BattleGridTile getSelectedTile(){
-        return selectedTile;
-    }
-
-    public void activateTile(Vector position){
-        BattleGridTile tile = getTile(position);
-
-        if( selectedTile != null && !selectedTile.hasOccupent() ){
-            selectTile(tile);
+        if( getTile(x,y).hasOccupent() && getTile(x,y).getOccupent() instanceof Slime ) {
+            distanceGrid = dijkstraGrid.getDistanceGrid(x, y);
+            currentlySelectedTile = getTile(x, y);
+            shadeInRange();
         }
     }
 
     public void deselectTile(){
-        selectedTile = null;
+        currentlySelectedTile = null;
         shadeInRange();
     }
 
-    private boolean inRange( BattleGridTile tile, int x, int y ){
+    public void moveSelect( int x, int y ){
 
+        if( inRange( this.currentlySelectedTile, x, y )){
+            moveOccupent(this.currentlySelectedTile, getTile(x,y));
+            deselectTile();
+        }
+    }
+
+    public void attackSelect( int x, int y ){
+
+        if( inRange( this.currentlySelectedTile, x, y )){
+
+            ArrayList<IntVector> pattern = ((Slime)this.currentlySelectedTile.getOccupent()).getAttackPattern(x,y);
+            BattleGridTile effectedTile;
+            Slime attackingSlime = ((Slime) currentlySelectedTile.getOccupent());
+            Slime deffendingSlime;
+
+            for(int i = 0; i < pattern.size(); i++){
+                effectedTile = getTile(pattern.get(i).x, pattern.get(i).y);
+
+                if( effectedTile.hasOccupent() && effectedTile.getOccupent() instanceof Slime ){ //CHANGE
+                    deffendingSlime = ((Slime) effectedTile.getOccupent());
+                    deffendingSlime.currentHP -= attackingSlime.damage;
+
+                    System.out.println(deffendingSlime.currentHP);
+
+                    if( deffendingSlime.currentHP <= 0 ){
+                        effectedTile.removeOccupent();
+                        gameApi.createEntity(effectedTile);
+                    }
+                }
+            }
+            attackingSlime.setHasAttacked(true);
+            deselectTile();
+        }
+    }
+
+    public BattleGridTile getSelectedTile(){
+        return currentlySelectedTile;
+    }
+
+//    public void activateTile(Vector position){
+//        BattleGridTile tile = getTile(position);
+//
+//        if( currentlySelectedTile != null && !currentlySelectedTile.hasOccupent() ){
+//            selectTile(x,y);
+//        }
+//    }
+
+    private boolean inRange( BattleGridTile tile, int x, int y ){
 
         if(tile == null){
             return false;
@@ -260,8 +322,15 @@ public class BattleGrid {
         if(!(tile.getOccupent() instanceof Slime)){
             throw new IllegalArgumentException("Error: Cannot call inRange on tile with non-slime occupant");
         }
-        if( ((Slime) tile.getOccupent()).speed >= distanceGrid[x][y] ){
-            return true;
+        if( mode == ATTACK_MODE ) {
+            if (((Slime) tile.getOccupent()).getAttackRange() >= distanceGrid[x][y]) {
+                return true;
+            }
+        }
+        if( mode == MOVMENT_MODE ) {
+            if (((Slime) tile.getOccupent()).getSpeed() >= distanceGrid[x][y]) {
+                return true;
+            }
         }
         return false;
     }
@@ -270,7 +339,7 @@ public class BattleGrid {
 
         for(int i = 0; i < gridWidth; i++){
             for(int j = 0; j < gridHeight; j++){
-                getTile(i, j).setShaded(inRange(selectedTile, i, j));
+                getTile(i, j).setShaded(inRange(currentlySelectedTile, i, j));
             }
         }
     }
@@ -286,7 +355,7 @@ public class BattleGrid {
             System.err.println("Error: Only slimes can move");
             return;
         }
-        if(!((Slime) a.getOccupent()).canMove()){
+        if( ((Slime) a.getOccupent()).onCooldown() || ((Slime) a.getOccupent()).hasMoved()){
             return;
         }
         if(b.hasOccupent()){
@@ -308,6 +377,7 @@ public class BattleGrid {
 
         BattleGridTile newTileB = new BattleGridTile( b.getPosition(), b.getxIndex(), b.getyIndex() );
         addOccupentTo(newTileB, movingSlime);
+        movingSlime.onMove();
         gameApi.createEntity(newTileB);
     }
 
@@ -323,6 +393,17 @@ public class BattleGrid {
             }
         }
         return entityList;
+    }
+
+    public void highlightTile(Vector position, Graphics g){
+        BattleGridTile tile = getTile(position);
+        Color c = g.getColor();
+
+        g.setColor(highlight);
+        g.fillRect(tile.getX()-tileSize/2, tile.getY()-tileSize/2,
+                tileSize, tileSize);
+
+        g.setColor(c);
     }
 
     private void drawGrid(Graphics g){

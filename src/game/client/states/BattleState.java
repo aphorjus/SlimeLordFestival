@@ -170,9 +170,12 @@ public class BattleState extends BasicGameState implements GameApiListener {
             this.battleGrid.deselectTile();
         }
 
-        if (input.isKeyPressed(Input.KEY_E)){
-//            endTurn();
+        if (input.isKeyPressed(Input.KEY_E)){// && isMyTurn()){
             gameApi.endTurn();
+        }
+
+        if (input.isKeyPressed(Input.KEY_S)){
+            battleGrid.switchMode();
         }
 
         gameApi.update();
@@ -181,10 +184,11 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void displayCoolDown(Graphics g, BattleGridTile tile){
 
         if(tile.hasOccupent() && tile.getOccupent() instanceof Slime){
+            if( ((Slime) tile.getOccupent()).onCooldown() ) {
 
-            String cooldown = String.valueOf(((Slime) tile.getOccupent()).getCooldownRemaining());
-
-            g.drawString( cooldown, (int)tile.getPosition().getX(), (int)tile.getPosition().getY());
+                String cooldown = String.valueOf(((Slime) tile.getOccupent()).getCurrentCooldown());
+                g.drawString(cooldown, (int) tile.getPosition().getX(), (int) tile.getPosition().getY());
+            }
         }
     }
 
@@ -195,14 +199,13 @@ public class BattleState extends BasicGameState implements GameApiListener {
         Input input = gc.getInput();
 
         g.setBackground(Color.green);
-
         battleGrid.render(g);
 
-        g.setColor(Color.black);
-
+//        g.setColor(Color.black);
         Vector mousePosition = new Vector(input.getMouseX(), input.getMouseY());
 
         if(this.battleGrid.getTile(mousePosition) != null){
+            this.battleGrid.highlightTile(mousePosition, g);
             if(this.battleGrid.getTile(mousePosition).hasOccupent()) {
                 displayCoolDown(g, this.battleGrid.getTile(mousePosition));
             }
@@ -221,8 +224,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void onCreateEntity(IEntity entity) {
 
         BattleGridTile tile = (BattleGridTile) entity;
-//        System.out.println(tile.toJson());
-//        battleGrid.replaceTile(tile);
+
         battleGrid.replaceOccupent(tile);
     }
 
