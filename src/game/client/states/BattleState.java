@@ -82,10 +82,10 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void enter(GameContainer gc, StateBasedGame sbg) {
         this.gameApi = new GameApi(gameClient, this);
         this.battleGrid.setGameApi(gameApi);
-        System.out.println(gameClient.myId);
+//        System.out.println(gameClient.myId);
         //TEIMP
 
-        this.slimeLordOne = new SlimeLord(gameClient.myId);
+        this.slimeLordOne = new SlimeLord(0);
         this.slimeLordTwo = new SlimeLord(1);
         spawnInFactories();
 
@@ -133,7 +133,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
             if( entitys.get(i) instanceof SlimeFactory && ((SlimeFactory) entitys.get(i)).clientID != activePlayer){
                 BattleGridTile tile = ((SlimeFactory) entitys.get(i)).spawnSlime();
                 if( tile != null ) {
-                    gameApi.createEntity(tile);
+                    gameApi.createEntity((IEntity) tile);
                 }
             }
         }
