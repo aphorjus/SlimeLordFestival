@@ -20,6 +20,9 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
     int maxHP;
     int currentHP;
 
+    int xIndex;
+    int yIndex;
+
     Slime slime;
     ArrayList<BattleGridTile> spawnableTiles;
 
@@ -58,6 +61,12 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
     public void setSpawnableTiles(ArrayList<BattleGridTile> ajacentTiles){
 
         this.spawnableTiles = ajacentTiles;
+    }
+
+    @Override
+    public void setIndexes(int x, int y) {
+        xIndex = x;
+        yIndex = y;
     }
 
     public String getEntityType() {

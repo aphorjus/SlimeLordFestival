@@ -101,6 +101,7 @@ public class BattleGridTile extends Entity implements IEntity {
         if( !this.hasOccupent() && newOccupent != null ) {
             this.occupent = newOccupent;
             ((Entity)this.occupent).setPosition(this.getPosition());
+            this.occupent.setIndexes(xIndex, yIndex);
             return true;
         }
         return false;

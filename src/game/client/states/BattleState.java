@@ -205,7 +205,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
         Vector mousePosition = new Vector(input.getMouseX(), input.getMouseY());
 
         if(this.battleGrid.getTile(mousePosition) != null){
-            this.battleGrid.highlightTile(mousePosition, g);
+            this.battleGrid.mouseoverHighlight(mousePosition, g);
             if(this.battleGrid.getTile(mousePosition).hasOccupent()) {
                 displayCoolDown(g, this.battleGrid.getTile(mousePosition));
             }
