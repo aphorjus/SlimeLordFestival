@@ -125,6 +125,7 @@ public class Slime extends Entity implements IEntity, BattleEntity {
     public JSONObject toJson() {
         JSONObject jsonSlime = new JSONObject();
 
+        jsonSlime.put("entityType", entityType);
         jsonSlime.put("clientID", clientID);
         jsonSlime.put("id", id);
         jsonSlime.put("currentHP", currentHP);
