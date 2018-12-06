@@ -1,10 +1,13 @@
 package game.entities.slimelord;
 
+import game.client.Board;
 import game.entities.IEntity;
 import game.entities.slimefactory.SlimeFactory;
 import jig.Entity;
+import jig.ResourceManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.newdawn.slick.Graphics;
 
 import java.util.LinkedList;
 import java.util.UUID;
@@ -20,6 +23,11 @@ public class SlimeLord extends Entity implements IEntity {
     public LinkedList<SlimeFactory> factories;
     public LinkedList<String> specialSlimes;
 
+    private float xoffset = 0;
+    private float yoffset = 0;
+    private float xpos;
+    private float ypos;
+
     public SlimeLord(int clientID){
         this.clientID = clientID;
         this.id = UUID.randomUUID().toString();
@@ -30,7 +38,26 @@ public class SlimeLord extends Entity implements IEntity {
         this.factories = new LinkedList<SlimeFactory>();
         this.factories.add(new SlimeFactory(this.clientID));
         this.factories.add(new SlimeFactory(this.clientID));
+
+        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
     }
+
+    public void render(Graphics g){
+        float x = xpos - xoffset;
+        float y = ypos - yoffset;
+        g.drawImage(ResourceManager.getImage(Board.SLIME1_RSC), x+1, y+1);
+    }
+
+    public void setOffsets(float xoffset, float yoffset) {
+        this.xoffset = xoffset;
+        this.yoffset = yoffset;
+    }
+
+    public void setPosition(float x, float y) {
+        this.xpos = x;
+        this.ypos = y;
+    }
+
 
     public SlimeLord(JSONObject data) {
         abilities = new LinkedList<>();
