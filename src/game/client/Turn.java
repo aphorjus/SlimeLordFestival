@@ -7,7 +7,7 @@ public class Turn {
     private int move;
 
     public Turn() {
-        currentID = 1;
+        currentID = 0;
         move = 0;
     }
 
@@ -15,7 +15,7 @@ public class Turn {
         if(move < NUM_MOVES) {
             move++;
             if(move == NUM_MOVES){
-                currentID = 1 + (currentID) % NUM_PLAYERS;
+                currentID = (currentID) % NUM_PLAYERS;
             }
             return true;
         }

@@ -3,6 +3,7 @@ package game.client;
 import javax.swing.JOptionPane;
 
 
+import game.entities.slimelord.SlimeLord;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -35,14 +36,43 @@ public class Board {
     private Tile current;
     private float xoffset = 0;
     private float yoffset = 0;
-    private int slimeID = 1;
+    private int slimeID = 0;
     private Turn turn;
+    GameClient gameClient;
+
+
+    SlimeLord slimeLordOne;
+    SlimeLord slimeLordTwo;
+    SlimeLord slimeLordThree;
+    SlimeLord slimeLordFour;
+    SlimeLord currentSlimelord;
+
 
     public Board() {
 
         tiles = new Tile[NUMROWS][NUMCOLS];
         turn = new Turn();
+    }
+    public void setUp(GameClient gameClient) {
+        this.gameClient = gameClient;
+        this.slimeLordOne = new SlimeLord(0);
+        this.slimeLordTwo = new SlimeLord(1);
+        this.slimeLordThree = new SlimeLord(2);
+        this.slimeLordFour = new SlimeLord(3);
+        updateSlimelord();
 
+    }
+    private void updateSlimelord() {
+        switch(gameClient.myId){
+            case 0: currentSlimelord = slimeLordOne;
+                break;
+            case 1: currentSlimelord = slimeLordTwo;
+                break;
+            case 2: currentSlimelord = slimeLordThree;
+                break;
+            case 3: currentSlimelord = slimeLordFour;
+                break;
+        }
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -65,6 +95,11 @@ public class Board {
                 }
             }
         }
+        slimeLordOne.setOffsets(xoffset, yoffset);
+        slimeLordOne.render(g);
+        //slimeLordTwo.render(g);
+       // slimeLordThree.render(g);
+        //slimeLordFour.render(g);
     }
 
     // setting up tiles
@@ -215,12 +250,21 @@ public class Board {
         place("T:0", 22, 57);           // tent
         // place("T:0", 11, 54);                          // shop
 
-        place("1", 10, 5);  // blue
         place("2", 4, 76);  // green
-        place("3", 39, 81);  // orange
-        place("4", 39, 5);  // red
+        //slimeLordTwo.setX(current.getX());
+        //slimeLordTwo.setY(current.getY());
 
-        // generatePaths();
+        place("3", 39, 81);  // orange
+       // slimeLordThree.setX(current.getX());
+       // slimeLordThree.setY(current.getY());
+
+        place("4", 39, 5);  // red
+       // slimeLordFour.setX(current.getX());
+       // slimeLordFour.setY(current.getY());
+
+        place("1", 10, 5);  // blue
+       // slimeLordOne.setX(current.getX());
+       // slimeLordOne.setY(current.getY());
     }
 
     public boolean place(String contents, int row, int col) {
@@ -387,6 +431,8 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
+            currentSlimelord.setX(current.getX());
+            currentSlimelord.setY(current.getY());
             return true;
         }
         return false;
@@ -409,6 +455,8 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
+            currentSlimelord.setX(current.getX());
+            currentSlimelord.setY(current.getY());
             return true;
         }
         return false;
@@ -431,6 +479,8 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
+            currentSlimelord.setX(current.getX());
+            currentSlimelord.setY(current.getY());
             return true;
         }
         return false;
@@ -446,6 +496,7 @@ public class Board {
             if(!isMyTurn()){
                 return false;
             }
+            System.out.println(current.getRow() + " " + current.getCol());
             current.setContents("");
             current = current.getDown();
             if(isTent()) {
@@ -453,6 +504,7 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
+            currentSlimelord.setPosition(current.getX(), current.getY());
             return true;
         }
         return false;
