@@ -38,16 +38,16 @@ public class Tile extends Entity {
             g.drawImage(ResourceManager.getImage(Board.TILE_RSC), x, y);
         }
         if (contents.equals("1")) {	// blue
-            g.drawImage(ResourceManager.getImage(Board.SLIME1_RSC), x+1, y+1);
+          //  g.drawImage(ResourceManager.getImage(Board.SLIME1_RSC), x+1, y+1);
         }
         if (contents.equals("2")) { // green
-            g.drawImage(ResourceManager.getImage(Board.SLIME2_RSC), x+1, y+1);
+          //  g.drawImage(ResourceManager.getImage(Board.SLIME2_RSC), x+1, y+1);
         }
         if (contents.equals("3")) { // orange
-            g.drawImage(ResourceManager.getImage(Board.SLIME3_RSC), x+1, y+1);
+          //  g.drawImage(ResourceManager.getImage(Board.SLIME3_RSC), x+1, y+1);
         }
         if (contents.equals("4")) { // red
-            g.drawImage(ResourceManager.getImage(Board.SLIME4_RSC), x+1, y+1);
+          //  g.drawImage(ResourceManager.getImage(Board.SLIME4_RSC), x+1, y+1);
         }
 
     }
