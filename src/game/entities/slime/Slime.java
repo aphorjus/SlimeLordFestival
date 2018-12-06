@@ -10,6 +10,7 @@ import jig.ResourceManager;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.UUID;
 
 public class Slime extends Entity implements IEntity, BattleEntity {
@@ -30,12 +31,14 @@ public class Slime extends Entity implements IEntity, BattleEntity {
     public int size;
     public int damage;
     public double speed;
-    public double minAttackRange = 0;
-    public double maxAttackRange = (float)1.5;
+    public double minAttackRange;
+    public double maxAttackRange;
 
     public boolean hasMoved = false;
     public boolean hasAttacked = false;
     public boolean upgraded = false;
+
+    public String myType;
 
     private boolean hasDirectionAttak;
 
@@ -50,11 +53,11 @@ public class Slime extends Entity implements IEntity, BattleEntity {
 
     private IntVector[][] attackPattern;
 
-    private IntVector[] basicAttackPattern = {
+    private IntVector[][] basicAttackPattern = {{
             new IntVector(0,0)
-    };
+    }};
 
-    private IntVector[][] morter = {{
+    private static IntVector[][] mortar = {{
             new IntVector(0,0),
             new IntVector(0,-1),
             new IntVector(0,1),
@@ -62,28 +65,28 @@ public class Slime extends Entity implements IEntity, BattleEntity {
             new IntVector(1,0)
     }};
 
-    private IntVector[][] line = {
+    private static IntVector[][] line = {
             { new IntVector(0,0), new IntVector( 0, 1), new IntVector( 0, 2)},
             { new IntVector(0,0), new IntVector( 0,-1), new IntVector( 0,-2)},
             { new IntVector(0,0), new IntVector( 1, 0), new IntVector( 2, 0)},
             { new IntVector(0,0), new IntVector(-1, 0), new IntVector(-2, 0)}
     };
 
-    private IntVector[][] shortLine = {
+    private static IntVector[][] shortLine = {
             { new IntVector(0,0), new IntVector( 0, 1) },
             { new IntVector(0,0), new IntVector( 0,-1) },
             { new IntVector(0,0), new IntVector( 1, 0) },
             { new IntVector(0,0), new IntVector(-1, 0) }
     };
 
-    private IntVector[][] shotgun = {
+    private static IntVector[][] shotgun = {
             { new IntVector(0,0), new IntVector( 0, 1), new IntVector( 1, 1), new IntVector(-1, 1) },
             { new IntVector(0,0), new IntVector( 0,-1), new IntVector(-1,-1), new IntVector( 1,-1) },
             { new IntVector(0,0), new IntVector( 1, 0), new IntVector( 1,-1), new IntVector( 1, 1) },
             { new IntVector(0,0), new IntVector(-1, 0), new IntVector(-1, 1), new IntVector(-1,-1) }
     };
 
-    private IntVector[][] spread = {
+    private static IntVector[][] spread = {
             { new IntVector(0,0), new IntVector( 1, 1), new IntVector( 2, 2), new IntVector( 0, 2), new IntVector(-2, 2), new IntVector(-1, 1) },
             { new IntVector(0,0), new IntVector(-1,-1), new IntVector(-2,-2), new IntVector( 0,-2), new IntVector( 2,-2), new IntVector( 1,-1) },
             { new IntVector(0,0), new IntVector( 1,-1), new IntVector( 2,-2), new IntVector( 2, 0), new IntVector( 2, 2), new IntVector( 1, 1) },
@@ -94,59 +97,41 @@ public class Slime extends Entity implements IEntity, BattleEntity {
 
         this.clientID = id;
         this.id = UUID.randomUUID().toString();
-        this.size = size;
-        this.speed = (int)((10/size) + 1);
-        this.maxHP = 10*size;
-        this.currentHP = maxHP;
-        this.damage = 4+3*size;
 
-        hasDirectionAttak = false;
-        attackPattern = morter;
+        this.size = size;
+
+        this.makeAdvancedStriker();
+//        this.makeBasic();
+        this.currentHP = maxHP;
 
         setRec();
     }
 
     public Slime(JSONObject jsonSlime){
 
-        this.clientID = jsonSlime.getInt("clientID");
-        this.id = jsonSlime.getString("id");
-        this.maxHP = jsonSlime.getInt("maxHP");
-        this.currentHP = jsonSlime.getInt("currentHP");
-        this.speed = jsonSlime.getDouble("speed");
-        this.minAttackRange = jsonSlime.getDouble("minAttackRange");
-        this.maxAttackRange = jsonSlime.getDouble("maxAttackRange");
-        this.damage = jsonSlime.getInt("damage");
-        this.size = jsonSlime.getInt("size");
+        this.clientID =     jsonSlime.getInt("clientID");
+        this.id =           jsonSlime.getString("id");
+        this.currentHP =    jsonSlime.getInt("currentHP");
+        this.size =         jsonSlime.getInt("size");
+        this.hasMoved =     jsonSlime.getBoolean("hasMoved");
+        this.hasAttacked =  jsonSlime.getBoolean("hasAttacked");
+        this.myType =       jsonSlime.getString("myType");
 
-        this.hasMoved = jsonSlime.getBoolean("hasMoved");
-        this.hasAttacked = jsonSlime.getBoolean("hasAttacked");
-
-//        attackPattern = spread;
-//        hasDirectionAttak = true;
-//        makeMorter();
-        this.makeMorter();
-
+        this.upgradeTo(myType);
         this.setRec();
     }
 
     @Override
     public JSONObject toJson() {
-
         JSONObject jsonSlime = new JSONObject();
 
-        jsonSlime.put("entityType", getEntityType());
         jsonSlime.put("clientID", clientID);
         jsonSlime.put("id", id);
-        jsonSlime.put("maxHP", maxHP);
         jsonSlime.put("currentHP", currentHP);
         jsonSlime.put("size", size);
-        jsonSlime.put("damage", damage);
-        jsonSlime.put("speed", speed);
-        jsonSlime.put("minAttackRange", minAttackRange);
-        jsonSlime.put("maxAttackRange", maxAttackRange);
-
         jsonSlime.put("hasMoved", hasMoved);
         jsonSlime.put("hasAttacked", hasAttacked);
+        jsonSlime.put("myType", myType);
 
         setRec();
 
@@ -162,8 +147,27 @@ public class Slime extends Entity implements IEntity, BattleEntity {
         }
     }
 
-    public void makeMorter(){
+    public void setMyType(String myType) {
+        this.myType = myType;
+    }
 
+    public void makeBasic(){
+
+        this.setMyType("basic");
+        this.setUpgraded(false);
+
+        this.setMaxHP(10*size);
+        this.speed = (int)((10/size) + 1);
+        this.damage = 4+3*size;
+        this.setAttackRange(0, 1.5);
+
+        this.attackPattern = basicAttackPattern;
+        this.hasDirectionAttak = false;
+
+    }
+
+    public void makeMortar(){
+        this.setMyType("mortar");
         this.setUpgraded(true);
 
         this.setMaxHP(20);
@@ -171,12 +175,12 @@ public class Slime extends Entity implements IEntity, BattleEntity {
         this.damage = 20;
         this.setAttackRange(6, 10.5);
 
-        this.attackPattern = morter;
+        this.attackPattern = mortar;
         this.hasDirectionAttak = false;
     }
 
     public void makeStriker(){
-
+        this.setMyType("striker");
         this.setUpgraded(true);
 
         setMaxHP(15);
@@ -189,12 +193,12 @@ public class Slime extends Entity implements IEntity, BattleEntity {
     }
 
     public void makeAdvancedStriker(){
-
+        this.setMyType("advancedStriker");
         this.setUpgraded(true);
 
-        setMaxHP(25);
+        setMaxHP(24);
         this.speed = 6;
-        this.damage = 6;
+        this.damage = 8;
         this.setAttackRange(0,1.5);
 
         this.attackPattern = shotgun;
@@ -202,7 +206,7 @@ public class Slime extends Entity implements IEntity, BattleEntity {
     }
 
     public void makeLancer(){
-
+        this.setMyType("lancer");
         this.setUpgraded(true);
 
         setMaxHP(15);
@@ -215,7 +219,7 @@ public class Slime extends Entity implements IEntity, BattleEntity {
     }
 
     public void makeAdvancedLancer(){
-
+        this.setMyType("advancedLancer");
         this.setUpgraded(true);
 
         setMaxHP(25);
@@ -227,18 +231,41 @@ public class Slime extends Entity implements IEntity, BattleEntity {
 
     }
 
-    public void upgrade(String type){
+    public void upgradeTo(String type){
 
         switch(type){
-            case "morter":              makeMorter(); break;
-            case "striker":             makeStriker(); break;
-            case "advancedStriker":     makeAdvancedStriker(); break;
-            case "lancer":              makeLancer(); break;
-            case "advancedLancer":      makeAdvancedLancer(); break;
+            case "basic":               makeBasic();            break;
+            case "mortar":              makeMortar();           break;
+            case "striker":             makeStriker();          break;
+            case "lancer":              makeLancer();           break;
+            case "advancedStriker":     makeAdvancedStriker();  break;
+            case "advancedLancer":      makeAdvancedLancer();   break;
 
             default: System.err.println("Error: No such slime type.");
         }
+    }
 
+    public LinkedList<String> getAvailableUpgrades(){
+
+        LinkedList<String> availableUpgrades = new LinkedList<>();
+
+        if ( isUpgraded() ){
+            availableUpgrades.add("basic");
+            return availableUpgrades;
+        }
+
+        if ( size >= 2 ){
+            availableUpgrades.add("Striker");
+            availableUpgrades.add("lancer");
+        }
+        if ( size >= 4 ){
+            availableUpgrades.add("advancedStriker");
+            availableUpgrades.add("advancedLancer");
+        }
+        if ( size >= 6 ){
+            availableUpgrades.add("mortar");
+        }
+        return availableUpgrades;
     }
 
     @Override
