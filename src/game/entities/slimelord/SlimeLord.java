@@ -21,6 +21,7 @@ public class SlimeLord extends Entity implements IEntity {
     int remainingMovement;
     LinkedList<SlimeLordAbility> abilities;
     public LinkedList<SlimeFactory> factories;
+    public LinkedList<String> specialSlimes;
 
     private float xoffset = 0;
     private float yoffset = 0;

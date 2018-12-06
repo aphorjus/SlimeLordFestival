@@ -76,7 +76,7 @@ public class BattleGrid {
             this.mode = mode;
         }
         else{
-            System.err.println("Error: invalid mode type "+mode);
+            System.err.println("Error: invalid mode "+mode);
         }
     }
 
@@ -139,17 +139,17 @@ public class BattleGrid {
         return ajacent;
     }
 
-    public void addOccupentTo(int x, int y, IEntity occupent){
+    public void addOccupentTo(int x, int y, BattleEntity occupent){
 
         addOccupentTo(getTile(x, y), occupent);
 
     }
 
-    private void addOccupentTo(BattleGridTile tile, IEntity occupent){
-        if( occupent.getEntityType().equals("Slime") ) {
+    private void addOccupentTo(BattleGridTile tile, BattleEntity occupent){
+        if( occupent instanceof Slime ) {
             tile.addOccupent(occupent);
         }
-        else if ( occupent.getEntityType().equals("Factory") ){
+        else if ( occupent instanceof SlimeFactory ){
             tile.addOccupent(occupent);
             ((SlimeFactory)occupent).setSpawnableTiles(getAjacent(tile));
         }
@@ -159,8 +159,14 @@ public class BattleGrid {
     private int getTileX(BattleGridTile tile){
         return (int)( tile.getX() - xBuffer ) / tileSize;
     }
+    private int getTileX(Vector position){
+        return (int)( position.getX() - xBuffer ) / tileSize;
+    }
     private int getTileY(BattleGridTile tile){
         return (int)( tile.getY() - yBuffer ) / tileSize;
+    }
+    private int getTileY(Vector position){
+        return (int)( position.getY() - yBuffer ) / tileSize;
     }
 
     private IntVector getTileIndex(BattleGridTile tile){
@@ -186,15 +192,14 @@ public class BattleGrid {
         int i = (int)(position.getX()-xBuffer) / tileSize;
         int j = (int)(position.getY()-yBuffer) / tileSize;
 
-        if( i >= gridWidth || j >= gridHeight || i < 0 || j < 0 ){
-            return null;
-        }
-
         return getTile(i, j);
     }
 
     public BattleGridTile getTile(int x, int y){
 
+        if( x >= gridWidth || y >= gridHeight || x < 0 || y < 0 ){
+            return null;
+        }
         return this.tileGrid[x][y];
     }
 
@@ -245,7 +250,6 @@ public class BattleGrid {
                 }
             }
         }
-
     }
 
     public void selectTile(int x, int y){
@@ -274,21 +278,22 @@ public class BattleGrid {
 
         if( inRange( this.currentlySelectedTile, x, y )){
 
+            if(((Slime)this.currentlySelectedTile.getOccupent()).hasAttacked()){
+                return;
+            }
             ArrayList<IntVector> pattern = ((Slime)this.currentlySelectedTile.getOccupent()).getAttackPattern(x,y);
             BattleGridTile effectedTile;
             Slime attackingSlime = ((Slime) currentlySelectedTile.getOccupent());
-            Slime deffendingSlime;
+            BattleEntity defender;
 
-            for(int i = 0; i < pattern.size(); i++){
-                effectedTile = getTile(pattern.get(i).x, pattern.get(i).y);
+            for( int i = 0; i < pattern.size(); i++ ){
+                effectedTile = getTile( pattern.get(i).x, pattern.get(i).y );
 
-                if( effectedTile.hasOccupent() && effectedTile.getOccupent() instanceof Slime ){ //CHANGE
-                    deffendingSlime = ((Slime) effectedTile.getOccupent());
-                    deffendingSlime.currentHP -= attackingSlime.damage;
+                if( effectedTile != null && effectedTile.hasOccupent() ){
+                    defender = effectedTile.getOccupent();
+                    defender.takeDamage(attackingSlime.damage);
 
-                    System.out.println(deffendingSlime.currentHP);
-
-                    if( deffendingSlime.currentHP <= 0 ){
+                    if( !defender.isAlive() ){
                         effectedTile.removeOccupent();
                         gameApi.createEntity(effectedTile);
                     }
@@ -311,6 +316,17 @@ public class BattleGrid {
 //        }
 //    }
 
+    private Slime getSelectedOccupent(){
+        if( tileSelected() ){
+            return (Slime)getSelectedTile().getOccupent();
+        }
+        return null;
+    }
+
+    private boolean inRange(int x, int y){
+        return inRange(currentlySelectedTile, x, y);
+    }
+
     private boolean inRange( BattleGridTile tile, int x, int y ){
 
         if(tile == null){
@@ -323,7 +339,7 @@ public class BattleGrid {
             throw new IllegalArgumentException("Error: Cannot call inRange on tile with non-slime occupant");
         }
         if( mode == ATTACK_MODE ) {
-            if (((Slime) tile.getOccupent()).getAttackRange() >= distanceGrid[x][y]) {
+            if (((Slime) tile.getOccupent()).inRange(distanceGrid[x][y]) ) {
                 return true;
             }
         }
@@ -360,7 +376,8 @@ public class BattleGrid {
         }
         if(b.hasOccupent()){
             if(b.getOccupent() instanceof Slime && !a.getOccupent().equals(b.getOccupent()) &&
-                    ((Slime) b.getOccupent()).clientID == ((Slime) a.getOccupent()).clientID){
+                    ((Slime) b.getOccupent()).clientID == ((Slime) a.getOccupent()).clientID &&
+                    !((Slime) b.getOccupent()).isUpgraded() && !((Slime) a.getOccupent()).isUpgraded()){
 
                 movingSlime = ((Slime) b.getOccupent()).combine((Slime) a.getOccupent());
             }
@@ -388,7 +405,7 @@ public class BattleGrid {
             for(int j = 0; j < gridHeight; j++){
                 BattleGridTile tile = tileGrid[i][j];
                 if(tile.hasOccupent()){
-                    entityList.add(tile.getOccupent());
+                    entityList.add( (IEntity) tile.getOccupent() );
                 }
             }
         }
@@ -404,6 +421,41 @@ public class BattleGrid {
                 tileSize, tileSize);
 
         g.setColor(c);
+    }
+
+    public void highlightAttackPattern( Vector position, Graphics g ){
+
+        int x = getTileX(position);
+        int y = getTileY(position);
+
+        if (!inRange(x,y)){
+            highlightTile(position, g);
+            return;
+        }
+
+        ArrayList<IntVector> pattern = getSelectedOccupent().getAttackPattern(x,y);
+
+        for( int i = 0; i < pattern.size(); i++ ){
+            x = pattern.get(i).x;
+            y = pattern.get(i).y;
+
+            BattleGridTile tile = getTile(x,y);
+            if(tile != null){
+                highlightTile(tile.getPosition(), g);
+            }
+        }
+
+    }
+
+    public void mouseoverHighlight( Vector position, Graphics g ){
+
+        if( this.tileSelected() && mode == ATTACK_MODE){
+            highlightAttackPattern(position, g);
+        }
+        else{
+            highlightTile(position, g);
+        }
+
     }
 
     private void drawGrid(Graphics g){

@@ -1,5 +1,6 @@
 package game.entities.slimefactory;
 
+import game.Battles.BattleEntity;
 import game.Battles.BattleGrid;
 import game.Battles.BattleGridTile;
 import game.client.Board;
@@ -12,11 +13,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class SlimeFactory extends Entity implements IEntity {
+public class SlimeFactory extends Entity implements IEntity, BattleEntity {
     String entityType = "Factory";
     public int clientID;
     String id;
-    int hp;
+    int maxHP;
+    int currentHP;
+
+    int xIndex;
+    int yIndex;
+
     Slime slime;
     ArrayList<BattleGridTile> spawnableTiles;
 
@@ -25,6 +31,9 @@ public class SlimeFactory extends Entity implements IEntity {
         this.id = UUID.randomUUID().toString();
         this.slime = new Slime(1, clientID);
 
+        this.maxHP = 50;
+        this.currentHP = maxHP;
+
         this.addImage(ResourceManager.getImage(Board.TILE_RSC));
     }
 
@@ -32,7 +41,8 @@ public class SlimeFactory extends Entity implements IEntity {
         entityType = data.getString("entityType");
         clientID = data.getInt("clientId");
         id = data.getString("id");
-        hp = data.getInt("hp");
+        maxHP = data.getInt("maxHP");
+        currentHP = data.getInt("currentHP");
 
         this.addImage(ResourceManager.getImage(Board.TILE_RSC));
     }
@@ -42,7 +52,8 @@ public class SlimeFactory extends Entity implements IEntity {
         data.put("entityType", entityType);
         data.put("clientId", clientID);
         data.put("id", id);
-        data.put("hp", hp);
+        data.put("maxHP", maxHP);
+        data.put("currentHP", currentHP);
 
         return data;
     }
@@ -50,6 +61,12 @@ public class SlimeFactory extends Entity implements IEntity {
     public void setSpawnableTiles(ArrayList<BattleGridTile> ajacentTiles){
 
         this.spawnableTiles = ajacentTiles;
+    }
+
+    @Override
+    public void setIndexes(int x, int y) {
+        xIndex = x;
+        yIndex = y;
     }
 
     public String getEntityType() {
@@ -75,4 +92,18 @@ public class SlimeFactory extends Entity implements IEntity {
         return tile;
     }
 
+    @Override
+    public void onNextTurn() {
+        spawnSlime();
+    }
+
+    @Override
+    public void takeDamage(int amount) {
+        currentHP -= amount;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return currentHP > 0;
+    }
 }
