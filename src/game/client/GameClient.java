@@ -88,7 +88,7 @@ public class GameClient extends StateBasedGame {
         }
     }
 
-    void exit() {
+    public void exit() {
         try {
             input.close();
         } catch (Exception e) {
