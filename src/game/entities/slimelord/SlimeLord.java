@@ -1,15 +1,23 @@
 package game.entities.slimelord;
 
+import game.IGameState;
+import game.api.GameApiListener;
+import game.client.Board;
+import game.client.Player;
+import game.client.Turn;
 import game.entities.IEntity;
 import game.entities.slimefactory.SlimeFactory;
 import jig.Entity;
+import jig.ResourceManager;
+import jig.Vector;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.newdawn.slick.Graphics;
 
 import java.util.LinkedList;
 import java.util.UUID;
 
-public class SlimeLord extends Entity implements IEntity {
+public class SlimeLord extends Entity implements IEntity, GameApiListener {
     String entityType = "slime_lord";
     public int clientID;
     public String id;
@@ -17,19 +25,89 @@ public class SlimeLord extends Entity implements IEntity {
     int totalMovement;
     int remainingMovement;
     LinkedList<SlimeLordAbility> abilities;
-    LinkedList<SlimeFactory> factories;
+    public LinkedList<SlimeFactory> factories;
+    public LinkedList<String> specialSlimes;
+
+    private float xoffset = 0;
+    private float yoffset = 0;
+    private float xpos;
+    private float ypos;
+    private Turn turn;
 
     public SlimeLord(int clientID){
+        System.out.println("slimelord created" + clientID);
         this.clientID = clientID;
         this.id = UUID.randomUUID().toString();
         this.totalMovement = 10;
         this.remainingMovement = totalMovement;
         this.abilities = new LinkedList<SlimeLordAbility>();
-
         this.factories = new LinkedList<SlimeFactory>();
-        this.factories.add(new SlimeFactory(clientID));
-        this.factories.add(new SlimeFactory(clientID));
+        this.factories.add(new SlimeFactory(this.clientID));    // Austin, what is this?
+        this.factories.add(new SlimeFactory(this.clientID));
+
+        this.turn = new Turn(clientID);
+
+        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
+        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));
+        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));
+        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));
     }
+
+    public void render(Graphics g){
+        float x = getX() - xoffset;
+        float y = getY() - yoffset;
+        if(clientID == 0) {
+            g.drawImage(ResourceManager.getImage(Board.SLIME1_RSC), x + 1, y + 1);
+        }
+        if(clientID == 1) {
+            g.drawImage(ResourceManager.getImage(Board.SLIME2_RSC), x + 1, y + 1);
+        }
+        if(clientID == 2) {
+            g.drawImage(ResourceManager.getImage(Board.SLIME3_RSC), x + 1, y + 1);
+        }
+        if(clientID == 3) {
+            g.drawImage(ResourceManager.getImage(Board.SLIME4_RSC), x + 1, y + 1);
+        }
+    }
+
+    public boolean makeMove() {
+        return true;
+    }
+
+    public void moveRight() {
+        if(makeMove()) {
+            this.translate(16,0);
+        }
+    }
+
+    public void moveLeft() {
+        if(makeMove()) {
+            this.translate(-16, 0);
+        }
+    }
+
+    public void moveUp() {
+        if(makeMove()) {
+            this.translate(0, -16);
+        }
+    }
+
+    public void moveDown() {
+        if(makeMove()) {
+            this.translate(0, 16);
+        }
+    }
+
+    public void setOffsets(float xoffset, float yoffset) {
+        this.xoffset = xoffset;
+        this.yoffset = yoffset;
+    }
+
+    public void setPosition(float x, float y) {
+        this.xpos = x;
+        this.ypos = y;
+    }
+
 
     public SlimeLord(JSONObject data) {
         abilities = new LinkedList<>();
@@ -94,5 +172,60 @@ public class SlimeLord extends Entity implements IEntity {
         }
 
         return data;
+    }
+
+    @Override
+    public void onAlterGameState(IGameState gameState) {
+
+    }
+
+    @Override
+    public void onAlterPlayerState(Player player) {
+
+    }
+
+    @Override
+    public void onCreateEntity(IEntity entity) {
+
+    }
+
+    @Override
+    public void onDeleteEntity(int id) {
+
+    }
+
+    @Override
+    public void onMessage(int senderId, String message) {
+
+    }
+
+    @Override
+    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {
+
+    }
+
+    @Override
+    public void onSetStateToOverworld() {
+
+    }
+
+    @Override
+    public void onEndTurn() {
+        turn.turnHasEnded();
+    }
+
+    @Override
+    public void onConnectionConfirmation(int myId) {
+
+    }
+
+    @Override
+    public void onLobbyClientListUpdate(String[] clientNames) {
+
+    }
+
+    @Override
+    public void onLobbyIsFull() {
+
     }
 }
