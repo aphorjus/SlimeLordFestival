@@ -1,5 +1,6 @@
 package game.entities.slime;
 
+import game.Battles.AttackPattern;
 import game.Battles.BattleEntity;
 import game.Battles.BattleGridTile;
 import game.IntVector;
@@ -52,46 +53,6 @@ public class Slime extends Entity implements IEntity, BattleEntity {
     private final static int UP_LEFT = 7;
 
     private IntVector[][] attackPattern;
-
-    private IntVector[][] basicAttackPattern = {{
-            new IntVector(0,0)
-    }};
-
-    private static IntVector[][] mortar = {{
-            new IntVector(0,0),
-            new IntVector(0,-1),
-            new IntVector(0,1),
-            new IntVector(-1,0),
-            new IntVector(1,0)
-    }};
-
-    private static IntVector[][] line = {
-            { new IntVector(0,0), new IntVector( 0, 1), new IntVector( 0, 2)},
-            { new IntVector(0,0), new IntVector( 0,-1), new IntVector( 0,-2)},
-            { new IntVector(0,0), new IntVector( 1, 0), new IntVector( 2, 0)},
-            { new IntVector(0,0), new IntVector(-1, 0), new IntVector(-2, 0)}
-    };
-
-    private static IntVector[][] shortLine = {
-            { new IntVector(0,0), new IntVector( 0, 1) },
-            { new IntVector(0,0), new IntVector( 0,-1) },
-            { new IntVector(0,0), new IntVector( 1, 0) },
-            { new IntVector(0,0), new IntVector(-1, 0) }
-    };
-
-    private static IntVector[][] shotgun = {
-            { new IntVector(0,0), new IntVector( 0, 1), new IntVector( 1, 1), new IntVector(-1, 1) },
-            { new IntVector(0,0), new IntVector( 0,-1), new IntVector(-1,-1), new IntVector( 1,-1) },
-            { new IntVector(0,0), new IntVector( 1, 0), new IntVector( 1,-1), new IntVector( 1, 1) },
-            { new IntVector(0,0), new IntVector(-1, 0), new IntVector(-1, 1), new IntVector(-1,-1) }
-    };
-
-    private static IntVector[][] spread = {
-            { new IntVector(0,0), new IntVector( 1, 1), new IntVector( 2, 2), new IntVector( 0, 2), new IntVector(-2, 2), new IntVector(-1, 1) },
-            { new IntVector(0,0), new IntVector(-1,-1), new IntVector(-2,-2), new IntVector( 0,-2), new IntVector( 2,-2), new IntVector( 1,-1) },
-            { new IntVector(0,0), new IntVector( 1,-1), new IntVector( 2,-2), new IntVector( 2, 0), new IntVector( 2, 2), new IntVector( 1, 1) },
-            { new IntVector(0,0), new IntVector(-1, 1), new IntVector(-2, 2), new IntVector(-2, 0), new IntVector(-2,-2), new IntVector(-1,-1) }
-    };
 
     public Slime(int size, int id){
 
@@ -162,7 +123,7 @@ public class Slime extends Entity implements IEntity, BattleEntity {
         this.damage = 4+3*size;
         this.setAttackRange(0, 1.5);
 
-        this.attackPattern = basicAttackPattern;
+        this.attackPattern = AttackPattern.SINGLE_TARGET;
         this.hasDirectionAttak = false;
 
     }
@@ -176,7 +137,7 @@ public class Slime extends Entity implements IEntity, BattleEntity {
         this.damage = 20;
         this.setAttackRange(6, 10.5);
 
-        this.attackPattern = mortar;
+        this.attackPattern = AttackPattern.MORTAR;
         this.hasDirectionAttak = false;
     }
 
@@ -189,7 +150,7 @@ public class Slime extends Entity implements IEntity, BattleEntity {
         this.damage = 6;
         this.setAttackRange(0,1);
 
-        this.attackPattern = shotgun;
+        this.attackPattern = AttackPattern.SHOTGUN;
         this.hasDirectionAttak = true;
     }
 
@@ -202,7 +163,7 @@ public class Slime extends Entity implements IEntity, BattleEntity {
         this.damage = 8;
         this.setAttackRange(0,1.5);
 
-        this.attackPattern = shotgun;
+        this.attackPattern = AttackPattern.SHOTGUN;
         this.hasDirectionAttak = true;
     }
 
@@ -215,7 +176,7 @@ public class Slime extends Entity implements IEntity, BattleEntity {
         this.damage = 8;
         this.setAttackRange(0,1.5);
 
-        this.attackPattern = shortLine;
+        this.attackPattern = AttackPattern.SHORT_LINE;
         this.hasDirectionAttak = true;
     }
 
@@ -227,7 +188,7 @@ public class Slime extends Entity implements IEntity, BattleEntity {
         this.speed = 8;
         this.damage = 10;
 
-        this.attackPattern = line;
+        this.attackPattern = AttackPattern.LINE;
         this.hasDirectionAttak = true;
 
     }

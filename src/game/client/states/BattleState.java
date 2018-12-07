@@ -177,7 +177,6 @@ public class BattleState extends BasicGameState implements GameApiListener {
         if (input.isKeyPressed(Input.KEY_S)){
             battleGrid.switchMode();
         }
-
         gameApi.update();
     }
 
@@ -191,7 +190,6 @@ public class BattleState extends BasicGameState implements GameApiListener {
             }
         }
     }
-
 
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
@@ -243,7 +241,6 @@ public class BattleState extends BasicGameState implements GameApiListener {
         this.playerTwo = slimeLordTwo.clientID;
 
         this.activePlayer = slimeLordOne.clientID;
-
     }
 
     public void onSetStateToOverworld() {}
@@ -255,5 +252,6 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void onLobbyClientListUpdate(String[] clientNames) {}
 
     public void onLobbyIsFull() {}
+
     public void onConnectionConfirmation(int myId) { }
 }
