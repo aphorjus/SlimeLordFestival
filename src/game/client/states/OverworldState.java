@@ -30,6 +30,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     public void enter(GameContainer gc, StateBasedGame sbg) {
 
         gameApi = new GameApi((GameClient)sbg, this);
+        GameClient bg = (GameClient)sbg;
+        Board board = bg.getBoard();
+        board.setUp(gameApi, gameClient);
+
     }
 
     @Override
@@ -39,6 +43,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         Input input = gc.getInput();
         GameClient bg = (GameClient)sbg;
         Board board = bg.getBoard();
+        // board.setUp(gameApi, gameClient);
+        board.updateSlimelord();
         if (input.isKeyDown(Input.KEY_LEFT)){
             board.moveLeft();
         }

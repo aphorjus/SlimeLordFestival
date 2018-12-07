@@ -3,6 +3,9 @@ package game.client;
 import javax.swing.JOptionPane;
 
 
+import game.api.GameApi;
+import game.entities.slimelord.SlimeLord;
+import jig.Vector;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -35,14 +38,65 @@ public class Board {
     private Tile current;
     private float xoffset = 0;
     private float yoffset = 0;
-    private int slimeID = 1;
+    private int slimeID = 0;
     private Turn turn;
+    GameClient gameClient;
+    GameApi gameApi;
+
+    SlimeLord slimeLordOne;
+    SlimeLord slimeLordTwo;
+    SlimeLord slimeLordThree;
+    SlimeLord slimeLordFour;
+    SlimeLord currentSlimelord;
+
 
     public Board() {
 
         tiles = new Tile[NUMROWS][NUMCOLS];
-        turn = new Turn();
+        turn = new Turn(0);
+    }
 
+    public void setUp(GameApi gameApi, GameClient gameClient) {
+        this.gameApi = gameApi;
+        this.gameClient = gameClient;
+        this.slimeLordOne = new SlimeLord(0);
+        this.slimeLordTwo = new SlimeLord(1);
+        this.slimeLordThree = new SlimeLord(2);
+        this.slimeLordFour = new SlimeLord(3);
+
+        slimeLordOne.setPosition(new Vector(5*16,10*16));       //  blue
+        slimeLordTwo.setPosition(new Vector(76*16,4*16));       // green
+        slimeLordThree.setPosition(new Vector(81*16,39*16));    // orange
+        slimeLordFour.setPosition(new Vector(5*16,39*16));      // red
+
+        updateSlimelord();
+        switch(gameClient.myId) {
+            case 0:
+                place("", 10,5);
+                break;
+            case 1:
+                place("", 4,76);
+                break;
+            case 2:
+                place("", 39,81);
+                break;
+            case 3:
+                place("", 39,5);
+                break;
+        }
+    }
+
+    public void updateSlimelord() {
+        switch(gameClient.myId){
+            case 0: currentSlimelord = slimeLordOne;
+                break;
+            case 1: currentSlimelord = slimeLordTwo;
+                break;
+            case 2: currentSlimelord = slimeLordThree;
+                break;
+            case 3: currentSlimelord = slimeLordFour;
+                break;
+        }
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -65,6 +119,14 @@ public class Board {
                 }
             }
         }
+        slimeLordOne.setOffsets(xoffset, yoffset);
+        slimeLordOne.render(g);
+        slimeLordTwo.setOffsets(xoffset, yoffset);
+        slimeLordTwo.render(g);
+        slimeLordThree.setOffsets(xoffset, yoffset);
+        slimeLordThree.render(g);
+        slimeLordFour.setOffsets(xoffset, yoffset);
+        slimeLordFour.render(g);
     }
 
     // setting up tiles
@@ -215,12 +277,21 @@ public class Board {
         place("T:0", 22, 57);           // tent
         // place("T:0", 11, 54);                          // shop
 
-        place("1", 10, 5);  // blue
-        place("2", 4, 76);  // green
-        place("3", 39, 81);  // orange
-        place("4", 39, 5);  // red
+       // place("2", 4, 76);  // green
+        //slimeLordTwo.setX(current.getX());
+        //slimeLordTwo.setY(current.getY());
 
-        // generatePaths();
+        //place("3", 39, 81);  // orange
+       // slimeLordThree.setX(current.getX());
+       // slimeLordThree.setY(current.getY());
+
+       // place("4", 39, 5);  // red
+       // slimeLordFour.setX(current.getX());
+       // slimeLordFour.setY(current.getY());
+
+        //place("1", 10, 5);  // blue
+       // slimeLordOne.setX(current.getX());
+       // slimeLordOne.setY(current.getY());
     }
 
     public boolean place(String contents, int row, int col) {
@@ -387,6 +458,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
+            //  gameApi.deleteEntity(currentSlimelord.clientID);
+            currentSlimelord.moveLeft();
+            //  gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
@@ -409,6 +483,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
+            //  gameApi.deleteEntity(currentSlimelord.clientID);
+            currentSlimelord.moveRight();
+            //  gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
@@ -431,6 +508,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
+            //  gameApi.deleteEntity(currentSlimelord.clientID);
+            currentSlimelord.moveUp();
+            //  gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
@@ -446,6 +526,7 @@ public class Board {
             if(!isMyTurn()){
                 return false;
             }
+            System.out.println(current.getRow() + " " + current.getCol());
             current.setContents("");
             current = current.getDown();
             if(isTent()) {
@@ -453,6 +534,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
+          //  gameApi.deleteEntity(currentSlimelord.clientID);
+            currentSlimelord.moveDown();
+          //  gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
