@@ -19,6 +19,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     GameApi gameApi;
     GameClient gameClient;
 
+    private Board board;
+
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) {
         gameClient = (GameClient)sbg;
@@ -33,7 +35,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         GameClient bg = (GameClient)sbg;
         Board board = bg.getBoard();
         board.setUp(gameApi, gameClient);
-
+        this.board = board;
     }
 
     @Override
@@ -93,9 +95,14 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     public void onAlterPlayerState(Player player) {}
 
-    public void onCreateEntity(IEntity entity) {}
+    public void onCreateEntity(IEntity entity) {
+        //System.out.println("entity created.");
+       // System.out.println(entity.getEntityType());
+    }
 
-    public void onDeleteEntity(int entityId) {}
+    public void onDeleteEntity(int entityId) {
+        System.out.println("entity deleted.");
+    }
 
     public void onMessage(int senderId, String message) {
         System.out.println(senderId);
@@ -106,7 +113,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     public void onSetStateToOverworld() {}
 
-    public void onEndTurn() {}
+    public void onEndTurn() {
+        System.out.println("end turn detected.");
+        board.endTurn();
+    }
 
     public void onLobbyClientListUpdate(String[] clientNames) {}
     public void onLobbyIsFull() {}

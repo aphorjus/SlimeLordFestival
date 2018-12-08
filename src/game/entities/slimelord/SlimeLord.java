@@ -32,7 +32,6 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
     private float yoffset = 0;
     private float xpos;
     private float ypos;
-    private Turn turn;
 
     public SlimeLord(int clientID){
         System.out.println("slimelord created" + clientID);
@@ -44,8 +43,6 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
         this.factories = new LinkedList<SlimeFactory>();
         this.factories.add(new SlimeFactory(this.clientID));    // Austin, what is this?
         this.factories.add(new SlimeFactory(this.clientID));
-
-        this.turn = new Turn(clientID);
 
         addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
         addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));
@@ -110,30 +107,38 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
 
 
     public SlimeLord(JSONObject data) {
-        abilities = new LinkedList<>();
-        factories = new LinkedList<>();
+        System.out.println("JSONObject");
+        try {
 
-        entityType = data.getString("entityType");
-        clientID = data.getInt("clientID");
-        id = data.getString("id");
-        name = data.getString("name");
-        totalMovement = data.getInt("totalMovement");
-        remainingMovement = data.getInt("remainingMovement");
+            abilities = new LinkedList<>();
+            factories = new LinkedList<>();
 
-        if (data.has("abilities")) {
-            JSONArray jsonAbilities = data.getJSONArray("abilities");
+            entityType = data.getString("entityType");
+            clientID = data.getInt("clientID");
+            id = data.getString("id");
+            name = data.getString("name");
+            totalMovement = data.getInt("totalMovement");
+            remainingMovement = data.getInt("remainingMovement");
 
-            for (int i = 0; i < jsonAbilities.length(); i++) {
-                abilities.add(new SlimeLordAbility(jsonAbilities.getJSONObject(i)));
+            System.out.println("system created");
+
+            if (data.has("abilities")) {
+                JSONArray jsonAbilities = data.getJSONArray("abilities");
+
+                for (int i = 0; i < jsonAbilities.length(); i++) {
+                    abilities.add(new SlimeLordAbility(jsonAbilities.getJSONObject(i)));
+                }
             }
-        }
 
-        if (data.has("factories")) {
-            JSONArray jsonFactories = data.getJSONArray("factories");
+            if (data.has("factories")) {
+                JSONArray jsonFactories = data.getJSONArray("factories");
 
-            for (int i = 0; i < jsonFactories.length(); i++) {
-                factories.add(new SlimeFactory(jsonFactories.getJSONObject(i)));
+                for (int i = 0; i < jsonFactories.length(); i++) {
+                    factories.add(new SlimeFactory(jsonFactories.getJSONObject(i)));
+                }
             }
+        } catch(Exception ex){
+            ex.printStackTrace();
         }
     }
 
@@ -143,34 +148,39 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
 
     public JSONObject toJson() {
         JSONObject data = new JSONObject();
+        System.out.println("toJson.");
+        try {
+            data.put("entityType", entityType);
+            data.put("clientID", clientID);
+            data.put("id", id);
+            data.put("name", name);
+            data.put("totalMovement", totalMovement);
+            data.put("remainingMovement", remainingMovement);
+            /*
+            if (abilities.size() > 0) {
+                JSONArray jsonAbilities = new JSONArray();
 
-        data.put("entityType", entityType);
-        data.put("clientID", clientID);
-        data.put("id", id);
-        data.put("name", name);
-        data.put("totalMovement", totalMovement);
-        data.put("remainingMovement", remainingMovement);
+                for (SlimeLordAbility ability : abilities) {
+                    jsonAbilities.put(ability.toJson());
+                }
 
-        if (abilities.size() > 0) {
-            JSONArray jsonAbilities = new JSONArray();
-
-            for (SlimeLordAbility ability : abilities) {
-                jsonAbilities.put(ability.toJson());
+                data.put("abilities", jsonAbilities);
             }
 
-            data.put("abilities", jsonAbilities);
-        }
+            if (factories.size() > 0) {
+                JSONArray jsonFactories = new JSONArray();
 
-        if (factories.size() > 0) {
-            JSONArray jsonFactories = new JSONArray();
+                for (SlimeFactory factory : factories) {
+                    jsonFactories.put(factory.toJson());
+                }
 
-            for (SlimeFactory factory : factories) {
-                jsonFactories.put(factory.toJson());
+                data.put("factories", factories);
             }
-
-            data.put("factories", factories);
+            */
+            System.out.println("json created.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
         return data;
     }
 
@@ -211,7 +221,6 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
 
     @Override
     public void onEndTurn() {
-        turn.turnHasEnded();
     }
 
     @Override

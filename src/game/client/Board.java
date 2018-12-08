@@ -53,7 +53,7 @@ public class Board {
     public Board() {
 
         tiles = new Tile[NUMROWS][NUMCOLS];
-        turn = new Turn(0);
+        // turn = new Turn(0);
     }
 
     public void setUp(GameApi gameApi, GameClient gameClient) {
@@ -63,6 +63,12 @@ public class Board {
         this.slimeLordTwo = new SlimeLord(1);
         this.slimeLordThree = new SlimeLord(2);
         this.slimeLordFour = new SlimeLord(3);
+        gameApi.createEntity(slimeLordOne);
+        gameApi.createEntity(slimeLordTwo);
+        gameApi.createEntity(slimeLordThree);
+        gameApi.createEntity(slimeLordFour);
+
+        turn = new Turn(gameApi, gameClient.myId);
 
         slimeLordOne.setPosition(new Vector(5*16,10*16));       //  blue
         slimeLordTwo.setPosition(new Vector(76*16,4*16));       // green
@@ -427,10 +433,14 @@ public class Board {
     }
 
     public boolean isMyTurn() {
-        if(slimeID == turn.getCurrentPlayer()){
+        if(turn.isMyMove()){
             return turn.makeMove();
         }
         return false;
+    }
+
+    public void endTurn(){
+        turn.turnHasEnded();
     }
 
     // move function called by the network
@@ -526,7 +536,6 @@ public class Board {
             if(!isMyTurn()){
                 return false;
             }
-            System.out.println(current.getRow() + " " + current.getCol());
             current.setContents("");
             current = current.getDown();
             if(isTent()) {
@@ -534,9 +543,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
-          //  gameApi.deleteEntity(currentSlimelord.clientID);
+            gameApi.deleteEntity(gameClient.myId);
             currentSlimelord.moveDown();
-          //  gameApi.createEntity(currentSlimelord);
+            gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
