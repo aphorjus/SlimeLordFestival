@@ -1,10 +1,12 @@
 package game.entities.slimelord;
 
+import com.sun.org.apache.regexp.internal.RE;
 import game.IGameState;
 import game.api.GameApiListener;
 import game.client.Board;
 import game.client.Player;
 import game.client.Turn;
+import game.entities.AnimatedEntity;
 import game.entities.IEntity;
 import game.entities.slimefactory.SlimeFactory;
 import jig.Entity;
@@ -12,12 +14,20 @@ import jig.ResourceManager;
 import jig.Vector;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SpriteSheet;
 
 import java.util.LinkedList;
 import java.util.UUID;
 
-public class SlimeLord extends Entity implements IEntity, GameApiListener {
+public class SlimeLord extends AnimatedEntity implements IEntity, GameApiListener {
+    String GREEN_IDLE = "game/client/resource/green-slime-idle.png";
+    String BLUE_IDLE = "game/client/resource/blue-slime-idle.png";
+    String YELLOW_IDLE = "game/client/resource/yellow-slime-idle.png";
+    String RED_IDLE = "game/client/resource/red-slime-idle.png";
+
     String entityType = "slime_lord";
     public int clientID;
     public String id;
@@ -33,6 +43,7 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
     private float xpos;
     private float ypos;
     private Turn turn;
+    String color = "blue";
 
     public SlimeLord(int clientID){
         System.out.println("slimelord created" + clientID);
@@ -47,27 +58,36 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
 
         this.turn = new Turn(clientID);
 
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));
+        this.initializeAnimations();
+//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
+//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));
+//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));
+//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));
     }
 
-    public void render(Graphics g){
-        float x = getX() - xoffset;
-        float y = getY() - yoffset;
-        if(clientID == 0) {
-            g.drawImage(ResourceManager.getImage(Board.SLIME1_RSC), x + 1, y + 1);
+    void initializeAnimations() {
+        String imageName = GREEN_IDLE;
+
+        switch (this.color) {
+            case "blue":
+                imageName = BLUE_IDLE;
+                break;
+            case "green":
+                imageName = GREEN_IDLE;
+                break;
+            case "yellow":
+                imageName = YELLOW_IDLE;
+                break;
+            case "red":
+                imageName = RED_IDLE;
+                break;
         }
-        if(clientID == 1) {
-            g.drawImage(ResourceManager.getImage(Board.SLIME2_RSC), x + 1, y + 1);
-        }
-        if(clientID == 2) {
-            g.drawImage(ResourceManager.getImage(Board.SLIME3_RSC), x + 1, y + 1);
-        }
-        if(clientID == 3) {
-            g.drawImage(ResourceManager.getImage(Board.SLIME4_RSC), x + 1, y + 1);
-        }
+
+        Image idle = ResourceManager.getImage(imageName);
+        idle.setFilter(Image.FILTER_NEAREST);
+        SpriteSheet idleSheet = new SpriteSheet(idle, 64, 32);
+        putAnimation("idle", new Animation(idleSheet, 99999));
+        putAnimation("victory", new Animation(idleSheet, 250));
     }
 
     public boolean makeMove() {

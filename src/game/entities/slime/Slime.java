@@ -8,6 +8,7 @@ import game.entities.IEntity;
 import game.client.Board;
 import jig.Entity;
 import jig.ResourceManager;
+import jig.Vector;
 import org.json.JSONObject;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
@@ -115,7 +116,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
             { new IntVector(0,0), new IntVector(-1, 1), new IntVector(-2, 2), new IntVector(-2, 0), new IntVector(-2,-2), new IntVector(-1,-1) }
     };
 
-    String color = "green";
+    String color = "red";
 
     public Slime(int size, int id){
 
@@ -128,6 +129,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         this.makeAdvancedStriker();
 //        this.makeBasic();
         this.currentHP = maxHP;
+        this.initializeAnimations();
 
         setRec();
     }
@@ -144,6 +146,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
 
         this.upgradeTo(myType);
         this.setRec();
+        this.initializeAnimations();
     }
 
     void initializeAnimations() {
@@ -174,20 +177,24 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
                 break;
         }
 
+        Vector offset = new Vector(0, -8);
+
         Image idleImage = ResourceManager.getImage(idleImageName);
         idleImage.setFilter(Image.FILTER_NEAREST);
-        SpriteSheet idleSheet = new SpriteSheet(idleImage, 320, 32);
-        putAnimation("idle", new Animation(idleSheet, 100));
+        SpriteSheet idleSheet = new SpriteSheet(idleImage, 32, 32);
+        putAnimation("idle", new Animation(idleSheet, 100), offset);
 
         Image attackImage = ResourceManager.getImage(attackImageName);
         attackImage.setFilter(Image.FILTER_NEAREST);
-        SpriteSheet attackSheet = new SpriteSheet(attackImage, 320, 32);
-        putAnimation("attack", new Animation(attackSheet, 100));
+        SpriteSheet attackSheet = new SpriteSheet(attackImage, 32, 32);
+        putAnimation("attack", new Animation(attackSheet, 100), offset);
 
         Image deathImage = ResourceManager.getImage(deathImageName);
         deathImage.setFilter(Image.FILTER_NEAREST);
-        SpriteSheet deathSheet = new SpriteSheet(deathImage, 320, 32);
-        putAnimation("death", new Animation(deathSheet, 100));
+        SpriteSheet deathSheet = new SpriteSheet(deathImage, 32, 32);
+        putAnimation("death", new Animation(deathSheet, 100), offset);
+
+        playAnimation("idle");
     }
 
     @Override
@@ -209,12 +216,12 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
     }
 
     private void setRec(){
-        switch(clientID) {
-            case 0: this.addImage(ResourceManager.getImage(Board.SLIME1_RSC)); break;
-            case 1: this.addImage(ResourceManager.getImage(Board.SLIME2_RSC)); break;
-            case 2: this.addImage(ResourceManager.getImage(Board.SLIME3_RSC)); break;
-            case 3: this.addImage(ResourceManager.getImage(Board.SLIME4_RSC)); break;
-        }
+//        switch(clientID) {
+//            case 0: this.addImage(ResourceManager.getImage(Board.SLIME1_RSC)); break;
+//            case 1: this.addImage(ResourceManager.getImage(Board.SLIME2_RSC)); break;
+//            case 2: this.addImage(ResourceManager.getImage(Board.SLIME3_RSC)); break;
+//            case 3: this.addImage(ResourceManager.getImage(Board.SLIME4_RSC)); break;
+//        }
     }
 
     public void setMyType(String myType) {
