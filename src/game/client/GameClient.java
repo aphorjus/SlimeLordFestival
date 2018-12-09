@@ -29,7 +29,7 @@ public class GameClient extends StateBasedGame {
     String name;
     int width;
     int height;
-    int tokens;
+    int tokens = 300;
     LinkedList<SlimeLord> slimeLords;
     public Player[] players;
 
@@ -81,6 +81,14 @@ public class GameClient extends StateBasedGame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public int getTokens(){
+        return this.tokens;
+    }
+
+    public void setTokens(int tokens) {
+        this.tokens = tokens;
     }
 
     public void exit() {

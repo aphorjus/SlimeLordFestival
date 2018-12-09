@@ -80,6 +80,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             bg.enterState(GameClient.BATTLE_STATE);
         }
         if (input.isKeyDown(Input.KEY_X)) {
+            SlimeLord testSlimeLord = new SlimeLord(0);
+            currentShop.setCurrentSlimeLord(testSlimeLord);
             inShop = true;
         }
 
