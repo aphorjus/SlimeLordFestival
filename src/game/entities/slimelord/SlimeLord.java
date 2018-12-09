@@ -8,13 +8,11 @@ import game.client.Turn;
 import game.entities.AnimatedEntity;
 import game.entities.IEntity;
 import game.entities.slimefactory.SlimeFactory;
-import jig.Entity;
 import jig.ResourceManager;
 import jig.Vector;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.newdawn.slick.Animation;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
@@ -22,10 +20,10 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 public class SlimeLord extends AnimatedEntity implements IEntity {
-    String GREEN_IDLE = "game/client/resource/green-slime-idle.png";
-    String BLUE_IDLE = "game/client/resource/blue-slime-idle.png";
-    String YELLOW_IDLE = "game/client/resource/yellow-slime-idle.png";
-    String RED_IDLE = "game/client/resource/red-slime-idle.png";
+    String GREEN_IDLE = "game/client/resource/yellow-slimelord.png";
+    String BLUE_IDLE = "game/client/resource/blue-slimelord.png";
+    String YELLOW_IDLE = "game/client/resource/yellow-slimelord.png";
+    String RED_IDLE = "game/client/resource/red-slimelord.png";
 
 
     String entityType = "slime_lord";
@@ -84,9 +82,10 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
 
         Image idle = ResourceManager.getImage(imageName);
         idle.setFilter(Image.FILTER_NEAREST);
-        SpriteSheet idleSheet = new SpriteSheet(idle, 64, 32);
-        putAnimation("idle", new Animation(idleSheet, 99999));
-        putAnimation("victory", new Animation(idleSheet, 250));
+        SpriteSheet idleSheet = new SpriteSheet(idle, 32, 32);
+        putAnimation("idle", new Animation(idleSheet, 99999), new Vector(8, 0));
+        putAnimation("victory", new Animation(idleSheet, 250), new Vector(8, 0));
+        playAnimation("idle");
     }
 
     public boolean makeMove() {
@@ -189,5 +188,60 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
                 data.put("factories", jsonFactories);
             }
         return data;
+    }
+
+    @Override
+    public void onAlterGameState(IGameState gameState) {
+
+    }
+
+    @Override
+    public void onAlterPlayerState(Player player) {
+
+    }
+
+    @Override
+    public void onCreateEntity(IEntity entity) {
+
+    }
+
+    @Override
+    public void onDeleteEntity(int id) {
+
+    }
+
+    @Override
+    public void onMessage(int senderId, String message) {
+
+    }
+
+    @Override
+    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {
+
+    }
+
+    @Override
+    public void onSetStateToOverworld() {
+
+    }
+
+    @Override
+    public void onEndTurn() {
+
+    }
+
+    @Override
+    public void onConnectionConfirmation(int myId) {
+
+    }
+
+    @Override
+    public void onLobbyClientListUpdate(String[] clientNames) {
+
+    }
+
+    @Override
+    public void onLobbyIsFull() {
+
     }
 }

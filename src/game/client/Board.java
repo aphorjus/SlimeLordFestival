@@ -11,15 +11,12 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import jig.ResourceManager;
-import game.DijkstraGrid;
-import game.client.GameClient;
-import game.client.Tile;
 
 public class Board {
     public static final String OVERWORLD_RSC = "game/client/resource/overworld.png";
     public static final String TILE_RSC = "game/client/resource/tile.png";
     public static final String BLUE_SLIMELORD_RSC = "game/client/resource/blue-slimelord.png";
-    public static final String GREEN_SLIMELORD_RSC = "game/client/resource/green-slimelord.png";
+    public static final String GREEN_SLIMELORD_RSC = "game/client/resource/yellow-slimelord.png";
     public static final String ORANGE_SLIMELORD_RSC = "game/client/resource/orange-slimelord.png";
     public static final String RED_SLIMELORD_RSC = "game/client/resource/red-slimelord.png";
     public static final String TOKENTENT_RSC = "game/client/resource/tokentent.png";    // unconquered
@@ -47,7 +44,7 @@ public class Board {
     SlimeLord slimeLordTwo;
     SlimeLord slimeLordThree;
     SlimeLord slimeLordFour;
-    SlimeLord currentSlimelord;
+    public SlimeLord currentSlimelord;
 
 
     public Board() {
@@ -468,9 +465,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
-            //  gameApi.deleteEntity(currentSlimelord.clientID);
+            gameApi.deleteEntity(currentSlimelord.clientID);
             currentSlimelord.moveLeft();
-            //  gameApi.createEntity(currentSlimelord);
+            gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
@@ -493,9 +490,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
-            //  gameApi.deleteEntity(currentSlimelord.clientID);
+            gameApi.deleteEntity(currentSlimelord.clientID);
             currentSlimelord.moveRight();
-            //  gameApi.createEntity(currentSlimelord);
+            gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
@@ -517,9 +514,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
-            //  gameApi.deleteEntity(currentSlimelord.clientID);
+            gameApi.deleteEntity(currentSlimelord.clientID);
             currentSlimelord.moveUp();
-            //  gameApi.createEntity(currentSlimelord);
+            gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
@@ -615,46 +612,5 @@ public class Board {
             acceptKeyboard = true;
         }
     }
-
-    /*
-    // Dijkstras
-    public void generatePaths() {
-        // int size = NUMROWS * NUMCOLS;
-        int[][]weights = new int[NUMROWS][NUMCOLS];    // weights
-        for(int row = 0; row < NUMROWS; row++){
-            for(int col = 0; col < NUMCOLS; col++){
-                int n = NUMCOLS * row + col;
-                int up = row - 1;
-                int down = row + 1;
-                int left = col - 1;
-                int right = col + 1;
-                int n_up = NUMCOLS * up + col;
-                int n_down = NUMCOLS * down + col;
-                int n_left = NUMCOLS * row + left;
-                int n_right = NUMCOLS * row + right;
-                if(tiles[row][col] == null){
-
-                // defining the weight between two connected tiles
-                // where there is a path, and the weight is 1.
-                } else if(up >= 0 && tiles[up][col] != null){
-                    weights [up][col] = 1;
-                    // weights [n_up][n] = 1;
-                } else if(down < NUMROWS && tiles[down][col] != null){
-                    weights [down][col] = 1;
-                    // weights [n_down][n] = 1;
-                }  else if(left >= 0 && tiles[row][left] != null){
-                    weights [row][left] = 1;
-                    // weights [n_left][n] = 1;
-                } else if(right < NUMCOLS && tiles[row][right] != null){
-                    weights [row][right] = 1;
-                    // weights [n_right][n] = 1;
-                }
-            }
-        }
-        DijkstraGrid grid = new DijkstraGrid(weights);
-        grid.printDistanceGrid();
-    }
-    */
-
 }
 
