@@ -17,7 +17,7 @@ import org.newdawn.slick.Graphics;
 import java.util.LinkedList;
 import java.util.UUID;
 
-public class SlimeLord extends Entity implements IEntity, GameApiListener {
+public class SlimeLord extends Entity implements IEntity {
     String entityType = "slime_lord";
     public int clientID;
     public String id;
@@ -32,10 +32,9 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
     private float yoffset = 0;
     private float xpos;
     private float ypos;
-    private Turn turn;
 
     public SlimeLord(int clientID){
-        System.out.println("slimelord created" + clientID);
+       // System.out.println("slimelord created" + clientID);
         this.clientID = clientID;
         this.id = UUID.randomUUID().toString();
         this.totalMovement = 10;
@@ -44,8 +43,6 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
         this.factories = new LinkedList<SlimeFactory>();
         this.factories.add(new SlimeFactory(this.clientID));    // Austin, what is this?
         this.factories.add(new SlimeFactory(this.clientID));
-
-        this.turn = new Turn(clientID);
 
         addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
         addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));
@@ -143,89 +140,32 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
 
     public JSONObject toJson() {
         JSONObject data = new JSONObject();
+            data.put("entityType", entityType);
+            data.put("clientID", clientID);
+            data.put("id", id);
+            data.put("name", name);
+            data.put("totalMovement", totalMovement);
+            data.put("remainingMovement", remainingMovement);
 
-        data.put("entityType", entityType);
-        data.put("clientID", clientID);
-        data.put("id", id);
-        data.put("name", name);
-        data.put("totalMovement", totalMovement);
-        data.put("remainingMovement", remainingMovement);
+            if (abilities.size() > 0) {
+                JSONArray jsonAbilities = new JSONArray();
 
-        if (abilities.size() > 0) {
-            JSONArray jsonAbilities = new JSONArray();
+                for (SlimeLordAbility ability : abilities) {
+                    jsonAbilities.put(ability.toJson());
+                }
 
-            for (SlimeLordAbility ability : abilities) {
-                jsonAbilities.put(ability.toJson());
+                data.put("abilities", jsonAbilities);
             }
 
-            data.put("abilities", jsonAbilities);
-        }
+            if (factories.size() > 0) {
+                JSONArray jsonFactories = new JSONArray();
 
-        if (factories.size() > 0) {
-            JSONArray jsonFactories = new JSONArray();
+                for (SlimeFactory factory : factories) {
+                    jsonFactories.put(factory.toJson());
+                }
 
-            for (SlimeFactory factory : factories) {
-                jsonFactories.put(factory.toJson());
+                data.put("factories", jsonFactories);
             }
-
-            data.put("factories", factories);
-        }
-
         return data;
-    }
-
-    @Override
-    public void onAlterGameState(IGameState gameState) {
-
-    }
-
-    @Override
-    public void onAlterPlayerState(Player player) {
-
-    }
-
-    @Override
-    public void onCreateEntity(IEntity entity) {
-
-    }
-
-    @Override
-    public void onDeleteEntity(int id) {
-
-    }
-
-    @Override
-    public void onMessage(int senderId, String message) {
-
-    }
-
-    @Override
-    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {
-
-    }
-
-    @Override
-    public void onSetStateToOverworld() {
-
-    }
-
-    @Override
-    public void onEndTurn() {
-        turn.turnHasEnded();
-    }
-
-    @Override
-    public void onConnectionConfirmation(int myId) {
-
-    }
-
-    @Override
-    public void onLobbyClientListUpdate(String[] clientNames) {
-
-    }
-
-    @Override
-    public void onLobbyIsFull() {
-
     }
 }
