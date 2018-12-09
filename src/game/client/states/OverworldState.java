@@ -7,17 +7,25 @@ import game.api.GameApiListener;
 import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
+import game.entities.building.Shop;
 import game.entities.slimelord.SlimeLord;
+import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class OverworldState extends BasicGameState implements GameApiListener {
+    String GREEN_IDLE = "game/client/resource/yellow-slimelord.png";
+    String BLUE_IDLE = "game/client/resource/blue-slimelord.png";
+    String YELLOW_IDLE = "game/client/resource/yellow-slimelord.png";
+    String RED_IDLE = "game/client/resource/red-slimelord.png";
     InputManager inputManager;
     TextField textField;
     GameApi gameApi;
     GameClient gameClient;
+    Shop currentShop = null;
+    boolean inShop = false;
 
     private Board board;
 
@@ -30,9 +38,13 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
-
+        ResourceManager.loadImage(GREEN_IDLE);
+        ResourceManager.loadImage(BLUE_IDLE);
+        ResourceManager.loadImage(YELLOW_IDLE);
+        ResourceManager.loadImage(RED_IDLE);
         gameApi = new GameApi((GameClient)sbg, this);
         GameClient bg = (GameClient)sbg;
+        currentShop = new Shop(bg);
         Board board = bg.getBoard();
         board.setUp(gameApi, gameClient);
         this.board = board;
@@ -75,6 +87,15 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         if (input.isKeyDown(Input.KEY_B)) {
             bg.enterState(GameClient.BATTLE_STATE);
         }
+        if (input.isKeyDown(Input.KEY_X)) {
+            inShop = true;
+        }
+
+        if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
+            if(inShop == true){
+                currentShop.checkClick(input.getMouseX(), input.getMouseY());
+            }
+        }
 
         gameApi.update();
     }
@@ -84,6 +105,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         GameClient bg = (GameClient)sbg;
         Board board = bg.getBoard();
         board.render(gc, sbg, g);
+
+        if(inShop == true){
+            currentShop.render(g);
+        }
     }
 
     @Override
