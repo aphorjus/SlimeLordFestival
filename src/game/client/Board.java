@@ -505,7 +505,6 @@ public class Board {
         if(!acceptKeyboard) {
             return false;
         }
-        // System.out.println(current.getRow() + " " + current.getCol());
         acceptKeyboard = false;
         if(current.getUp() != null) {
             if(!isMyTurn()){

@@ -96,8 +96,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     public void onAlterPlayerState(Player player) {}
 
     public void onCreateEntity(IEntity entity) {
-        //System.out.println("entity created.");
-       // System.out.println(entity.getEntityType());
+        System.out.println("entity created.");
+        // System.out.println(entity.getEntityType());
     }
 
     public void onDeleteEntity(int entityId) {

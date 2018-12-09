@@ -31,7 +31,7 @@ public class Turn {
     }
 
     public boolean isMyMove() {
-        System.out.println(currentID + " " + turnID + " " + move);
+        // System.out.println(currentID + " " + turnID + " " + move);
         return currentID == turnID && move < NUM_MOVES;
     }
 
