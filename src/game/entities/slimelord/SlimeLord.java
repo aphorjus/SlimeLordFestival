@@ -1,10 +1,12 @@
 package game.entities.slimelord;
 
+import com.sun.org.apache.regexp.internal.RE;
 import game.IGameState;
 import game.api.GameApiListener;
 import game.client.Board;
 import game.client.Player;
 import game.client.Turn;
+import game.entities.AnimatedEntity;
 import game.entities.IEntity;
 import game.entities.slimefactory.SlimeFactory;
 import jig.Entity;
@@ -12,12 +14,21 @@ import jig.ResourceManager;
 import jig.Vector;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SpriteSheet;
 
 import java.util.LinkedList;
 import java.util.UUID;
 
-public class SlimeLord extends Entity implements IEntity, GameApiListener {
+public class SlimeLord extends AnimatedEntity implements IEntity {
+    String GREEN_IDLE = "game/client/resource/green-slime-idle.png";
+    String BLUE_IDLE = "game/client/resource/blue-slime-idle.png";
+    String YELLOW_IDLE = "game/client/resource/yellow-slime-idle.png";
+    String RED_IDLE = "game/client/resource/red-slime-idle.png";
+
+
     String entityType = "slime_lord";
     public int clientID;
     public String id;
@@ -33,41 +44,50 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
     private float xpos;
     private float ypos;
     private Turn turn;
+    String color = "blue";
 
     public SlimeLord(int clientID){
-        System.out.println("slimelord created" + clientID);
+       // System.out.println("slimelord created" + clientID);
         this.clientID = clientID;
         this.id = UUID.randomUUID().toString();
         this.totalMovement = 10;
         this.remainingMovement = totalMovement;
-        this.abilities = new LinkedList<SlimeLordAbility>();
-        this.factories = new LinkedList<SlimeFactory>();
+        this.abilities = new LinkedList<>();
+        this.factories = new LinkedList<>();
         this.factories.add(new SlimeFactory(this.clientID));    // Austin, what is this?
         this.factories.add(new SlimeFactory(this.clientID));
 
-        this.turn = new Turn(clientID);
-
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));
+        this.initializeAnimations();
+//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
+//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));
+//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));
+//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));
     }
 
-    public void render(Graphics g){
-        float x = getX() - xoffset;
-        float y = getY() - yoffset;
-        if(clientID == 0) {
-            g.drawImage(ResourceManager.getImage(Board.SLIME1_RSC), x + 1, y + 1);
+    void initializeAnimations() {
+        String imageName = GREEN_IDLE;
+
+        switch (this.color) {
+            case "blue":
+                imageName = BLUE_IDLE;
+                break;
+            case "green":
+                imageName = GREEN_IDLE;
+                break;
+            case "yellow":
+                imageName = YELLOW_IDLE;
+                break;
+            case "red":
+                imageName = RED_IDLE;
+                break;
+
         }
-        if(clientID == 1) {
-            g.drawImage(ResourceManager.getImage(Board.SLIME2_RSC), x + 1, y + 1);
-        }
-        if(clientID == 2) {
-            g.drawImage(ResourceManager.getImage(Board.SLIME3_RSC), x + 1, y + 1);
-        }
-        if(clientID == 3) {
-            g.drawImage(ResourceManager.getImage(Board.SLIME4_RSC), x + 1, y + 1);
-        }
+
+        Image idle = ResourceManager.getImage(imageName);
+        idle.setFilter(Image.FILTER_NEAREST);
+        SpriteSheet idleSheet = new SpriteSheet(idle, 64, 32);
+        putAnimation("idle", new Animation(idleSheet, 99999));
+        putAnimation("victory", new Animation(idleSheet, 250));
     }
 
     public boolean makeMove() {
@@ -143,89 +163,32 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
 
     public JSONObject toJson() {
         JSONObject data = new JSONObject();
+            data.put("entityType", entityType);
+            data.put("clientID", clientID);
+            data.put("id", id);
+            data.put("name", name);
+            data.put("totalMovement", totalMovement);
+            data.put("remainingMovement", remainingMovement);
 
-        data.put("entityType", entityType);
-        data.put("clientID", clientID);
-        data.put("id", id);
-        data.put("name", name);
-        data.put("totalMovement", totalMovement);
-        data.put("remainingMovement", remainingMovement);
+            if (abilities.size() > 0) {
+                JSONArray jsonAbilities = new JSONArray();
 
-        if (abilities.size() > 0) {
-            JSONArray jsonAbilities = new JSONArray();
+                for (SlimeLordAbility ability : abilities) {
+                    jsonAbilities.put(ability.toJson());
+                }
 
-            for (SlimeLordAbility ability : abilities) {
-                jsonAbilities.put(ability.toJson());
+                data.put("abilities", jsonAbilities);
             }
 
-            data.put("abilities", jsonAbilities);
-        }
+            if (factories.size() > 0) {
+                JSONArray jsonFactories = new JSONArray();
 
-        if (factories.size() > 0) {
-            JSONArray jsonFactories = new JSONArray();
+                for (SlimeFactory factory : factories) {
+                    jsonFactories.put(factory.toJson());
+                }
 
-            for (SlimeFactory factory : factories) {
-                jsonFactories.put(factory.toJson());
+                data.put("factories", jsonFactories);
             }
-
-            data.put("factories", factories);
-        }
-
         return data;
-    }
-
-    @Override
-    public void onAlterGameState(IGameState gameState) {
-
-    }
-
-    @Override
-    public void onAlterPlayerState(Player player) {
-
-    }
-
-    @Override
-    public void onCreateEntity(IEntity entity) {
-
-    }
-
-    @Override
-    public void onDeleteEntity(int id) {
-
-    }
-
-    @Override
-    public void onMessage(int senderId, String message) {
-
-    }
-
-    @Override
-    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {
-
-    }
-
-    @Override
-    public void onSetStateToOverworld() {
-
-    }
-
-    @Override
-    public void onEndTurn() {
-        turn.turnHasEnded();
-    }
-
-    @Override
-    public void onConnectionConfirmation(int myId) {
-
-    }
-
-    @Override
-    public void onLobbyClientListUpdate(String[] clientNames) {
-
-    }
-
-    @Override
-    public void onLobbyIsFull() {
-
     }
 }
