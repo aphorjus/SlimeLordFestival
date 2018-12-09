@@ -69,12 +69,7 @@ public class GameClient extends StateBasedGame {
 
         Entity.setCoarseGrainedCollisionBoundary(Entity.AABB);
         board = new Board();
-
-        loadResources();
-        //connectToServer(HOST_NAME, PORT_NUMBER);
     }
-
-    void loadResources() {}
 
     public void connectToServer(String hostName, int port) {
         try {
