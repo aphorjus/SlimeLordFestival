@@ -7,6 +7,7 @@ import game.api.GameApiListener;
 import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
+import game.entities.building.Shop;
 import game.entities.slimelord.SlimeLord;
 import jig.ResourceManager;
 import org.newdawn.slick.*;
@@ -23,6 +24,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     TextField textField;
     GameApi gameApi;
     GameClient gameClient;
+    Shop currentShop = null;
+    boolean inShop = false;
 
     private Board board;
 
@@ -41,6 +44,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         ResourceManager.loadImage(RED_IDLE);
         gameApi = new GameApi((GameClient)sbg, this);
         GameClient bg = (GameClient)sbg;
+        currentShop = new Shop(bg);
         Board board = bg.getBoard();
         board.setUp(gameApi, gameClient);
         this.board = board;
@@ -83,6 +87,15 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         if (input.isKeyDown(Input.KEY_B)) {
             bg.enterState(GameClient.BATTLE_STATE);
         }
+        if (input.isKeyDown(Input.KEY_X)) {
+            inShop = true;
+        }
+
+        if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
+            if(inShop == true){
+                currentShop.checkClick(input.getMouseX(), input.getMouseY());
+            }
+        }
 
         gameApi.update();
     }
@@ -92,6 +105,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         GameClient bg = (GameClient)sbg;
         Board board = bg.getBoard();
         board.render(gc, sbg, g);
+
+        if(inShop == true){
+            currentShop.render(g);
+        }
     }
 
     @Override
