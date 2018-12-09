@@ -22,16 +22,13 @@ import org.newdawn.slick.SpriteSheet;
 import java.util.LinkedList;
 import java.util.UUID;
 
-<<<<<<< HEAD
-public class SlimeLord extends AnimatedEntity implements IEntity, GameApiListener {
+public class SlimeLord extends AnimatedEntity implements IEntity {
     String GREEN_IDLE = "game/client/resource/green-slime-idle.png";
     String BLUE_IDLE = "game/client/resource/blue-slime-idle.png";
     String YELLOW_IDLE = "game/client/resource/yellow-slime-idle.png";
     String RED_IDLE = "game/client/resource/red-slime-idle.png";
 
-=======
-public class SlimeLord extends Entity implements IEntity {
->>>>>>> 0d78d5099f4b958b1b39bbd46c1277db31e2cb9b
+
     String entityType = "slime_lord";
     public int clientID;
     public String id;
@@ -46,11 +43,8 @@ public class SlimeLord extends Entity implements IEntity {
     private float yoffset = 0;
     private float xpos;
     private float ypos;
-<<<<<<< HEAD
     private Turn turn;
     String color = "blue";
-=======
->>>>>>> 0d78d5099f4b958b1b39bbd46c1277db31e2cb9b
 
     public SlimeLord(int clientID){
        // System.out.println("slimelord created" + clientID);
@@ -58,13 +52,11 @@ public class SlimeLord extends Entity implements IEntity {
         this.id = UUID.randomUUID().toString();
         this.totalMovement = 10;
         this.remainingMovement = totalMovement;
-        this.abilities = new LinkedList<SlimeLordAbility>();
-        this.factories = new LinkedList<SlimeFactory>();
+        this.abilities = new LinkedList<>();
+        this.factories = new LinkedList<>();
         this.factories.add(new SlimeFactory(this.clientID));    // Austin, what is this?
         this.factories.add(new SlimeFactory(this.clientID));
 
-<<<<<<< HEAD
-        this.turn = new Turn(clientID);
 
         this.initializeAnimations();
 //        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
@@ -89,28 +81,7 @@ public class SlimeLord extends Entity implements IEntity {
             case "red":
                 imageName = RED_IDLE;
                 break;
-=======
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));
-        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));
-    }
 
-    public void render(Graphics g){
-        float x = getX() - xoffset;
-        float y = getY() - yoffset;
-        if(clientID == 0) {
-            g.drawImage(ResourceManager.getImage(Board.SLIME1_RSC), x + 1, y + 1);
-        }
-        if(clientID == 1) {
-            g.drawImage(ResourceManager.getImage(Board.SLIME2_RSC), x + 1, y + 1);
-        }
-        if(clientID == 2) {
-            g.drawImage(ResourceManager.getImage(Board.SLIME3_RSC), x + 1, y + 1);
-        }
-        if(clientID == 3) {
-            g.drawImage(ResourceManager.getImage(Board.SLIME4_RSC), x + 1, y + 1);
->>>>>>> 0d78d5099f4b958b1b39bbd46c1277db31e2cb9b
         }
 
         Image idle = ResourceManager.getImage(imageName);

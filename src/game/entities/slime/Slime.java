@@ -6,6 +6,7 @@ import game.IntVector;
 import game.entities.AnimatedEntity;
 import game.entities.IEntity;
 import game.client.Board;
+import game.utility.AnimationSwitchTimer;
 import jig.Entity;
 import jig.ResourceManager;
 import jig.Vector;
