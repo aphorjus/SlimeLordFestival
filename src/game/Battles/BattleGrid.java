@@ -18,6 +18,7 @@ public class BattleGrid {
 
     public static final int MOVMENT_MODE = 1;
     public static final int ATTACK_MODE = 2;
+    public static final int ABILITY_MODE = 3;
     public int mode = MOVMENT_MODE;
 
     public int gridHeight;
@@ -72,22 +73,29 @@ public class BattleGrid {
     }
 
     public void setMode(int mode){
-        if(mode == ATTACK_MODE || mode == MOVMENT_MODE){
-            this.mode = mode;
+
+        if( mode < 1 || 3 < mode ){
+            System.err.println("ERROR: no mode with id "+mode+".");
         }
-        else{
-            System.err.println("Error: invalid mode "+mode);
+        else {
+            this.mode = mode;
         }
     }
 
     public void switchMode(){
 
-        if(mode == MOVMENT_MODE){
-            mode = ATTACK_MODE;
-        }
-        else if(mode == ATTACK_MODE){
+        if(mode == ABILITY_MODE){
             mode = MOVMENT_MODE;
         }
+        else{
+            mode += 1;
+        }
+//        if(mode == MOVMENT_MODE){
+//            mode = ATTACK_MODE;
+//        }
+//        else if(mode == ATTACK_MODE){
+//            mode = MOVMENT_MODE;
+//        }
         deselectTile();
     }
 
@@ -299,7 +307,7 @@ public class BattleGrid {
                     }
                 }
             }
-            attackingSlime.setHasAttacked(true);
+            attackingSlime.onAttack();
             deselectTile();
         }
     }
