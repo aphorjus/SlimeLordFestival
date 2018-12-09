@@ -1,6 +1,5 @@
 package game.entities.slimelord;
 
-import com.sun.org.apache.regexp.internal.RE;
 import game.IGameState;
 import game.api.GameApiListener;
 import game.client.Board;
