@@ -17,7 +17,7 @@ import org.newdawn.slick.Graphics;
 import java.util.LinkedList;
 import java.util.UUID;
 
-public class SlimeLord extends Entity implements IEntity {
+public class SlimeLord extends Entity implements IEntity, GameApiListener {
     String entityType = "slime_lord";
     public int clientID;
     public String id;
@@ -41,7 +41,7 @@ public class SlimeLord extends Entity implements IEntity {
         this.remainingMovement = totalMovement;
         this.abilities = new LinkedList<SlimeLordAbility>();
         this.factories = new LinkedList<SlimeFactory>();
-        this.factories.add(new SlimeFactory(this.clientID));    // Austin, what is this?
+        this.factories.add(new SlimeFactory(this.clientID));   
         this.factories.add(new SlimeFactory(this.clientID));
 
         addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
@@ -167,5 +167,60 @@ public class SlimeLord extends Entity implements IEntity {
                 data.put("factories", jsonFactories);
             }
         return data;
+    }
+
+    @Override
+    public void onAlterGameState(IGameState gameState) {
+
+    }
+
+    @Override
+    public void onAlterPlayerState(Player player) {
+
+    }
+
+    @Override
+    public void onCreateEntity(IEntity entity) {
+
+    }
+
+    @Override
+    public void onDeleteEntity(int id) {
+
+    }
+
+    @Override
+    public void onMessage(int senderId, String message) {
+
+    }
+
+    @Override
+    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {
+
+    }
+
+    @Override
+    public void onSetStateToOverworld() {
+
+    }
+
+    @Override
+    public void onEndTurn() {
+
+    }
+
+    @Override
+    public void onConnectionConfirmation(int myId) {
+
+    }
+
+    @Override
+    public void onLobbyClientListUpdate(String[] clientNames) {
+
+    }
+
+    @Override
+    public void onLobbyIsFull() {
+
     }
 }

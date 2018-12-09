@@ -97,6 +97,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
+        gameApi = new GameApi((GameClient)sbg, this);
 
     }
 
@@ -119,6 +120,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         inputManager.update();
         Input input = gc.getInput();
         GameClient bg = (GameClient)sbg;
+
         if (connected == true){
             gameApi.update();
         }
