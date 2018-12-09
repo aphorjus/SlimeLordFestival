@@ -1,12 +1,9 @@
 package game.entities.slimelord;
 
-<<<<<<< HEAD
-=======
 import game.IGameState;
 import game.api.GameApiListener;
 import game.client.Board;
 import game.client.Player;
->>>>>>> df6844d8d94651a149bb7bf1be8a4ac87ce7fecc
 import game.client.Turn;
 import game.entities.AnimatedEntity;
 import game.entities.IEntity;
