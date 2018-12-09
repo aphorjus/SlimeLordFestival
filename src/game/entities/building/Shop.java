@@ -2,12 +2,14 @@ package game.entities.building;
 
 import game.client.Button;
 import game.client.GameClient;
+import game.entities.slimelord.SlimeLord;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class Shop{
     Graphics g = null;
@@ -18,6 +20,7 @@ public class Shop{
     Button buyStriker = null;
     Button buyLancer = null;
     Button buyAdvancedStriker = null;
+    SlimeLord currentSlimeLord = null;
     String currentMessage = "Welcome to my shop Slime Lord!";
     public static final String LOBBYBOARD = "game/client/resource/LobbyBoard.png";
     public static final String BUYIMAGE = "game/client/resource/BuyButton.png";
@@ -41,36 +44,52 @@ public class Shop{
         buyAdvancedStriker = new Button(626, 190, buyImage);
     }
 
+    public void setCurrentSlimeLord(SlimeLord nsl){
+        currentSlimeLord = nsl;
+    }
+
     public void checkClick(int x, int y) {
 
         if(buyStriker.checkClick(x,y) == true){
             //If you can buy it
-
-            if(true){
-                currentMessage = "Nice purchase!";
-                buyStriker.setCurrentImage(soldImage);
-            } else if(false){ //If you cant afford it
-                currentMessage = "Sorry, but it looks like you can't afford that!";
-            } else{ //you already own it
+            if(Arrays.asList(currentSlimeLord.specialSlimes).contains("striker") == false){
+                if(currentG.getTokens() >= 100){
+                    currentG.setTokens(currentG.getTokens() - 100);
+                    currentMessage = "Nice purchase!";
+                    buyStriker.setCurrentImage(soldImage);
+                    currentSlimeLord.specialSlimes.add("striker");
+                }else{
+                    currentMessage = "Sorry, but it looks like you can't afford that!";
+                }
+            } else{ //If you already own it
                 currentMessage = "You already own that my dude!";
             }
         }else if(buyLancer.checkClick(x,y) == true){
             //If you can buy it
-            if(true){
-                currentMessage = "Nice purchase!";
-                buyLancer.setCurrentImage(soldImage);
-            } else if(false){ //If you cant afford it
-                currentMessage = "Sorry, but it looks like you can't afford that!";
-            } else{ //you already own it
+            if(Arrays.asList(currentSlimeLord.specialSlimes).contains("lancer") == false){
+                if(currentG.getTokens() >= 100){
+                    currentG.setTokens(currentG.getTokens() - 100);
+                    currentMessage = "Nice purchase!";
+                    buyStriker.setCurrentImage(soldImage);
+                    currentSlimeLord.specialSlimes.add("lancer");
+                }else{
+                    currentMessage = "Sorry, but it looks like you can't afford that!";
+                }
+            } else{ //If you already own it
                 currentMessage = "You already own that my dude!";
             }
-        }else if (buyAdvancedStriker.checkClick(x,y) == true){
-            if(true){
-                currentMessage = "Nice purchase!";
-                buyAdvancedStriker.setCurrentImage(soldImage);
-            } else if(false){ //If you cant afford it
-                currentMessage = "Sorry, but it looks like you can't afford that!";
-            } else{ //you already own it
+        }else if(buyAdvancedStriker.checkClick(x,y) == true){
+            //If you can buy it
+            if(Arrays.asList(currentSlimeLord.specialSlimes).contains("advancedLancer") == false){
+                if(currentG.getTokens() >= 100){
+                    currentG.setTokens(currentG.getTokens() - 100);
+                    currentMessage = "Nice purchase!";
+                    buyStriker.setCurrentImage(soldImage);
+                    currentSlimeLord.specialSlimes.add("advancedLancer");
+                }else{
+                    currentMessage = "Sorry, but it looks like you can't afford that!";
+                }
+            } else{ //If you already own it
                 currentMessage = "You already own that my dude!";
             }
         }
