@@ -156,7 +156,10 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
             data.put("name", name);
             data.put("totalMovement", totalMovement);
             data.put("remainingMovement", remainingMovement);
-            /*
+            System.out.println(abilities.size());
+            System.out.println(factories.size());
+
+
             if (abilities.size() > 0) {
                 JSONArray jsonAbilities = new JSONArray();
 
@@ -171,12 +174,13 @@ public class SlimeLord extends Entity implements IEntity, GameApiListener {
                 JSONArray jsonFactories = new JSONArray();
 
                 for (SlimeFactory factory : factories) {
+                    System.out.println(factory.toJson());
                     jsonFactories.put(factory.toJson());
                 }
 
-                data.put("factories", factories);
+                data.put("factories", jsonFactories);
             }
-            */
+
             System.out.println("json created.");
         } catch (Exception ex) {
             ex.printStackTrace();
