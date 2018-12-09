@@ -8,12 +8,17 @@ import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
 import game.entities.slimelord.SlimeLord;
+import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class OverworldState extends BasicGameState implements GameApiListener {
+    String GREEN_IDLE = "game/client/resource/yellow-slimelord.png";
+    String BLUE_IDLE = "game/client/resource/blue-slimelord.png";
+    String YELLOW_IDLE = "game/client/resource/yellow-slimelord.png";
+    String RED_IDLE = "game/client/resource/red-slimelord.png";
     InputManager inputManager;
     TextField textField;
     GameApi gameApi;
@@ -30,7 +35,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
-
+        ResourceManager.loadImage(GREEN_IDLE);
+        ResourceManager.loadImage(BLUE_IDLE);
+        ResourceManager.loadImage(YELLOW_IDLE);
+        ResourceManager.loadImage(RED_IDLE);
         gameApi = new GameApi((GameClient)sbg, this);
         GameClient bg = (GameClient)sbg;
         Board board = bg.getBoard();

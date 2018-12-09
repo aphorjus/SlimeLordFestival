@@ -11,15 +11,12 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import jig.ResourceManager;
-import game.DijkstraGrid;
-import game.client.GameClient;
-import game.client.Tile;
 
 public class Board {
     public static final String OVERWORLD_RSC = "game/client/resource/overworld.png";
     public static final String TILE_RSC = "game/client/resource/tile.png";
     public static final String BLUE_SLIMELORD_RSC = "game/client/resource/blue-slimelord.png";
-    public static final String GREEN_SLIMELORD_RSC = "game/client/resource/green-slimelord.png";
+    public static final String GREEN_SLIMELORD_RSC = "game/client/resource/yellow-slimelord.png";
     public static final String ORANGE_SLIMELORD_RSC = "game/client/resource/orange-slimelord.png";
     public static final String RED_SLIMELORD_RSC = "game/client/resource/red-slimelord.png";
     public static final String TOKENTENT_RSC = "game/client/resource/tokentent.png";    // unconquered
@@ -47,7 +44,7 @@ public class Board {
     SlimeLord slimeLordTwo;
     SlimeLord slimeLordThree;
     SlimeLord slimeLordFour;
-    SlimeLord currentSlimelord;
+    public SlimeLord currentSlimelord;
 
 
     public Board() {
@@ -468,9 +465,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
-            //  gameApi.deleteEntity(currentSlimelord.clientID);
+            gameApi.deleteEntity(currentSlimelord.clientID);
             currentSlimelord.moveLeft();
-            //  gameApi.createEntity(currentSlimelord);
+            gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
@@ -493,9 +490,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
-            //  gameApi.deleteEntity(currentSlimelord.clientID);
+            gameApi.deleteEntity(currentSlimelord.clientID);
             currentSlimelord.moveRight();
-            //  gameApi.createEntity(currentSlimelord);
+            gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
@@ -517,9 +514,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
-            //  gameApi.deleteEntity(currentSlimelord.clientID);
+            gameApi.deleteEntity(currentSlimelord.clientID);
             currentSlimelord.moveUp();
-            //  gameApi.createEntity(currentSlimelord);
+            gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
