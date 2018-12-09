@@ -57,7 +57,6 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         this.factories.add(new SlimeFactory(this.clientID));    // Austin, what is this?
         this.factories.add(new SlimeFactory(this.clientID));
 
-
         this.initializeAnimations();
 //        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
 //        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));
