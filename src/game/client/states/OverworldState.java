@@ -7,17 +7,28 @@ import game.api.GameApiListener;
 import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
+import game.entities.building.Shop;
 import game.entities.slimelord.SlimeLord;
+import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class OverworldState extends BasicGameState implements GameApiListener {
+    String GREEN_IDLE = "game/client/resource/slime-lord-green.png";
+    String BLUE_IDLE = "game/client/resource/slime-lord-blue.png";
+    String YELLOW_IDLE = "game/client/resource/slime-lord-yellow.png";
+    String RED_IDLE = "game/client/resource/slime-lord-red.png";
+
     InputManager inputManager;
     TextField textField;
     GameApi gameApi;
     GameClient gameClient;
+    Shop currentShop = null;
+    boolean inShop = false;
+
+    private Board board;
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) {
@@ -28,9 +39,16 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
-
+        ResourceManager.loadImage(GREEN_IDLE);
+        ResourceManager.loadImage(BLUE_IDLE);
+        ResourceManager.loadImage(YELLOW_IDLE);
+        ResourceManager.loadImage(RED_IDLE);
         gameApi = new GameApi((GameClient)sbg, this);
-
+        GameClient bg = (GameClient)sbg;
+        currentShop = new Shop(bg);
+        Board board = bg.getBoard();
+        board.setUp(gameApi, gameClient);
+        this.board = board;
     }
 
     @Override
@@ -40,7 +58,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         Input input = gc.getInput();
         GameClient bg = (GameClient)sbg;
         Board board = bg.getBoard();
-        board.setUp(gameClient);
+        // board.setUp(gameApi, gameClient);
+        board.updateSlimelord();
         if (input.isKeyDown(Input.KEY_LEFT)){
             board.moveLeft();
         }
@@ -69,6 +88,17 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         if (input.isKeyDown(Input.KEY_B)) {
             bg.enterState(GameClient.BATTLE_STATE);
         }
+        if (input.isKeyDown(Input.KEY_X)) {
+            SlimeLord testSlimeLord = new SlimeLord(0);
+            currentShop.setCurrentSlimeLord(testSlimeLord);
+            inShop = true;
+        }
+
+        if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
+            if(inShop == true){
+                currentShop.checkClick(input.getMouseX(), input.getMouseY());
+            }
+        }
 
         gameApi.update();
     }
@@ -78,6 +108,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         GameClient bg = (GameClient)sbg;
         Board board = bg.getBoard();
         board.render(gc, sbg, g);
+
+        if(inShop == true){
+            currentShop.render(g);
+        }
     }
 
     @Override
@@ -89,9 +123,14 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     public void onAlterPlayerState(Player player) {}
 
-    public void onCreateEntity(IEntity entity) {}
+    public void onCreateEntity(IEntity entity) {
+        System.out.println("entity created.");
+        // System.out.println(entity.getEntityType());
+    }
 
-    public void onDeleteEntity(int entityId) {}
+    public void onDeleteEntity(int entityId) {
+        System.out.println("entity deleted.");
+    }
 
     public void onMessage(int senderId, String message) {
         System.out.println(senderId);
@@ -102,7 +141,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     public void onSetStateToOverworld() {}
 
-    public void onEndTurn() {}
+    public void onEndTurn() {
+        System.out.println("end turn detected.");
+        board.endTurn();
+    }
 
     public void onLobbyClientListUpdate(String[] clientNames) {}
     public void onLobbyIsFull() {}

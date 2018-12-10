@@ -3,21 +3,20 @@ package game.client;
 import javax.swing.JOptionPane;
 
 
+import game.api.GameApi;
 import game.entities.slimelord.SlimeLord;
+import jig.Vector;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import jig.ResourceManager;
-import game.DijkstraGrid;
-import game.client.GameClient;
-import game.client.Tile;
 
 public class Board {
     public static final String OVERWORLD_RSC = "game/client/resource/overworld.png";
     public static final String TILE_RSC = "game/client/resource/tile.png";
     public static final String BLUE_SLIMELORD_RSC = "game/client/resource/blue-slimelord.png";
-    public static final String GREEN_SLIMELORD_RSC = "game/client/resource/green-slimelord.png";
+    public static final String GREEN_SLIMELORD_RSC = "game/client/resource/yellow-slimelord.png";
     public static final String ORANGE_SLIMELORD_RSC = "game/client/resource/orange-slimelord.png";
     public static final String RED_SLIMELORD_RSC = "game/client/resource/red-slimelord.png";
     public static final String TOKENTENT_RSC = "game/client/resource/tokentent.png";    // unconquered
@@ -39,30 +38,58 @@ public class Board {
     private int slimeID = 0;
     private Turn turn;
     GameClient gameClient;
-
+    GameApi gameApi;
 
     SlimeLord slimeLordOne;
     SlimeLord slimeLordTwo;
     SlimeLord slimeLordThree;
     SlimeLord slimeLordFour;
-    SlimeLord currentSlimelord;
+    public SlimeLord currentSlimelord;
 
 
     public Board() {
 
         tiles = new Tile[NUMROWS][NUMCOLS];
-        turn = new Turn();
+        // turn = new Turn(0);
     }
-    public void setUp(GameClient gameClient) {
+
+    public void setUp(GameApi gameApi, GameClient gameClient) {
+        this.gameApi = gameApi;
         this.gameClient = gameClient;
         this.slimeLordOne = new SlimeLord(0);
         this.slimeLordTwo = new SlimeLord(1);
         this.slimeLordThree = new SlimeLord(2);
         this.slimeLordFour = new SlimeLord(3);
-        updateSlimelord();
+        gameApi.createEntity(slimeLordOne);
+        gameApi.createEntity(slimeLordTwo);
+        gameApi.createEntity(slimeLordThree);
+        gameApi.createEntity(slimeLordFour);
 
+        turn = new Turn(gameApi, gameClient.myId);
+
+        slimeLordOne.setPosition(new Vector(5*16,10*16));       //  blue
+        slimeLordTwo.setPosition(new Vector(76*16,4*16));       // green
+        slimeLordThree.setPosition(new Vector(81*16,39*16));    // orange
+        slimeLordFour.setPosition(new Vector(5*16,39*16));      // red
+
+        updateSlimelord();
+        switch(gameClient.myId) {
+            case 0:
+                place("", 10,5);
+                break;
+            case 1:
+                place("", 4,76);
+                break;
+            case 2:
+                place("", 39,81);
+                break;
+            case 3:
+                place("", 39,5);
+                break;
+        }
     }
-    private void updateSlimelord() {
+
+    public void updateSlimelord() {
         switch(gameClient.myId){
             case 0: currentSlimelord = slimeLordOne;
                 break;
@@ -97,9 +124,12 @@ public class Board {
         }
         slimeLordOne.setOffsets(xoffset, yoffset);
         slimeLordOne.render(g);
-        //slimeLordTwo.render(g);
-       // slimeLordThree.render(g);
-        //slimeLordFour.render(g);
+        slimeLordTwo.setOffsets(xoffset, yoffset);
+        slimeLordTwo.render(g);
+        slimeLordThree.setOffsets(xoffset, yoffset);
+        slimeLordThree.render(g);
+        slimeLordFour.setOffsets(xoffset, yoffset);
+        slimeLordFour.render(g);
     }
 
     // setting up tiles
@@ -250,19 +280,19 @@ public class Board {
         place("T:0", 22, 57);           // tent
         // place("T:0", 11, 54);                          // shop
 
-        place("2", 4, 76);  // green
+       // place("2", 4, 76);  // green
         //slimeLordTwo.setX(current.getX());
         //slimeLordTwo.setY(current.getY());
 
-        place("3", 39, 81);  // orange
+        //place("3", 39, 81);  // orange
        // slimeLordThree.setX(current.getX());
        // slimeLordThree.setY(current.getY());
 
-        place("4", 39, 5);  // red
+       // place("4", 39, 5);  // red
        // slimeLordFour.setX(current.getX());
        // slimeLordFour.setY(current.getY());
 
-        place("1", 10, 5);  // blue
+        //place("1", 10, 5);  // blue
        // slimeLordOne.setX(current.getX());
        // slimeLordOne.setY(current.getY());
     }
@@ -400,10 +430,14 @@ public class Board {
     }
 
     public boolean isMyTurn() {
-        if(slimeID == turn.getCurrentPlayer()){
+        if(turn.isMyMove()){
             return turn.makeMove();
         }
         return false;
+    }
+
+    public void endTurn(){
+        turn.turnHasEnded();
     }
 
     // move function called by the network
@@ -431,8 +465,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
-            currentSlimelord.setX(current.getX());
-            currentSlimelord.setY(current.getY());
+            gameApi.deleteEntity(currentSlimelord.clientID);
+            currentSlimelord.moveLeft();
+            gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
@@ -455,8 +490,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
-            currentSlimelord.setX(current.getX());
-            currentSlimelord.setY(current.getY());
+            gameApi.deleteEntity(currentSlimelord.clientID);
+            currentSlimelord.moveRight();
+            gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
@@ -466,7 +502,6 @@ public class Board {
         if(!acceptKeyboard) {
             return false;
         }
-        // System.out.println(current.getRow() + " " + current.getCol());
         acceptKeyboard = false;
         if(current.getUp() != null) {
             if(!isMyTurn()){
@@ -479,8 +514,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
-            currentSlimelord.setX(current.getX());
-            currentSlimelord.setY(current.getY());
+            gameApi.deleteEntity(currentSlimelord.clientID);
+            currentSlimelord.moveUp();
+            gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
@@ -496,7 +532,6 @@ public class Board {
             if(!isMyTurn()){
                 return false;
             }
-            System.out.println(current.getRow() + " " + current.getCol());
             current.setContents("");
             current = current.getDown();
             if(isTent()) {
@@ -504,7 +539,9 @@ public class Board {
             } else {
                 current.setContents("" + slimeID);
             }
-            currentSlimelord.setPosition(current.getX(), current.getY());
+            gameApi.deleteEntity(gameClient.myId);
+            currentSlimelord.moveDown();
+            gameApi.createEntity(currentSlimelord);
             return true;
         }
         return false;
@@ -575,46 +612,5 @@ public class Board {
             acceptKeyboard = true;
         }
     }
-
-    /*
-    // Dijkstras
-    public void generatePaths() {
-        // int size = NUMROWS * NUMCOLS;
-        int[][]weights = new int[NUMROWS][NUMCOLS];    // weights
-        for(int row = 0; row < NUMROWS; row++){
-            for(int col = 0; col < NUMCOLS; col++){
-                int n = NUMCOLS * row + col;
-                int up = row - 1;
-                int down = row + 1;
-                int left = col - 1;
-                int right = col + 1;
-                int n_up = NUMCOLS * up + col;
-                int n_down = NUMCOLS * down + col;
-                int n_left = NUMCOLS * row + left;
-                int n_right = NUMCOLS * row + right;
-                if(tiles[row][col] == null){
-
-                // defining the weight between two connected tiles
-                // where there is a path, and the weight is 1.
-                } else if(up >= 0 && tiles[up][col] != null){
-                    weights [up][col] = 1;
-                    // weights [n_up][n] = 1;
-                } else if(down < NUMROWS && tiles[down][col] != null){
-                    weights [down][col] = 1;
-                    // weights [n_down][n] = 1;
-                }  else if(left >= 0 && tiles[row][left] != null){
-                    weights [row][left] = 1;
-                    // weights [n_left][n] = 1;
-                } else if(right < NUMCOLS && tiles[row][right] != null){
-                    weights [row][right] = 1;
-                    // weights [n_right][n] = 1;
-                }
-            }
-        }
-        DijkstraGrid grid = new DijkstraGrid(weights);
-        grid.printDistanceGrid();
-    }
-    */
-
 }
 

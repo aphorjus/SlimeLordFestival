@@ -29,7 +29,7 @@ public class GameClient extends StateBasedGame {
     String name;
     int width;
     int height;
-    int tokens;
+    int tokens = 300;
     LinkedList<SlimeLord> slimeLords;
     public Player[] players;
 
@@ -69,12 +69,7 @@ public class GameClient extends StateBasedGame {
 
         Entity.setCoarseGrainedCollisionBoundary(Entity.AABB);
         board = new Board();
-
-        loadResources();
-        //connectToServer(HOST_NAME, PORT_NUMBER);
     }
-
-    void loadResources() {}
 
     public void connectToServer(String hostName, int port) {
         try {
@@ -88,7 +83,15 @@ public class GameClient extends StateBasedGame {
         }
     }
 
-    void exit() {
+    public int getTokens(){
+        return this.tokens;
+    }
+
+    public void setTokens(int tokens) {
+        this.tokens = tokens;
+    }
+
+    public void exit() {
         try {
             input.close();
         } catch (Exception e) {
