@@ -6,6 +6,7 @@ import game.entities.IEntity;
 import game.entities.slime.Slime;
 import game.api.GameApi;
 import game.entities.slimefactory.SlimeFactory;
+import game.entities.slimelord.BattleAbility;
 import jig.Entity;
 import jig.Vector;
 import org.lwjgl.Sys;
@@ -13,6 +14,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class BattleGrid {
 
@@ -20,6 +22,8 @@ public class BattleGrid {
     public static final int ATTACK_MODE = 2;
     public static final int ABILITY_MODE = 3;
     public int mode = MOVMENT_MODE;
+
+    public BattleAbility ability = new BattleAbility();
 
     public int gridHeight;
     public int gridWidth;
@@ -42,6 +46,7 @@ public class BattleGrid {
 
     public BattleGridTile[][] tileGrid;
     private BattleGridTile currentlySelectedTile;
+//    private BattleAbility  currentlySelectedAblity = new BattleAbility();
 
     private Color shaded = new Color(0,0,0,50);
     private Color highlight = new Color(0,0,0,75);
@@ -70,6 +75,7 @@ public class BattleGrid {
 
     public void setGameApi(GameApi gameApi) {
         this.gameApi = gameApi;
+//        this.ability = new BattleAbility(gameApi);
     }
 
     public void setMode(int mode){
@@ -82,20 +88,27 @@ public class BattleGrid {
         }
     }
 
+    public void enterAblityMode(String abilityType){
+
+        ability.selectAbility( abilityType );
+        setMode(ABILITY_MODE);
+
+    }
+
     public void switchMode(){
 
-        if(mode == ABILITY_MODE){
-            mode = MOVMENT_MODE;
-        }
-        else{
-            mode += 1;
-        }
-//        if(mode == MOVMENT_MODE){
-//            mode = ATTACK_MODE;
-//        }
-//        else if(mode == ATTACK_MODE){
+//        if(mode == ABILITY_MODE){
 //            mode = MOVMENT_MODE;
 //        }
+//        else{
+//            mode += 1;
+//        }
+        if(mode == MOVMENT_MODE){
+            mode = ATTACK_MODE;
+        }
+        else {
+            mode = MOVMENT_MODE;
+        }
         deselectTile();
     }
 
@@ -222,10 +235,8 @@ public class BattleGrid {
 
     public void replaceOccupent(BattleGridTile newTile){
 
-//        newTile.setPosition( tileGrid[ newTile.getxIndex() ][ newTile.getyIndex() ].getPosition() );
         BattleGridTile tileInGrid = getTile( newTile.getxIndex(), newTile.getyIndex() );
         tileInGrid.replaceOccupent(newTile.getOccupent());
-
     }
 
     public void setTile( int x, int y, BattleGridTile tile ){
@@ -240,12 +251,16 @@ public class BattleGrid {
     public void selectTile(Vector position){
 
         BattleGridTile tile = getTile(position);
+
         if(tile != null) {
 
             int x = getTileX( tile );
             int y = getTileY( tile );
 
             if( !tileSelected() ){
+                if(mode == ABILITY_MODE){
+                    abilitySelect(x, y);
+                }
                 selectTile(x,y);
             }
             else {
@@ -298,13 +313,8 @@ public class BattleGrid {
                 effectedTile = getTile( pattern.get(i).x, pattern.get(i).y );
 
                 if( effectedTile != null && effectedTile.hasOccupent() ){
-                    defender = effectedTile.getOccupent();
-                    defender.takeDamage(attackingSlime.damage);
-
-                    if( !defender.isAlive() ){
-                        effectedTile.removeOccupent();
-                        gameApi.createEntity(effectedTile);
-                    }
+                    effectedTile.damageOccupent(attackingSlime.damage);
+                    gameApi.createEntity(effectedTile);
                 }
             }
             attackingSlime.onAttack();
@@ -312,17 +322,27 @@ public class BattleGrid {
         }
     }
 
+    public void abilitySelect( int x, int y ){
+
+        if(ability.getEffectType() == BattleAbility.MASS_EFFECT) {
+            LinkedList<BattleEntity> effected = getEntityList();
+//            ability.activateAbility( getEntityList() );
+        }
+        else if(ability.getEffectType() == BattleAbility.TARGETED_EFFECT){
+            ArrayList<IntVector> pattern = ability.getAttackPattern(x, y);
+            LinkedList<BattleEntity> effected = new LinkedList<>();
+
+            for( int i = 0; i < pattern.size(); i++){
+                BattleGridTile effectedTile = getTile( pattern.get(i).x, pattern.get(i).y );
+                ability.activateAbility(effectedTile);
+                gameApi.createEntity(effectedTile);
+            }
+        }
+    }
+
     public BattleGridTile getSelectedTile(){
         return currentlySelectedTile;
     }
-
-//    public void activateTile(Vector position){
-//        BattleGridTile tile = getTile(position);
-//
-//        if( currentlySelectedTile != null && !currentlySelectedTile.hasOccupent() ){
-//            selectTile(x,y);
-//        }
-//    }
 
     private Slime getSelectedOccupent(){
         if( tileSelected() ){
@@ -406,14 +426,14 @@ public class BattleGrid {
         gameApi.createEntity(newTileB);
     }
 
-    public ArrayList<IEntity> getEntityList(){
-        ArrayList<IEntity> entityList = new ArrayList<>();
+    public LinkedList<BattleEntity> getEntityList(){
+        LinkedList<BattleEntity> entityList = new LinkedList<>();
 
         for(int i = 0; i < gridWidth; i++){
             for(int j = 0; j < gridHeight; j++){
                 BattleGridTile tile = tileGrid[i][j];
                 if(tile.hasOccupent()){
-                    entityList.add( (IEntity) tile.getOccupent() );
+                    entityList.add( tile.getOccupent() );
                 }
             }
         }
@@ -436,23 +456,33 @@ public class BattleGrid {
         int x = getTileX(position);
         int y = getTileY(position);
 
-        if (!inRange(x,y)){
+        if ( !inRange(x,y) ){
             highlightTile(position, g);
             return;
         }
-
         ArrayList<IntVector> pattern = getSelectedOccupent().getAttackPattern(x,y);
+        highlightPattern(pattern, g);
+    }
 
+    public void highlightAbilityPattern( Vector position, Graphics g ){
+
+        int x = getTileX(position);
+        int y = getTileY(position);
+
+        ArrayList<IntVector> pattern = ability.getAttackPattern(x,y);
+        highlightPattern(pattern, g);
+    }
+
+    public void highlightPattern(ArrayList<IntVector> pattern, Graphics g){
         for( int i = 0; i < pattern.size(); i++ ){
-            x = pattern.get(i).x;
-            y = pattern.get(i).y;
+            int x = pattern.get(i).x;
+            int y = pattern.get(i).y;
 
             BattleGridTile tile = getTile(x,y);
             if(tile != null){
                 highlightTile(tile.getPosition(), g);
             }
         }
-
     }
 
     public void mouseoverHighlight( Vector position, Graphics g ){
@@ -460,9 +490,18 @@ public class BattleGrid {
         if( this.tileSelected() && mode == ATTACK_MODE){
             highlightAttackPattern(position, g);
         }
+        else if(this.mode == ABILITY_MODE){
+            if (ability.getEffectType() == BattleAbility.TARGETED_EFFECT){
+                highlightAbilityPattern(position, g);
+            }
+        }
         else{
             highlightTile(position, g);
         }
+
+    }
+
+    public void onNextTurn(){
 
     }
 

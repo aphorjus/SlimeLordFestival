@@ -21,7 +21,6 @@ public class BattleGridTile extends Entity implements IEntity {
 
     public BattleGridTile(Vector position, int x, int y){
         super(position);
-//        this.position = position;
         this.xIndex = x;
         this.yIndex = y;
         this.occupent = null;
@@ -123,6 +122,13 @@ public class BattleGridTile extends Entity implements IEntity {
     public void replaceOccupent( BattleEntity newOccupent ){
         this.removeOccupent();
         this.addOccupent( newOccupent );
+    }
+
+    public void damageOccupent(int amount) {
+        this.getOccupent().takeDamage(amount);
+        if (!this.getOccupent().isAlive()) {
+            this.removeOccupent();
+        }
     }
 
     public boolean hasOccupent(){

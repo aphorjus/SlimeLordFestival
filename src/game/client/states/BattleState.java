@@ -1,5 +1,6 @@
 package game.client.states;
 
+import game.Battles.BattleEntity;
 import game.IGameState;
 import game.api.GameApi;
 import game.api.GameApiListener;
@@ -20,6 +21,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class BattleState extends BasicGameState implements GameApiListener {
     InputManager inputManager;
@@ -123,20 +125,23 @@ public class BattleState extends BasicGameState implements GameApiListener {
     }
 
     public void endTurn(){
-        ArrayList<IEntity> entitys = battleGrid.getEntityList();
+        LinkedList<BattleEntity> entitys = battleGrid.getEntityList();
 
         for( int i = 0; i < entitys.size(); i++ ){
 
             if( entitys.get(i) instanceof Slime && ((Slime) entitys.get(i)).clientID == activePlayer){
-                ((Slime) entitys.get(i)).onNextTurn();
+                entitys.get(i).onNextTurn();
             }
             if( entitys.get(i) instanceof SlimeFactory && ((SlimeFactory) entitys.get(i)).clientID != activePlayer){
                 BattleGridTile tile = ((SlimeFactory) entitys.get(i)).spawnSlime();
                 if( tile != null ) {
-                    gameApi.createEntity((IEntity) tile);
+                    gameApi.createEntity(tile);
                 }
             }
         }
+
+        battleGrid.ability.onEndTurn();
+
         if (activePlayer == playerOne){
             activePlayer = playerTwo;
         }
@@ -176,6 +181,9 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
         if (input.isKeyPressed(Input.KEY_S)){
             battleGrid.switchMode();
+        }
+        if (input.isKeyPressed(Input.KEY_A)){
+            battleGrid.enterAblityMode("damage");
         }
         gameApi.update();
     }
@@ -221,12 +229,26 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
     public void onCreateEntity(IEntity entity) {
 
-        BattleGridTile tile = (BattleGridTile) entity;
-
-        battleGrid.replaceOccupent(tile);
+        if(entity instanceof BattleGridTile) {
+            BattleGridTile tile = (BattleGridTile) entity;
+            battleGrid.replaceOccupent(tile);
+        }
+        else if (entity instanceof BattleEntity){
+            battleGrid.getTile(((Slime) entity).getPosition()).setOccupent((BattleEntity) entity);
+        }
     }
 
-    public void onDeleteEntity(int entityId) {}
+    public void onDeleteEntity(int entityId) {
+
+        LinkedList<BattleEntity> entities = battleGrid.getEntityList();
+
+        for(int i = 0; i < entities.size(); i++){
+//            if( ((IEntity)entities.get(i)).id.equals(entityId) ){
+//
+//            }
+        }
+
+    }
 
     public void onMessage(int senderId, String message) {}
 

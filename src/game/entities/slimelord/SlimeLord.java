@@ -19,6 +19,7 @@ public class SlimeLord extends Entity implements IEntity {
     String name;
     int totalMovement;
     int remainingMovement;
+    LinkedList<BattleAbility> battleAbilities;
     LinkedList<SlimeLordAbility> abilities;
     public LinkedList<SlimeFactory> factories;
     public LinkedList<String> specialSlimes;

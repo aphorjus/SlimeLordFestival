@@ -7,9 +7,7 @@ public class SlimeLordAbility implements IEntity {
 
     public int type;
 
-    public SlimeLordAbility(){
-        
-    }
+    public SlimeLordAbility(){ }
 
     public SlimeLordAbility(JSONObject data) {}
 
