@@ -49,7 +49,7 @@ public class BattleAbility extends SlimeLordAbility {
 
         effectType = TARGETED_EFFECT;
         attackPattern.set(AttackPattern.MORTAR, false);
-        ablityDamage = 50;aaa
+        ablityDamage = 50;
         used = false;
     }
 
