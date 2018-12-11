@@ -40,4 +40,30 @@ public class SplashAnimation extends Entity {
         Animation a = new Animation(splashSheet, 100);
         addAnimation(a);
     }
+
+    public SplashAnimation(Vector pos, int clientID) {
+        super(pos.getX(), pos.getY());
+
+        String splashColor = BLUE_RSC;
+        switch (clientID) {
+            case 1:
+                splashColor = BLUE_RSC;
+                break;
+            case 2:
+                splashColor = GREEN_RSC;
+                break;
+            case 3:
+                splashColor = YELLOW_RSC;
+                break;
+            case 4:
+                splashColor = RED_RSC;
+                break;
+        }
+
+        Image splashImage = ResourceManager.getImage(splashColor);
+        splashImage.setFilter(Image.FILTER_NEAREST);
+        SpriteSheet splashSheet = new SpriteSheet(splashImage, 32, 32);
+        Animation a = new Animation(splashSheet, 100);
+        addAnimation(a);
+    }
 }

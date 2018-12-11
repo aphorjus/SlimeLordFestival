@@ -194,6 +194,7 @@ public class BattleAbility extends SlimeLordAbility {
 
             if( effectsThis( effectedTile ) ){
                 effectedTile.damageOccupent(ablityDamage);
+                used = true;
             }
         }
     }
@@ -207,6 +208,7 @@ public class BattleAbility extends SlimeLordAbility {
                 Slime summon = new Slime(1, currentPlayerId);
                 summon.upgradeTo(summonType);
                 effectedTile.addOccupent(summon);
+                used = true;
             }
         }
     }
@@ -226,7 +228,12 @@ public class BattleAbility extends SlimeLordAbility {
     public void onEndTurn(int activePlayer){
 
         currentPlayerId = activePlayer;
+        attackPattern.set(AttackPattern.SINGLE_TARGET, false);
         selected = false;
         used = false;
+    }
+
+    public int getCurrentPlayerId() {
+        return currentPlayerId;
     }
 }

@@ -62,6 +62,11 @@ public class BattleGridTile extends Entity implements IEntity {
 //        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
     }
 
+    public void addSplash(int clientID){
+        splash = new SplashAnimation(this.getPosition(), clientID);
+        splashRemainingTime = maxSplashTime;
+    }
+
     public void update(int delta) {
         if (splash == null) return;
 
