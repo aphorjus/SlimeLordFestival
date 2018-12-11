@@ -196,6 +196,7 @@ public class BattleAbility extends SlimeLordAbility {
                 effectedTile.damageOccupent(ablityDamage);
                 used = true;
             }
+            effectedTile.addSplash(currentPlayerId);
         }
     }
 
@@ -208,6 +209,7 @@ public class BattleAbility extends SlimeLordAbility {
                 Slime summon = new Slime(1, currentPlayerId);
                 summon.upgradeTo(summonType);
                 effectedTile.addOccupent(summon);
+                effectedTile.addSplash(currentPlayerId);
                 used = true;
             }
         }

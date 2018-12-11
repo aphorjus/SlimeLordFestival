@@ -342,7 +342,7 @@ public class BattleGrid {
 
                 if(effectedTile != null) {
                     effectedTiles.add(effectedTile);
-                    effectedTile.addSplash(ability.getCurrentPlayerId());
+//                    effectedTile.addSplash(ability.getCurrentPlayerId());
                 }
             }
             ability.activateAbility(effectedTiles);
