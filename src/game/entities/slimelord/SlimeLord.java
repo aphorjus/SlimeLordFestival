@@ -36,15 +36,14 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     public LinkedList<SlimeFactory> factories;
     public LinkedList<String> specialSlimes;
 
-    private float xoffset = 0;
-    private float yoffset = 0;
+
+    public Vector cameraOffset = new Vector(0, 0);
     public float xpos;
     public float ypos;
     private Turn turn;
     String color = "blue";
 
     public SlimeLord(int clientID){
-       // System.out.println("slimelord created" + clientID);
         this.clientID = clientID;
         this.id = UUID.randomUUID().toString();
         this.totalMovement = 10;
@@ -55,10 +54,6 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         this.factories.add(new SlimeFactory(this.clientID));
 
         this.initializeAnimations();
-//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
-//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));
-//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));
-//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));
     }
 
     void initializeAnimations() {
@@ -120,9 +115,17 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         }
     }
 
-    public void setOffsets(float xoffset, float yoffset) {
-        this.xoffset = xoffset;
-        this.yoffset = yoffset;
+
+    public void setCameraOffset(Vector offset) {
+        cameraOffset = offset;
+    }
+
+    public void positionForCamera() {
+        translate(-cameraOffset.getX(), -cameraOffset.getY());
+    }
+
+    public void positionToOrigin() {
+        translate(cameraOffset.getX(), cameraOffset.getY());
     }
 
     public void setPosition(float x, float y) {
