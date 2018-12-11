@@ -45,6 +45,23 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
 
     public SlimeLord(int clientID){
         this.clientID = clientID;
+
+        switch (clientID) {
+            case 0:
+                this.color = "blue";
+                break;
+            case 1:
+                this.color = "green";
+                break;
+            case 2:
+                this.color = "red";
+                break;
+            case 3:
+                this.color = "yellow";
+                break;
+        }
+        System.out.println(this.color);
+
         this.id = UUID.randomUUID().toString();
         this.totalMovement = 10;
         this.remainingMovement = totalMovement;
