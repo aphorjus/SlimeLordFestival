@@ -4,6 +4,8 @@ import javax.swing.JOptionPane;
 
 
 import game.api.GameApi;
+import game.entities.IEntity;
+import game.entities.slime.Slime;
 import game.entities.slimelord.SlimeLord;
 import jig.Vector;
 import org.newdawn.slick.GameContainer;
@@ -11,6 +13,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import jig.ResourceManager;
+
+import java.util.LinkedList;
 
 public class Board {
     public static final String OVERWORLD_RSC = "game/client/resource/overworld.png";
@@ -46,6 +50,8 @@ public class Board {
     SlimeLord slimeLordThree;
     SlimeLord slimeLordFour;
 
+    LinkedList<SlimeLord> slimeLords = new LinkedList<>();
+
     public SlimeLord currentSlimelord;
 
 
@@ -74,6 +80,11 @@ public class Board {
         slimeLordThree.setPosition(new Vector(81*16,39*16));    // orange
         slimeLordFour.setPosition(new Vector(5*16,39*16));      // red
 
+        slimeLords.add(slimeLordOne);
+        slimeLords.add(slimeLordTwo);
+        slimeLords.add(slimeLordThree);
+        slimeLords.add(slimeLordFour);
+
         updateSlimelord();
         switch(gameClient.myId) {
             case 0:
@@ -89,6 +100,22 @@ public class Board {
                 place("", 39,5);
                 break;
         }
+    }
+
+    public void onCreateEntity(IEntity entity) {
+        switch (entity.getEntityType()) {
+            case "slime_lord":
+                onCreateSlimeLord((SlimeLord) entity);
+                break;
+        }
+    }
+
+    public void onDeleteEntity(int entityId) {
+        System.out.println("entity deleted.");
+    }
+
+    void onCreateSlimeLord(SlimeLord slimeLord) {
+        move(slimeLord.clientID, slimeLord.xpos, slimeLord.ypos);
     }
 
     public void updateSlimelord() {
@@ -116,6 +143,7 @@ public class Board {
         float y21 = y2 + yoffset;
 
         g.drawImage(ResourceManager.getImage(OVERWORLD_RSC), x1, y1, x2, y2, x11, y11, x21, y21);
+
         for(int row = 0; row < NUMROWS; row++) {
             for(int col = 0; col < NUMCOLS; col++) {
                 if(tiles[row][col] != null) {
@@ -124,14 +152,13 @@ public class Board {
                 }
             }
         }
-        slimeLordOne.setOffsets(xoffset, yoffset);
-        slimeLordOne.render(g);
-        slimeLordTwo.setOffsets(xoffset, yoffset);
-        slimeLordTwo.render(g);
-        slimeLordThree.setOffsets(xoffset, yoffset);
-        slimeLordThree.render(g);
-        slimeLordFour.setOffsets(xoffset, yoffset);
-        slimeLordFour.render(g);
+
+        for (SlimeLord slimeLord : slimeLords) {
+            slimeLord.setCameraOffset(new Vector(xoffset, yoffset));
+            slimeLord.positionForCamera();
+            slimeLord.render(g);
+            slimeLord.positionToOrigin();
+        }
     }
 
     // setting up tiles
