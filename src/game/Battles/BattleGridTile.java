@@ -152,6 +152,9 @@ public class BattleGridTile extends Entity implements IEntity {
     }
 
     public void damageOccupent(int amount) {
+        if(!hasOccupent()){
+            return;
+        }
         this.getOccupent().takeDamage(amount);
         if (!this.getOccupent().isAlive()) {
             this.removeOccupent();
