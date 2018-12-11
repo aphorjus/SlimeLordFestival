@@ -2,12 +2,14 @@ package game.Battles;
 
 import game.DijkstraGrid;
 import game.IntVector;
+import game.client.GameClient;
 import game.entities.IEntity;
 import game.entities.slime.Slime;
 import game.api.GameApi;
 import game.entities.slimefactory.SlimeFactory;
 import game.entities.slimelord.BattleAbility;
 import jig.Entity;
+import jig.ResourceManager;
 import jig.Vector;
 import org.lwjgl.Sys;
 import org.newdawn.slick.Color;
@@ -17,6 +19,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class BattleGrid {
+
+    String BACKGROUND_RSC = "game/client/resource/battle-background.png";
 
     public static final int MOVMENT_MODE = 1;
     public static final int ATTACK_MODE = 2;
@@ -546,6 +550,14 @@ public class BattleGrid {
     }
 
     public void render(Graphics g){
+        g.drawImage(ResourceManager.getImage(BACKGROUND_RSC),
+                0,
+                0,
+                GameClient.ScreenWidth,
+                GameClient.ScreenHeight,
+                0,
+                0);
+
         for(int i = 0; i < this.gridWidth; i++){
             for( int j = 0; j < this.gridHeight; j++){
                 BattleGridTile tile = this.tileGrid[i][j];
