@@ -39,16 +39,18 @@ public class Board {
     private Turn turn;
     GameClient gameClient;
     GameApi gameApi;
+    Pathfinding pathfinding;
 
     SlimeLord slimeLordOne;
     SlimeLord slimeLordTwo;
     SlimeLord slimeLordThree;
     SlimeLord slimeLordFour;
+
     public SlimeLord currentSlimelord;
 
 
     public Board() {
-
+        pathfinding = new Pathfinding();
         tiles = new Tile[NUMROWS][NUMCOLS];
         // turn = new Turn(0);
     }
@@ -60,10 +62,10 @@ public class Board {
         this.slimeLordTwo = new SlimeLord(1);
         this.slimeLordThree = new SlimeLord(2);
         this.slimeLordFour = new SlimeLord(3);
-        gameApi.createEntity(slimeLordOne);
-        gameApi.createEntity(slimeLordTwo);
-        gameApi.createEntity(slimeLordThree);
-        gameApi.createEntity(slimeLordFour);
+        //gameApi.createEntity(slimeLordOne);
+        //gameApi.createEntity(slimeLordTwo);
+        //gameApi.createEntity(slimeLordThree);
+        //gameApi.createEntity(slimeLordFour);
 
         turn = new Turn(gameApi, gameClient.myId);
 
@@ -440,6 +442,22 @@ public class Board {
         turn.turnHasEnded();
     }
 
+    public void move(int id, float xpos, float ypos) {
+        System.out.println(gameClient.myId + " " + id + " " + xpos + " " + ypos);
+        if(gameClient.myId != id && id == 0){
+            slimeLordOne.moveTo(xpos, ypos);
+        }
+        if(gameClient.myId != id && id == 1){
+            slimeLordTwo.moveTo(xpos, ypos);
+        }
+        if(gameClient.myId != id && id == 2){
+            slimeLordThree.moveTo(xpos, ypos);
+        }
+        if(gameClient.myId != id && id == 3){
+            slimeLordFour.moveTo(xpos, ypos);
+        }
+    }
+
     // move function called by the network
     public boolean move(int id, int row, int col) {
         if(tiles[row][col] != null) {
@@ -542,6 +560,7 @@ public class Board {
             gameApi.deleteEntity(gameClient.myId);
             currentSlimelord.moveDown();
             gameApi.createEntity(currentSlimelord);
+            pathfinding.showAllPaths(tiles, current);
             return true;
         }
         return false;

@@ -29,7 +29,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     String entityType = "slime_lord";
     public int clientID;
     public String id;
-    String name;
+    String name = "";
     int totalMovement;
     int remainingMovement;
     LinkedList<SlimeLordAbility> abilities;
@@ -38,8 +38,8 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
 
     private float xoffset = 0;
     private float yoffset = 0;
-    private float xpos;
-    private float ypos;
+    public float xpos;
+    public float ypos;
     private Turn turn;
     String color = "blue";
 
@@ -51,7 +51,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         this.remainingMovement = totalMovement;
         this.abilities = new LinkedList<>();
         this.factories = new LinkedList<>();
-        this.factories.add(new SlimeFactory(this.clientID));    // Austin, what is this?
+        this.factories.add(new SlimeFactory(this.clientID));
         this.factories.add(new SlimeFactory(this.clientID));
 
         this.initializeAnimations();
@@ -86,6 +86,10 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         putAnimation("idle", new Animation(idleSheet, 99999), new Vector(8, 0));
         putAnimation("victory", new Animation(idleSheet, 250), new Vector(8, 0));
         playAnimation("idle");
+    }
+
+    public void moveTo(float x, float y) {
+        this.translate(x - this.getX(),y - this.getY());
     }
 
     public boolean makeMove() {
@@ -137,6 +141,8 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         name = data.getString("name");
         totalMovement = data.getInt("totalMovement");
         remainingMovement = data.getInt("remainingMovement");
+        xpos = data.getFloat("Xposition");
+        ypos = data.getFloat("Yposition");
 
         if (data.has("abilities")) {
             JSONArray jsonAbilities = data.getJSONArray("abilities");
@@ -167,7 +173,8 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
             data.put("name", name);
             data.put("totalMovement", totalMovement);
             data.put("remainingMovement", remainingMovement);
-
+            data.put("Xposition", this.getX());
+            data.put("Yposition", this.getY());
             if (abilities.size() > 0) {
                 JSONArray jsonAbilities = new JSONArray();
 

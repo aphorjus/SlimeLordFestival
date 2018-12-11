@@ -11,12 +11,13 @@ public class Tile extends Entity {
     private int row;
     private int col;
     private String contents;
-    private Tile left;
-    private Tile right;
-    private Tile up;
-    private Tile down;
+    public Tile left;
+    public Tile right;
+    public Tile up;
+    public Tile down;
     private float xoffset = 0;
     private float yoffset = 0;
+    public boolean visited;
 
     public Tile(final String contents, final int row, final int col) {
         super((float) col*16, (float) row*16);
