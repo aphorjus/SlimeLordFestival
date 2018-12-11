@@ -56,7 +56,7 @@ public class BattleGridTile extends Entity implements IEntity {
         }
 
         if (jsonTile.has("playSplashAnimation")) {
-            splash = new SplashAnimation(getPosition(), "blue");
+            splash = new SplashAnimation(getPosition(), jsonTile.getString("playSplashAnimation"));
             splashRemainingTime = maxSplashTime;
         }
 
