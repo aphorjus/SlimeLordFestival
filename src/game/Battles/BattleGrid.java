@@ -274,11 +274,11 @@ public class BattleGrid {
                 }
                 else if( playerOne != entities.get(i).getClientID() ){
                     playerOne = entities.get(i).getClientID();
-                }
+                }e
             }
         }
         setWinner(playerOne);
-
+        background.cheer();
     }
 
     public void selectTile(Vector position){
@@ -312,7 +312,7 @@ public class BattleGrid {
             }
         }
         if( attackOccured ){
-
+            checkSetWinner();
         }
     }
 

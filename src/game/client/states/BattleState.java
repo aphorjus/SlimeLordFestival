@@ -35,6 +35,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
     int playerOne;
     int playerTwo;
     int activePlayer;
+    int winner;
 
 
 
@@ -86,6 +87,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void enter(GameContainer gc, StateBasedGame sbg) {
         this.gameApi = new GameApi(gameClient, this);
         this.battleGrid.setGameApi(gameApi);
+        this.winner = -1;
 //        System.out.println(gameClient.myId);
         //TEIMP
 
@@ -209,6 +211,13 @@ public class BattleState extends BasicGameState implements GameApiListener {
         }
         battleGrid.update(delta);
         gameApi.update();
+
+        if( battleGrid.getWinner() != winner ){
+            winner = battleGrid.getWinner();
+            // DO SOMETHING?!?
+            // Enter overworld and tell it who won somehow
+            //
+        }
     }
 
     public void displayCoolDown(Graphics g, BattleGridTile tile){
