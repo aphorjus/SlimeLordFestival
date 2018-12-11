@@ -16,10 +16,11 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class OverworldState extends BasicGameState implements GameApiListener {
-    String GREEN_IDLE = "game/client/resource/yellow-slimelord.png";
-    String BLUE_IDLE = "game/client/resource/blue-slimelord.png";
-    String YELLOW_IDLE = "game/client/resource/yellow-slimelord.png";
-    String RED_IDLE = "game/client/resource/red-slimelord.png";
+    String GREEN_IDLE = "game/client/resource/slime-lord-green.png";
+    String BLUE_IDLE = "game/client/resource/slime-lord-blue.png";
+    String YELLOW_IDLE = "game/client/resource/slime-lord-yellow.png";
+    String RED_IDLE = "game/client/resource/slime-lord-red.png";
+
     InputManager inputManager;
     TextField textField;
     GameApi gameApi;
