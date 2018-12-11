@@ -115,7 +115,20 @@ public class Board {
     }
 
     void onCreateSlimeLord(SlimeLord slimeLord) {
-        move(slimeLord.clientID, slimeLord.xpos, slimeLord.ypos);
+        boolean slimeLordAlreadyExists = false;
+
+        for (SlimeLord s : slimeLords) {
+            if (s.id.equals(slimeLord.id)) {
+                slimeLordAlreadyExists = true;
+            }
+        }
+
+        if (slimeLordAlreadyExists) {
+            move(slimeLord.clientID, slimeLord.xpos, slimeLord.ypos);
+        } else {
+            slimeLords.add(slimeLord);
+        }
+
     }
 
     public void updateSlimelord() {
