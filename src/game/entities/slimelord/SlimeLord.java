@@ -33,7 +33,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     int totalMovement;
     int remainingMovement;
     LinkedList<BattleAbility> battleAbilities;
-    LinkedList<SlimeLordAbility> abilities;
+    LinkedList<String> abilities;
     public LinkedList<SlimeFactory> factories;
     public LinkedList<String> specialSlimes;
 
@@ -143,7 +143,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
             JSONArray jsonAbilities = data.getJSONArray("abilities");
 
             for (int i = 0; i < jsonAbilities.length(); i++) {
-                abilities.add(new SlimeLordAbility(jsonAbilities.getJSONObject(i)));
+                abilities.add(jsonAbilities.getString(i));
             }
         }
 
@@ -172,8 +172,8 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
             if (abilities.size() > 0) {
                 JSONArray jsonAbilities = new JSONArray();
 
-                for (SlimeLordAbility ability : abilities) {
-                    jsonAbilities.put(ability.toJson());
+                for (String ability : abilities) {
+                    jsonAbilities.put(ability);
                 }
 
                 data.put("abilities", jsonAbilities);
@@ -189,5 +189,16 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
                 data.put("factories", jsonFactories);
             }
         return data;
+    }
+
+    public void addAbility(String ability){
+        abilities.add(ability);
+    }
+
+    public String getAbility(int i){
+        if( abilities.size() > i ) {
+            return abilities.get(i);
+        }
+        return "NONE";
     }
 }

@@ -92,12 +92,12 @@ public class BattleState extends BasicGameState implements GameApiListener {
         this.slimeLordOne = new SlimeLord(0);
         this.slimeLordTwo = new SlimeLord(1);
 
-//        this.slimeLordOne.battleAbilites.add("summonBasicSlime");
-//        this.slimeLordOne.battleAbilites.add("slimeBall");
-//        this.slimeLordOne.battleAbilites.add("damage");
-//
-//        this.slimeLordTwo.battleAbilites.add("slimeStrike");
-//        this.slimeLordTwo.battleAbilites.add("summonLancer");
+        this.slimeLordOne.addAbility("summonBasicSlime");
+        this.slimeLordOne.addAbility("slimeBall");
+        this.slimeLordOne.addAbility("damage");
+
+        this.slimeLordTwo.addAbility("slimeStrike");
+        this.slimeLordTwo.addAbility("summonLancer");
 
         spawnInFactories();
 
@@ -198,15 +198,15 @@ public class BattleState extends BasicGameState implements GameApiListener {
         if (input.isKeyPressed(Input.KEY_S)){
             battleGrid.switchMode();
         }
-//        if ( input.isKeyPressed(Input.KEY_1) ){// && isMyTurn()){
-//            battleGrid.enterAblityMode(activeSlimeLord.battleAbilites.get(0));
-//        }
-//        if ( input.isKeyPressed(Input.KEY_2) ){// && isMyTurn()){
-//            battleGrid.enterAblityMode(activeSlimeLord.battleAbilites.get(1));
-//        }
-//        if ( input.isKeyPressed(Input.KEY_3) ){// && isMyTurn()){
-//            battleGrid.enterAblityMode(activeSlimeLord.battleAbilites.get(2));
-//        }
+        if ( input.isKeyPressed(Input.KEY_1) ){// && isMyTurn()){
+            battleGrid.enterAblityMode(activeSlimeLord.getAbility(0));
+        }
+        if ( input.isKeyPressed(Input.KEY_2) ){// && isMyTurn()){
+            battleGrid.enterAblityMode(activeSlimeLord.getAbility(1));
+        }
+        if ( input.isKeyPressed(Input.KEY_3) ){// && isMyTurn()){
+            battleGrid.enterAblityMode(activeSlimeLord.getAbility(2));
+        }
         gameApi.update();
     }
 
