@@ -443,7 +443,7 @@ public class Board {
     }
 
     public void move(int id, float xpos, float ypos) {
-        System.out.println(gameClient.myId + " " + id + " " + xpos + " " + ypos);
+        // System.out.println(gameClient.myId + " " + id + " " + xpos + " " + ypos);
         if(gameClient.myId != id && id == 0){
             slimeLordOne.moveTo(xpos, ypos);
         }

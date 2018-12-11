@@ -23,8 +23,6 @@ public class GameApi {
     public static String SetGameStateOverworld = "setOverworld";
     public static String SetGameStateBattle = "setBattle";
     public static String EndTurn = "endTurn";
-    //public static String Move = "move";
-
 
     public static String LobbyClientListUpdate = "lobbyClientListUpdate";
     public static String LobbyIsFull = "lobbyIsFull";

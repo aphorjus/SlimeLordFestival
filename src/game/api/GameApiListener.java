@@ -16,8 +16,6 @@ public interface GameApiListener {
     void onEndTurn();
     void onConnectionConfirmation(int myId);
 
-    //void move(int direction);
-
     void onLobbyClientListUpdate(String[] clientNames);
     void onLobbyIsFull();
 }
