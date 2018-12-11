@@ -27,6 +27,8 @@ public class BattleGrid {
     public static final int ABILITY_MODE = 3;
     public int mode = MOVMENT_MODE;
 
+    private int winner = -1;
+
     public BattleAbility ability = new BattleAbility();
 
     public int gridHeight;
@@ -252,9 +254,37 @@ public class BattleGrid {
         return this.currentlySelectedTile != null;
     }
 
+    public int getWinner() {
+        return winner;
+    }
+
+    private void setWinner(int winner) {
+        this.winner = winner;
+    }
+
+    public void checkSetWinner(){
+
+        LinkedList<BattleEntity> entities = getEntityList();
+        int playerOne = -1;
+
+        for( int i = 0; i < entities.size(); i++ ){
+            if(entities.get(i) instanceof  SlimeFactory){
+                if( playerOne != -1 && playerOne != entities.get(i).getClientID() ){
+                    return;
+                }
+                else if( playerOne != entities.get(i).getClientID() ){
+                    playerOne = entities.get(i).getClientID();
+                }
+            }
+        }
+        setWinner(playerOne);
+
+    }
+
     public void selectTile(Vector position){
 
         BattleGridTile tile = getTile(position);
+        boolean attackOccured = false;
 
         if(tile != null) {
 
@@ -264,9 +294,11 @@ public class BattleGrid {
             if( !tileSelected() ){
                 if(mode == ABILITY_MODE){
                     abilitySelect(x, y);
-                    return;
+                    attackOccured = true;
                 }
-                selectTile(x,y);
+                else {
+                    selectTile(x, y);
+                }
             }
             else {
                 if (currentlySelectedTile == tile) {
@@ -275,8 +307,12 @@ public class BattleGrid {
                     moveSelect(x,y);
                 } else if (mode == ATTACK_MODE) {
                     attackSelect(x,y);
+                    attackOccured = true;
                 }
             }
+        }
+        if( attackOccured ){
+
         }
     }
 
