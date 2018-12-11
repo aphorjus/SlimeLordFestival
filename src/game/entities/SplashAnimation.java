@@ -46,16 +46,16 @@ public class SplashAnimation extends Entity {
 
         String splashColor = BLUE_RSC;
         switch (clientID) {
-            case 1:
+            case 0:
                 splashColor = BLUE_RSC;
                 break;
-            case 2:
+            case 1:
                 splashColor = GREEN_RSC;
                 break;
-            case 3:
+            case 2:
                 splashColor = YELLOW_RSC;
                 break;
-            case 4:
+            case 3:
                 splashColor = RED_RSC;
                 break;
         }
