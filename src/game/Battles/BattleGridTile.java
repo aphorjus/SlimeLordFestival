@@ -21,7 +21,7 @@ public class BattleGridTile extends Entity implements IEntity {
     private int yIndex;
     private boolean shaded;
     SplashAnimation splash;
-    int maxSplashTime = 1000;
+    int maxSplashTime = 1050;
     int splashRemainingTime = 0;
 
     public BattleGridTile(Vector position, int x, int y){

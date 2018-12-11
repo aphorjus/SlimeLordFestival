@@ -7,8 +7,6 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
-import java.awt.*;
-
 public class SplashAnimation extends Entity {
     String GREEN_RSC = "game/client/resource/green-splash.png";
     String BLUE_RSC = "game/client/resource/blue-splash.png";

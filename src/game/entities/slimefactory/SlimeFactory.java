@@ -8,12 +8,21 @@ import game.entities.IEntity;
 import game.entities.slime.Slime;
 import jig.Entity;
 import jig.ResourceManager;
+import jig.Vector;
 import org.json.JSONObject;
+import org.newdawn.slick.Animation;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SpriteSheet;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class SlimeFactory extends Entity implements IEntity, BattleEntity {
+    String GREEN_RSC = "game/client/resource/slime-factory-green.png";
+    String RED_RSC = "game/client/resource/slime-factory-red.png";
+    String YELLOW_RSC = "game/client/resource/slime-factory-yellow.png";
+    String BLUE_RSC = "game/client/resource/slime-factory-blue.png";
+
     String entityType = "Factory";
     public int clientID;
     String id;
@@ -34,7 +43,7 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
         this.maxHP = 50;
         this.currentHP = maxHP;
 
-        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
+        initializeAnimation();
     }
 
     public SlimeFactory(JSONObject data) {
@@ -44,7 +53,30 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
         maxHP = data.getInt("maxHP");
         currentHP = data.getInt("currentHP");
 
-        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
+        initializeAnimation();
+    }
+
+    void initializeAnimation() {
+        String color = BLUE_RSC;
+        switch (clientID) {
+            case 0:
+                color = BLUE_RSC;
+                break;
+            case 1:
+                color = GREEN_RSC;
+                break;
+            case 2:
+                color = YELLOW_RSC;
+                break;
+            case 3:
+                color = RED_RSC;
+                break;
+        }
+
+        Image image = ResourceManager.getImage(color);
+        image.setFilter(Image.FILTER_NEAREST);
+        SpriteSheet sheet = new SpriteSheet(image, 32, 32);
+        addAnimation(new Animation(sheet, 200), new Vector(0, -4));
     }
 
     public JSONObject toJson() {
