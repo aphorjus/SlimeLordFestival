@@ -486,7 +486,7 @@ public class BattleGrid {
                             tileSize, tileSize);
                     g.setColor(c);
                 }
-                tile.renderOccupent(g);
+                tile.render(g);
 
             }
         }
