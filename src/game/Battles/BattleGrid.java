@@ -315,7 +315,7 @@ public class BattleGrid {
 
                 if(effectedTile != null) {
                     effectedTile.damageOccupent(attackingSlime.damage);
-//                    effectedTile.addSplash(attackingSlime.getClientID());
+                    effectedTile.addSplash(attackingSlime.getClientID());
                     gameApi.createEntity(effectedTile);
                 }
             }
@@ -338,7 +338,7 @@ public class BattleGrid {
 
                 if(effectedTile != null) {
                     effectedTiles.add(effectedTile);
-//                    effectedTile.addSplash(ability.getCurrentPlayerId());
+                    effectedTile.addSplash(ability.getCurrentPlayerId());
                 }
             }
             ability.activateAbility(effectedTiles);
