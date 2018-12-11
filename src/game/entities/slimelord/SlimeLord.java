@@ -20,10 +20,10 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 public class SlimeLord extends AnimatedEntity implements IEntity {
-    String GREEN_IDLE = "game/client/resource/yellow-slimelord.png";
-    String BLUE_IDLE = "game/client/resource/blue-slimelord.png";
-    String YELLOW_IDLE = "game/client/resource/yellow-slimelord.png";
-    String RED_IDLE = "game/client/resource/red-slimelord.png";
+    String GREEN_IDLE = "game/client/resource/slime-lord-green.png";
+    String BLUE_IDLE = "game/client/resource/slime-lord-blue.png";
+    String YELLOW_IDLE = "game/client/resource/slime-lord-yellow.png";
+    String RED_IDLE = "game/client/resource/slime-lord-red.png";
 
 
     String entityType = "slime_lord";
