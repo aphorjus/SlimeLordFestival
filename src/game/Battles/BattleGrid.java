@@ -20,7 +20,6 @@ import java.util.LinkedList;
 
 public class BattleGrid {
 
-    String BACKGROUND_RSC = "game/client/resource/battle-background.png";
 
     public static final int MOVMENT_MODE = 1;
     public static final int ATTACK_MODE = 2;
@@ -54,6 +53,7 @@ public class BattleGrid {
 
     private Color shaded = new Color(0,0,0,50);
     private Color highlight = new Color(0,0,0,75);
+    AnimatedBattleBackground background = new AnimatedBattleBackground();
 
     public BattleGrid(final int screenHeight, final int screenWidth,
                       int yBuffer, GameApi gameApi, final int[][] map){
@@ -522,6 +522,7 @@ public class BattleGrid {
         else if(this.mode == ABILITY_MODE){
             if (ability.getTargetingType() == BattleAbility.TARGETED_EFFECT && !ability.used()){
                 highlightAbilityPattern(position, g);
+//                background.cheer();
             }
         }
         else{
@@ -550,13 +551,7 @@ public class BattleGrid {
     }
 
     public void render(Graphics g){
-        g.drawImage(ResourceManager.getImage(BACKGROUND_RSC),
-                0,
-                0,
-                GameClient.ScreenWidth,
-                GameClient.ScreenHeight,
-                0,
-                0);
+        background.render(g);
 
         for(int i = 0; i < this.gridWidth; i++){
             for( int j = 0; j < this.gridHeight; j++){
