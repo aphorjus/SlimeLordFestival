@@ -58,6 +58,12 @@ public class AttackPattern {
             { new IntVector(0,0), new IntVector(-1, 1), new IntVector(-2, 2), new IntVector(-2, 0), new IntVector(-2,-2), new IntVector(-1,-1) }
     };
 
+    public static IntVector[][] SQUARE = {
+            { new IntVector(-1,-1), new IntVector(0,-1), new IntVector(1,-1),
+              new IntVector(-1, 0), new IntVector(0, 0), new IntVector(1, 0),
+              new IntVector(-1, 1), new IntVector(0, 1), new IntVector(1, 1)}
+    };
+
 
     public AttackPattern( IntVector[][] attackPattern, boolean isDirectional ){
         this.attackPattern = attackPattern;

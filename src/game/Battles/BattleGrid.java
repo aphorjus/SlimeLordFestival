@@ -260,6 +260,7 @@ public class BattleGrid {
             if( !tileSelected() ){
                 if(mode == ABILITY_MODE){
                     abilitySelect(x, y);
+                    return;
                 }
                 selectTile(x,y);
             }
@@ -312,7 +313,7 @@ public class BattleGrid {
             for( int i = 0; i < pattern.size(); i++ ){
                 effectedTile = getTile( pattern.get(i).x, pattern.get(i).y );
 
-                if( effectedTile != null && effectedTile.hasOccupent() ){
+                if(effectedTile != null) {
                     effectedTile.damageOccupent(attackingSlime.damage);
                     gameApi.createEntity(effectedTile);
                 }
@@ -324,18 +325,24 @@ public class BattleGrid {
 
     public void abilitySelect( int x, int y ){
 
-        if(ability.getEffectType() == BattleAbility.MASS_EFFECT) {
-            LinkedList<BattleEntity> effected = getEntityList();
-//            ability.activateAbility( getEntityList() );
+        if(ability.getTargetingType() == BattleAbility.MASS_EFFECT) {
+            ArrayList<BattleGridTile> effectedTiles = getOccupiedTiles();
         }
-        else if(ability.getEffectType() == BattleAbility.TARGETED_EFFECT){
+        else if(ability.getTargetingType() == BattleAbility.TARGETED_EFFECT){
             ArrayList<IntVector> pattern = ability.getAttackPattern(x, y);
-            LinkedList<BattleEntity> effected = new LinkedList<>();
+            ArrayList<BattleGridTile> effectedTiles = new ArrayList<>();
 
             for( int i = 0; i < pattern.size(); i++){
                 BattleGridTile effectedTile = getTile( pattern.get(i).x, pattern.get(i).y );
-                ability.activateAbility(effectedTile);
-                gameApi.createEntity(effectedTile);
+
+                if(effectedTile != null) {
+                    effectedTiles.add(effectedTile);
+                }
+            }
+            ability.activateAbility(effectedTiles);
+
+            for( int i = 0; i < effectedTiles.size(); i++){
+                gameApi.createEntity(effectedTiles.get(i));
             }
         }
     }
@@ -440,6 +447,22 @@ public class BattleGrid {
         return entityList;
     }
 
+    public ArrayList<BattleGridTile> getOccupiedTiles(){
+
+        ArrayList<BattleGridTile> tileList = new ArrayList<>();
+
+        for(int i = 0; i < gridWidth; i++){
+            for(int j = 0; j < gridHeight; j++){
+                BattleGridTile tile = tileGrid[i][j];
+                if(tile.hasOccupent()){
+                    tileList.add( tile );
+                }
+            }
+        }
+        return tileList;
+
+    }
+
     public void highlightTile(Vector position, Graphics g){
         BattleGridTile tile = getTile(position);
         Color c = g.getColor();
@@ -491,7 +514,7 @@ public class BattleGrid {
             highlightAttackPattern(position, g);
         }
         else if(this.mode == ABILITY_MODE){
-            if (ability.getEffectType() == BattleAbility.TARGETED_EFFECT){
+            if (ability.getTargetingType() == BattleAbility.TARGETED_EFFECT && !ability.used()){
                 highlightAbilityPattern(position, g);
             }
         }

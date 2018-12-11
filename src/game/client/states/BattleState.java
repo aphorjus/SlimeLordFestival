@@ -30,10 +30,12 @@ public class BattleState extends BasicGameState implements GameApiListener {
     GameClient gameClient;
     SlimeLord slimeLordOne;
     SlimeLord slimeLordTwo;
+    SlimeLord activeSlimeLord;
 
     int playerOne;
     int playerTwo;
     int activePlayer;
+
 
 
     public static int[][] PLAIN_MAP =
@@ -89,11 +91,20 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
         this.slimeLordOne = new SlimeLord(0);
         this.slimeLordTwo = new SlimeLord(1);
+
+//        this.slimeLordOne.battleAbilites.add("summonBasicSlime");
+//        this.slimeLordOne.battleAbilites.add("slimeBall");
+//        this.slimeLordOne.battleAbilites.add("damage");
+//
+//        this.slimeLordTwo.battleAbilites.add("slimeStrike");
+//        this.slimeLordTwo.battleAbilites.add("summonLancer");
+
         spawnInFactories();
 
         playerOne = slimeLordOne.clientID;
         playerTwo = slimeLordTwo.clientID;
         activePlayer = playerOne;
+        activeSlimeLord = slimeLordOne;
 
         //END TEMP
 
@@ -139,16 +150,17 @@ public class BattleState extends BasicGameState implements GameApiListener {
                 }
             }
         }
-
-        battleGrid.ability.onEndTurn();
-
         if (activePlayer == playerOne){
             activePlayer = playerTwo;
+            activeSlimeLord = slimeLordTwo;
         }
         else{
             activePlayer = playerOne;
+            activeSlimeLord = slimeLordOne;
         }
         System.out.println("activePlay: " + activePlayer);
+        battleGrid.ability.onEndTurn(activePlayer);
+        battleGrid.setMode(BattleGrid.MOVMENT_MODE);
     }
 
 
@@ -186,9 +198,15 @@ public class BattleState extends BasicGameState implements GameApiListener {
         if (input.isKeyPressed(Input.KEY_S)){
             battleGrid.switchMode();
         }
-        if (input.isKeyPressed(Input.KEY_A)){
-            battleGrid.enterAblityMode("damage");
-        }
+//        if ( input.isKeyPressed(Input.KEY_1) ){// && isMyTurn()){
+//            battleGrid.enterAblityMode(activeSlimeLord.battleAbilites.get(0));
+//        }
+//        if ( input.isKeyPressed(Input.KEY_2) ){// && isMyTurn()){
+//            battleGrid.enterAblityMode(activeSlimeLord.battleAbilites.get(1));
+//        }
+//        if ( input.isKeyPressed(Input.KEY_3) ){// && isMyTurn()){
+//            battleGrid.enterAblityMode(activeSlimeLord.battleAbilites.get(2));
+//        }
         gameApi.update();
     }
 
@@ -216,7 +234,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
         if(this.battleGrid.getTile(mousePosition) != null){
             this.battleGrid.mouseoverHighlight(mousePosition, g);
-            if(this.battleGrid.getTile(mousePosition).hasOccupent()) {
+            if( this.battleGrid.getTile(mousePosition).hasOccupent() ) {
                 displayCoolDown(g, this.battleGrid.getTile(mousePosition));
             }
         }

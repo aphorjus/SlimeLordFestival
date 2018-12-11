@@ -67,22 +67,24 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
 
     private AttackPattern attackPattern = new AttackPattern();
 
-    String color = "red";
+    String color;
 
     public Slime(int size, int id){
 
-        this.initializeAnimations();
+//        setRec();
+//        this.initializeAnimations();
         this.clientID = id;
         this.id = UUID.randomUUID().toString();
 
         this.size = size;
 
-        this.makeAdvancedStriker();
-//        this.makeBasic();
+//        this.makeAdvancedStriker();
+        this.makeBasic();
+//        this.makeLancer();
+//        this.upgradeTo("lancer");
         this.currentHP = maxHP;
-        this.initializeAnimations();
-
         setRec();
+        this.initializeAnimations();
     }
 
     public Slime(JSONObject jsonSlime){
@@ -167,16 +169,21 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
     }
 
     private void setRec(){
-//        switch(clientID) {
-//            case 0: this.addImage(ResourceManager.getImage(Board.SLIME1_RSC)); break;
-//            case 1: this.addImage(ResourceManager.getImage(Board.SLIME2_RSC)); break;
-//            case 2: this.addImage(ResourceManager.getImage(Board.SLIME3_RSC)); break;
-//            case 3: this.addImage(ResourceManager.getImage(Board.SLIME4_RSC)); break;
-//        }
+        switch(clientID) {
+            case 0: this.color = "blue"; break;
+            case 1: this.color = "green"; break;
+            case 2: this.color = "red"; break;
+            case 3: this.color = "yellow"; break;
+        }
     }
 
     public void setMyType(String myType) {
         this.myType = myType;
+    }
+
+    @Override
+    public int getClientID() {
+        return clientID;
     }
 
     public void makeBasic(){
@@ -189,7 +196,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         this.damage = 4+3*size;
         this.setAttackRange(0, 1.5);
 
-        attackPattern.set(AttackPattern.SINGLE_TARGET, false);
+        this.attackPattern.set(AttackPattern.SINGLE_TARGET, false);
 
     }
 
@@ -202,7 +209,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         this.damage = 20;
         this.setAttackRange(6, 10.5);
 
-        attackPattern.set(AttackPattern.MORTAR, false);
+        this.attackPattern.set(AttackPattern.MORTAR, false);
     }
 
     public void makeStriker(){
@@ -214,7 +221,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         this.damage = 6;
         this.setAttackRange(0,1);
 
-        attackPattern.set(AttackPattern.SHOTGUN, true);
+        this.attackPattern.set(AttackPattern.SHOTGUN, true);
     }
 
     public void makeAdvancedStriker(){
@@ -275,7 +282,6 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
             availableUpgrades.add("basic");
             return availableUpgrades;
         }
-
         if ( size >= 2 ){
             availableUpgrades.add("Striker");
             availableUpgrades.add("lancer");

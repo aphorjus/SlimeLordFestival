@@ -7,6 +7,8 @@ import game.IntVector;
 import game.api.GameApi;
 import game.entities.IEntity;
 import game.entities.slime.Slime;
+import game.entities.slimefactory.SlimeFactory;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -19,12 +21,26 @@ public class BattleAbility extends SlimeLordAbility {
     private boolean selected;
     private boolean used;
 
-    private int ablityDamage;
-    private int effectType;
-    public String currentlySelectedAbility;
+    private int currentPlayerId;
 
     public static int TARGETED_EFFECT = 1;
     public static int MASS_EFFECT = 2;
+
+    // Variables to be set for "damage" effectType
+    private int ablityDamage;
+    private boolean effectsFriendlies;
+    private boolean effectsEnEnemies;
+    private boolean effectsFactories;
+    //
+
+    // Variables to be set for "summon" effectType
+    private String summonType;
+    //
+
+    // Variables to be set for both
+    private int targetingType;
+    private String effectType;
+
 
     public BattleAbility(GameApi gameApi){
         this.gameApi = gameApi;
@@ -34,51 +50,169 @@ public class BattleAbility extends SlimeLordAbility {
         return;
     }
 
+    public boolean used(){
+        return used;
+    }
+
+    public boolean selected(){
+        return selected;
+    }
+
+    //                                                       //
+    //                 ABILITY SELECTION                     //
+    //   This is where an abilities attributes are defined   //
+
     public void selectAbility(String ability){
 
        switch(ability){
-           case "damage": selectDamage("damage"); break;
+           case "damage":           selectDamage();             break;
+           case "slimeStrike":      selectSlimeStrike();        break;
+           case "slimeBall":        selectSlimeBall();          break;
+           case "massHeal":         selectMassHeal();
+           case "summonBasicSlime": selectSummonBasicSlime();   break;
+           case "summonLancer":     selectSummonLancer();       break;
            default: System.err.println("No battle ability "+ability);
        }
        selected = true;
     }
 
-    private void selectDamage(String name){
+    private void selectDamage(){
 
-        currentlySelectedAbility = name;
+        effectType = "damage";
 
-        effectType = TARGETED_EFFECT;
+        targetingType = TARGETED_EFFECT;
         attackPattern.set(AttackPattern.MORTAR, false);
-        ablityDamage = 50;
-        used = false;
+
+        effectsEnEnemies = true;
+        effectsFriendlies = true;
+        effectsFactories = true;
+
+        ablityDamage = 500;
     }
 
-    public void activateAbility( BattleGridTile effected ){
+    private void selectSlimeStrike(){
+
+        effectType = "damage";
+
+        targetingType = TARGETED_EFFECT;
+        attackPattern.set(AttackPattern.SINGLE_TARGET, false);
+
+        effectsEnEnemies = true;
+        effectsFriendlies = false;
+        effectsFactories = false;
+
+        ablityDamage = 25;
+    }
+
+    private void selectSlimeBall(){
+
+        effectType = "damage";
+
+        targetingType = TARGETED_EFFECT;
+        attackPattern.set(AttackPattern.SQUARE, false);
+
+        effectsEnEnemies = true;
+        effectsFriendlies = true;
+        effectsFactories = false;
+
+        ablityDamage = 10;
+    }
+
+    private void selectMassHeal(){
+
+        effectType = "damage";
+
+        targetingType = MASS_EFFECT;
+
+        effectsEnEnemies = false;
+        effectsFriendlies = true;
+        effectsFactories = true;
+
+        ablityDamage = -15;
+    }
+
+    private void selectSummonBasicSlime(){
+
+        effectType = "summon";
+
+        targetingType = TARGETED_EFFECT;
+        attackPattern.set(AttackPattern.LINE, false);
+        summonType = "basic";
+    }
+
+    private void selectSummonLancer(){
+
+        effectType = "summon";
+
+        targetingType = TARGETED_EFFECT;
+        attackPattern.set(AttackPattern.SINGLE_TARGET, false);
+        summonType = "advancedLancer";
+    }
+
+
+    //                      //
+    //  ABILITY ACTIVATION  //
+    //                      //
+
+    public void activateAbility( ArrayList<BattleGridTile> effected ){
         if( selected && !used ){
-            switch(currentlySelectedAbility){
-                case "damage": activateDamage(effected); return;
+            switch(effectType){
+                case "damage": activateDamage(effected); break;
+                case "summon": activateSummon(effected); break;
             }
         }
-        used = true;
+
     }
 
-    private void activateDamage( BattleGridTile effectedTile ) {
+    private boolean effectsThis( BattleGridTile tile ){
 
-        BattleEntity effected = effectedTile.getOccupent();
+        BattleEntity entity = tile.getOccupent();
 
-        if (effected instanceof Slime) {
-            effectedTile.damageOccupent(ablityDamage);
+        if( entity == null){
+            return false;
         }
-        else if (effected == null){
-            System.err.println("No Target");
+        if(entity instanceof SlimeFactory && !effectsFactories){
+            System.err.println("this ability dose noe effect factories");
+            return false;
         }
-        else{
-            System.err.println("This ablilty dose not effect factories");
+        if( entity.getClientID() == currentPlayerId && !effectsFriendlies){
+            System.err.println("this ability dose noe effect friendlies");
+            return false;
+        }
+        else if( entity.getClientID() != currentPlayerId && !effectsEnEnemies){
+            System.err.println("this ability dose noe effect enemies");
+            return false;
+        }
+        return true;
+
+    }
+
+    private void activateDamage( ArrayList<BattleGridTile> effectedTiles ) {
+
+        for( int i = 0; i < effectedTiles.size(); i++){
+            BattleGridTile effectedTile = effectedTiles.get(i);
+
+            if( effectsThis( effectedTile ) ){
+                effectedTile.damageOccupent(ablityDamage);
+            }
         }
     }
 
-    public int getEffectType() {
-        return effectType;
+    private void activateSummon( ArrayList<BattleGridTile> effectedTiles ){
+
+        for( int i = 0; i < effectedTiles.size(); i++) {
+            BattleGridTile effectedTile = effectedTiles.get(i);
+
+            if (!effectedTile.hasOccupent()) {
+                Slime summon = new Slime(1, currentPlayerId);
+                summon.upgradeTo(summonType);
+                effectedTile.addOccupent(summon);
+            }
+        }
+    }
+
+    public int getTargetingType() {
+        return targetingType;
     }
 
     public ArrayList<IntVector> getAttackPattern(int x, int y) {
@@ -88,7 +222,10 @@ public class BattleAbility extends SlimeLordAbility {
     public int getAblityDamage() {
         return ablityDamage;
     }
-    public void onEndTurn(){
+
+    public void onEndTurn(int activePlayer){
+
+        currentPlayerId = activePlayer;
         selected = false;
         used = false;
     }
