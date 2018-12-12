@@ -20,10 +20,10 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 public class SlimeLord extends AnimatedEntity implements IEntity {
-    String GREEN_IDLE = "game/client/resource/slime-lord-green.png";
-    String BLUE_IDLE = "game/client/resource/slime-lord-blue.png";
-    String YELLOW_IDLE = "game/client/resource/slime-lord-yellow.png";
-    String RED_IDLE = "game/client/resource/slime-lord-red.png";
+    String GREEN_SLIMELORD_IDLE = "game/client/resource/slime-lord-green.png";
+    String BLUE_SLIMELORD_IDLE = "game/client/resource/slime-lord-blue.png";
+    String YELLOW_SLIMELORD_IDLE = "game/client/resource/slime-lord-yellow.png";
+    String RED_SLIMELORD_IDLE = "game/client/resource/slime-lord-red.png";
 
 
     String entityType = "slime_lord";
@@ -75,20 +75,20 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     }
 
     void initializeAnimations() {
-        String imageName = GREEN_IDLE;
+        String imageName = GREEN_SLIMELORD_IDLE;
 
         switch (this.color) {
             case "blue":
-                imageName = BLUE_IDLE;
+                imageName = BLUE_SLIMELORD_IDLE;
                 break;
             case "green":
-                imageName = GREEN_IDLE;
+                imageName = GREEN_SLIMELORD_IDLE;
                 break;
             case "yellow":
-                imageName = YELLOW_IDLE;
+                imageName = YELLOW_SLIMELORD_IDLE;
                 break;
             case "red":
-                imageName = RED_IDLE;
+                imageName = RED_SLIMELORD_IDLE;
                 break;
 
         }
