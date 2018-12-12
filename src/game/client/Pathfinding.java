@@ -11,6 +11,7 @@ public class Pathfinding {
     private int nCols;
     private double delta = 0.5;
     private Tile[][] nodes;
+    private int numSteps;
 
     public class Node {
 
@@ -30,90 +31,28 @@ public class Pathfinding {
         }
     }
 
-    public static void main(String[] args) {
-        Pathfinding finder = new Pathfinding();
-        finder.execute();
-    }
-
-    public void execute() {
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            System.out.print("Enter Number of rows: ");
-            nRows = scanner.nextInt();
-            System.out.print("Enter Number of cols: ");
-            nCols = scanner.nextInt();
-            System.out.print("Enter Difficulty ( 0.1 = low, 0.9 = high ): ");
-            delta = scanner.nextDouble();
-            //nodes = new Node[nRows][nCols];
-
-            // showAllPaths();
-            System.out.print("Show Again (y/n): ");
-            String answer = scanner.next();
-            if (!answer.startsWith("y")) {
-                break;
-            }
-        }
-
+    public Pathfinding(Tile[][] nodes){
+        this.nodes = nodes;
     }
     private boolean isFound = false;
     private String savedPath = "";
 
-    public void showAllPaths(Tile[][] tiles, Tile tile) {
-        this.nodes = tiles;
-        tile.setContents("S");
+    public List<String> showAllPaths(Tile tile, int numSteps) {
+        this.numSteps = numSteps;
+        tile.visited = false;
         List<String> paths = new ArrayList<>();
         int tries = 0;
-        // createGrid();
         while (++tries < 500) {
             reset();
             find(tile, '0', "", paths);
 
         }
-        if (paths.isEmpty()) {
-        //     printGrid("");
-            System.out.println("No Path found");
-            return;
-        }
-        String minPath = paths.get(0);
-        System.out.println("Paths: ");
-        for (String path : paths) {
-            System.out.println(path);
-            if (path.length() < minPath.length()) {
-                minPath = path;
-            }
-        }
+        return paths;
     }
 
-    /*
-    public void showPath() {
-        List<String> paths = new ArrayList<>();
-        int tries = 0;
-        createGrid();
-        while (++tries < 100) {
-            reset();
-            find(nodes[0][0], '0', "", paths);
-
-        }
-        if (paths.isEmpty()) {
-            printGrid("");
-            System.out.println("No Path found");
-            return;
-        }
-        String minPath = paths.get(0);
-        System.out.println("Paths: ");
-        for (String path : paths) {
-            System.out.println(path);
-            if (path.length() < minPath.length()) {
-                minPath = path;
-            }
-        }
-        printGrid(minPath);
-    }
-    */
     public void find(Tile node, char last, String path, List<String> paths) {
         if (node != null && !node.visited) {
-            if (path.length() >= 10) {
+            if (path.length() == numSteps || node.getContents().equals("T")) {
                 if ( !paths.contains(path) ) {
                     paths.add(path);
                 }
@@ -156,108 +95,15 @@ public class Pathfinding {
             }
         }
     }
-
-    /*
-    public void createGrid() {
-        for (int row = 0; row < nRows; row++) {
-            for (int col = 0; col < nCols; col++) {
-                nodes[row][col] = new Node(" " + (nCols * row + col), row, col);
-            }
-        }
-        nodes[0][0].contents = "S";
-        nodes[nRows - 1][nCols - 1].contents = "E";
-        for (int row = 0; row < nRows; row++) {
-            for (int col = 0; col < nCols; col++) {
-                int up = row - 1;
-                int down = row + 1;
-                int left = col - 1;
-                int right = col + 1;
-                if (up >= 0 && Math.random() > delta) {
-                    nodes[row][col].up = nodes[up][col];
-                    nodes[up][col].down = nodes[row][col];
-                }
-                if (down < nRows && Math.random() > delta) {
-                    nodes[row][col].down = nodes[down][col];
-                    nodes[down][col].up = nodes[row][col];
-                }
-                if (left >= 0 && Math.random() > delta) {
-                    nodes[row][col].left = nodes[row][left];
-                    nodes[row][left].right = nodes[row][col];
-                }
-                if (right < nCols && Math.random() > delta) {
-                    nodes[row][col].right = nodes[row][right];
-                    nodes[row][right].left = nodes[row][col];
-                }
-            }
-        }
-    }
-    */
-    /*
-    public void printGrid(String path) {
-        char t = '+';
-        char[][] display = new char[3 * nRows][3 * nCols];
-        for (int row = 0; row < nRows; row++) {
-            for (int col = 0; col < nCols; col++) {
-                Node node = nodes[row][col];
-                int r = 3 * row;
-                int c = 3 * col;
-                display[r + 0][c + 0] = t;
-                display[r + 0][c + 1] = node.up == null ? t : ' ';
-                display[r + 0][c + 2] = t;
-                display[r + 1][c + 0] = node.left == null ? t : ' ';
-                display[r + 1][c + 1] = node.contents.charAt(0);
-                display[r + 1][c + 2] = node.right == null ? t : ' ';
-                display[r + 2][c + 0] = t;
-                display[r + 2][c + 1] = node.down == null ? t : ' ';
-                display[r + 2][c + 2] = t;
-            }
-        }
-        if (!"".equals(path)) {
-            Node current = nodes[0][0];
-            for (int ii = 0; ii < path.length(); ii++) {
-                int r = 3 * current.row;
-                int c = 3 * current.col;
-                char ch = path.charAt(ii);
-                display[r + 1][c + 1] = current.contents.equals("S") ? 'S' : ch;
-
-                switch (ch) {
-                    case 'u':
-                        current = current.up;
-                        break;
-                    case 'd':
-                        current = current.down;
-                        break;
-                    case 'l':
-                        current = current.left;
-                        break;
-                    case 'r':
-                        current = current.right;
-                        break;
-
-                }
-            }
-        }
-        System.out.println();
-        System.out.println();
-        String last = "";
-        for (int r = 0; r < nRows * 3; r++) {
-            String line = "";
-            for (int c = 0; c < 3 * nCols; c++) {
-                line += display[r][c];
-            }
-            if (!line.equals(last)) {
-                System.out.println(line);
-            } else {
-                System.out.println();
-            }
-            last = "";
-        }
-    }
-    */
     public void reset() {
-        for (int row = 0; row < nRows; row++) {
-            for (int col = 0; col < nCols; col++) {
-                nodes[row][col].visited = false;
+        if(nodes == null){
+            return;
+        }
+        for (int row = 0; row < nodes.length; row++) {
+            for (int col = 0; nodes[row] != null && col < nodes[row].length; col++) {
+                if(nodes[row][col] != null){
+                    nodes[row][col].visited = false;
+                }
             }
         }
     }

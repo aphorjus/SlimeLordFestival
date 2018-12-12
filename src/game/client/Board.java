@@ -15,6 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import jig.ResourceManager;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class Board {
     public static final String OVERWORLD_RSC = "game/client/resource/overworld.png";
@@ -24,6 +25,7 @@ public class Board {
     public static final String ORANGE_SLIMELORD_RSC = "game/client/resource/orange-slimelord.png";
     public static final String RED_SLIMELORD_RSC = "game/client/resource/red-slimelord.png";
     public static final String TOKENTENT_RSC = "game/client/resource/tokentent.png";    // unconquered
+    public static final String HIGHLIGHTED_TILE_RSC = "game/client/resource/highlight.png";
 
     public static final String SLIME1_RSC = "game/client/resource/slime1.png";
     public static final String SLIME2_RSC = "game/client/resource/slime2.png";
@@ -56,8 +58,8 @@ public class Board {
 
 
     public Board() {
-        pathfinding = new Pathfinding();
         tiles = new Tile[NUMROWS][NUMCOLS];
+        pathfinding = new Pathfinding(tiles);
         // turn = new Turn(0);
     }
 
@@ -188,6 +190,7 @@ public class Board {
         ResourceManager.loadImage(SLIME2_RSC);
         ResourceManager.loadImage(SLIME3_RSC);
         ResourceManager.loadImage(SLIME4_RSC);
+        ResourceManager.loadImage(HIGHLIGHTED_TILE_RSC);
         // place = 0
         // placeUp = 1
         // placeRight = 2
@@ -507,6 +510,75 @@ public class Board {
         return false;
     }
 
+    public boolean moveTo(int x, int y){
+        if(x >= 0 && x <= 1000 && y >= 0 && y <= 500 && turn.isMyMove()){
+            int row = y/16;
+            int col = x/16;
+            if(row < NUMROWS && col < NUMCOLS && tiles[row][col] != null){
+                x = col * 16;
+                y = row * 16;
+                int numMoves = Math.abs(row - current.getRow()) + Math.abs(col - current.getCol());
+                if(numMoves <= (Turn.NUM_MOVES - turn.getMove())){
+                    gameApi.deleteEntity(gameClient.myId);
+                    currentSlimelord.setPosition(new Vector(x,y));
+                    gameApi.createEntity(currentSlimelord);
+                    current = tiles[row][col];
+                    turn.updateMoves(numMoves);
+                    return true;
+                }
+                return false;
+            }
+        }
+        reset();
+        return false;
+    }
+
+    public void showHighlightedPaths(int x, int y){
+       // System.out.println(x + " " + y);
+        if(x >= 0 && x <= 1000 && y >= 0 && y <= 500 && turn.isMyMove()){
+            int row = y/16;
+            int col = x/16;
+            if(row < NUMROWS && col < NUMCOLS && tiles[row][col] != null){
+                showHighlighted(row, col);
+            }
+        }
+    }
+    private void showHighlighted(int row, int col){
+        reset();
+        Tile tile = tiles[row][col];
+        List<String> paths = pathfinding.showAllPaths(tile,Turn.NUM_MOVES - turn.getMove());
+        Tile last = tile;
+        tile.isHighlighted = true;
+        for(String path: paths){
+            for(char c: path.toCharArray()){
+                if(c == 'd'){
+                    tile = tile.down;
+                } else if(c == 'u'){
+                    tile = tile.up;
+                } else if(c == 'l'){
+                    tile = tile.left;
+                } else if(c == 'r'){
+                    tile = tile.right;
+                }
+                tile.isHighlighted = true;
+            }
+            tile = last;
+        }
+    }
+
+    public void reset() {
+        if(tiles == null){
+            return;
+        }
+        for (int row = 0; row < tiles.length; row++) {
+            for (int col = 0; tiles[row] != null && col < tiles[row].length; col++) {
+                if(tiles[row][col] != null){
+                    tiles[row][col].isHighlighted = false;
+                }
+            }
+        }
+    }
+
     public boolean moveLeft() {
         if(!acceptKeyboard) {
             return false;
@@ -600,7 +672,7 @@ public class Board {
             gameApi.deleteEntity(gameClient.myId);
             currentSlimelord.moveDown();
             gameApi.createEntity(currentSlimelord);
-            pathfinding.showAllPaths(tiles, current);
+            //showHighlighted();
             return true;
         }
         return false;
