@@ -16,10 +16,26 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class OverworldState extends BasicGameState implements GameApiListener {
-    String GREEN_IDLE = "game/client/resource/slime-lord-green.png";
-    String BLUE_IDLE = "game/client/resource/slime-lord-blue.png";
-    String YELLOW_IDLE = "game/client/resource/slime-lord-yellow.png";
-    String RED_IDLE = "game/client/resource/slime-lord-red.png";
+    String GREEN_SLIMELORD_IDLE = "game/client/resource/slime-lord-green.png";
+    String BLUE_SLIMELORD_IDLE = "game/client/resource/slime-lord-blue.png";
+    String YELLOW_SLIMELORD_IDLE = "game/client/resource/slime-lord-yellow.png";
+    String RED_SLIMELORD_IDLE = "game/client/resource/slime-lord-red.png";
+
+    String GREEN_IDLE = "game/client/resource/green-slime-idle.png";
+    String GREEN_ATTACK = "game/client/resource/green-slime-attack.png";
+    String GREEN_DEATH = "game/client/resource/green-slime-death.png";
+
+    String RED_IDLE = "game/client/resource/red-slime-idle.png";
+    String RED_ATTACK = "game/client/resource/red-slime-attack.png";
+    String RED_DEATH = "game/client/resource/red-slime-death.png";
+
+    String YELLOW_IDLE = "game/client/resource/yellow-slime-idle.png";
+    String YELLOW_ATTACK = "game/client/resource/yellow-slime-attack.png";
+    String YELLOW_DEATH = "game/client/resource/yellow-slime-death.png";
+
+    String BLUE_IDLE = "game/client/resource/blue-slime-idle.png";
+    String BLUE_ATTACK = "game/client/resource/blue-slime-attack.png";
+    String BLUE_DEATH = "game/client/resource/blue-slime-death.png";
 
     InputManager inputManager;
     TextField textField;
@@ -39,10 +55,27 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
+        ResourceManager.loadImage(GREEN_SLIMELORD_IDLE);
+        ResourceManager.loadImage(BLUE_SLIMELORD_IDLE);
+        ResourceManager.loadImage(YELLOW_SLIMELORD_IDLE);
+        ResourceManager.loadImage(RED_SLIMELORD_IDLE);
+
         ResourceManager.loadImage(GREEN_IDLE);
-        ResourceManager.loadImage(BLUE_IDLE);
-        ResourceManager.loadImage(YELLOW_IDLE);
+        ResourceManager.loadImage(GREEN_ATTACK);
+        ResourceManager.loadImage(GREEN_DEATH);
+
         ResourceManager.loadImage(RED_IDLE);
+        ResourceManager.loadImage(RED_ATTACK);
+        ResourceManager.loadImage(RED_DEATH);
+
+        ResourceManager.loadImage(YELLOW_IDLE);
+        ResourceManager.loadImage(YELLOW_ATTACK);
+        ResourceManager.loadImage(YELLOW_DEATH);
+
+        ResourceManager.loadImage(BLUE_IDLE);
+        ResourceManager.loadImage(BLUE_ATTACK);
+        ResourceManager.loadImage(BLUE_DEATH);
+
         gameApi = new GameApi((GameClient)sbg, this);
         GameClient bg = (GameClient)sbg;
         currentShop = new Shop(bg);

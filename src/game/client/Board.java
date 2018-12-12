@@ -20,17 +20,17 @@ import java.util.List;
 public class Board {
     public static final String OVERWORLD_RSC = "game/client/resource/overworld.png";
     public static final String TILE_RSC = "game/client/resource/tile.png";
-    public static final String BLUE_SLIMELORD_RSC = "game/client/resource/blue-slimelord.png";
-    public static final String GREEN_SLIMELORD_RSC = "game/client/resource/yellow-slimelord.png";
-    public static final String ORANGE_SLIMELORD_RSC = "game/client/resource/orange-slimelord.png";
-    public static final String RED_SLIMELORD_RSC = "game/client/resource/red-slimelord.png";
+    //public static final String BLUE_SLIMELORD_RSC = "game/client/resource/blue-slimelord.png";
+   // public static final String GREEN_SLIMELORD_RSC = "game/client/resource/yellow-slimelord.png";
+   // public static final String ORANGE_SLIMELORD_RSC = "game/client/resource/orange-slimelord.png";
+   // public static final String RED_SLIMELORD_RSC = "game/client/resource/red-slimelord.png";
     public static final String TOKENTENT_RSC = "game/client/resource/tokentent.png";    // unconquered
     public static final String HIGHLIGHTED_TILE_RSC = "game/client/resource/highlight.png";
 
-    public static final String SLIME1_RSC = "game/client/resource/slime1.png";
-    public static final String SLIME2_RSC = "game/client/resource/slime2.png";
-    public static final String SLIME3_RSC = "game/client/resource/slime3.png";
-    public static final String SLIME4_RSC = "game/client/resource/slime4.png";
+    //public static final String SLIME1_RSC = "game/client/resource/slime1.png";
+   // public static final String SLIME2_RSC = "game/client/resource/slime2.png";
+   // public static final String SLIME3_RSC = "game/client/resource/slime3.png";
+   // public static final String SLIME4_RSC = "game/client/resource/slime4.png";
 
     public static int NUMROWS = 50;
     public static int NUMCOLS = 200;
@@ -180,16 +180,16 @@ public class Board {
     public void initialize() {
         ResourceManager.loadImage(OVERWORLD_RSC);
         ResourceManager.loadImage(TILE_RSC);
-        ResourceManager.loadImage(BLUE_SLIMELORD_RSC);
-        ResourceManager.loadImage(GREEN_SLIMELORD_RSC);
-        ResourceManager.loadImage(ORANGE_SLIMELORD_RSC);
-        ResourceManager.loadImage(RED_SLIMELORD_RSC);
+        //ResourceManager.loadImage(BLUE_SLIMELORD_RSC);
+        //ResourceManager.loadImage(GREEN_SLIMELORD_RSC);
+        //ResourceManager.loadImage(ORANGE_SLIMELORD_RSC);
+        //ResourceManager.loadImage(RED_SLIMELORD_RSC);
         ResourceManager.loadImage(TOKENTENT_RSC);
 
-        ResourceManager.loadImage(SLIME1_RSC);
-        ResourceManager.loadImage(SLIME2_RSC);
-        ResourceManager.loadImage(SLIME3_RSC);
-        ResourceManager.loadImage(SLIME4_RSC);
+        //ResourceManager.loadImage(SLIME1_RSC);
+       // ResourceManager.loadImage(SLIME2_RSC);
+       // ResourceManager.loadImage(SLIME3_RSC);
+       // ResourceManager.loadImage(SLIME4_RSC);
         ResourceManager.loadImage(HIGHLIGHTED_TILE_RSC);
         // place = 0
         // placeUp = 1
