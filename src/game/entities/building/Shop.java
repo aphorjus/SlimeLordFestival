@@ -52,7 +52,7 @@ public class Shop{
 
         if(buyStriker.checkClick(x,y) == true){
             //If you can buy it
-            if(Arrays.asList(currentSlimeLord.specialSlimes).contains("striker") == false){
+            if(currentSlimeLord.specialSlimes.contains("striker") == false){
                 if(currentG.getTokens() >= 100){
                     currentG.setTokens(currentG.getTokens() - 100);
                     currentMessage = "Nice purchase!";
@@ -66,11 +66,11 @@ public class Shop{
             }
         }else if(buyLancer.checkClick(x,y) == true){
             //If you can buy it
-            if(Arrays.asList(currentSlimeLord.specialSlimes).contains("lancer") == false){
+            if(currentSlimeLord.specialSlimes.contains("lancer") == false){
                 if(currentG.getTokens() >= 100){
                     currentG.setTokens(currentG.getTokens() - 100);
                     currentMessage = "Nice purchase!";
-                    buyStriker.setCurrentImage(soldImage);
+                    buyLancer.setCurrentImage(soldImage);
                     currentSlimeLord.specialSlimes.add("lancer");
                 }else{
                     currentMessage = "Sorry, but it looks like you can't afford that!";
@@ -80,11 +80,11 @@ public class Shop{
             }
         }else if(buyAdvancedStriker.checkClick(x,y) == true){
             //If you can buy it
-            if(Arrays.asList(currentSlimeLord.specialSlimes).contains("advancedLancer") == false){
-                if(currentG.getTokens() >= 100){
-                    currentG.setTokens(currentG.getTokens() - 100);
+            if(currentSlimeLord.specialSlimes.contains("advancedLancer") == false){
+                if(currentG.getTokens() >= 300){
+                    currentG.setTokens(currentG.getTokens() - 300);
                     currentMessage = "Nice purchase!";
-                    buyStriker.setCurrentImage(soldImage);
+                    buyAdvancedStriker.setCurrentImage(soldImage);
                     currentSlimeLord.specialSlimes.add("advancedLancer");
                 }else{
                     currentMessage = "Sorry, but it looks like you can't afford that!";
