@@ -11,12 +11,14 @@ public class Tile extends Entity {
     private int row;
     private int col;
     private String contents;
-    private Tile left;
-    private Tile right;
-    private Tile up;
-    private Tile down;
+    public Tile left;
+    public Tile right;
+    public Tile up;
+    public Tile down;
     private float xoffset = 0;
     private float yoffset = 0;
+    public boolean visited;
+    public boolean isHighlighted;
 
     public Tile(final String contents, final int row, final int col) {
         super((float) col*16, (float) row*16);
@@ -29,24 +31,28 @@ public class Tile extends Entity {
         addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));	// green
         addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));	// orange
         addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));	    // red
+        addImageWithBoundingBox(ResourceManager.getImage(Board.HIGHLIGHTED_TILE_RSC));
     }
 
     public void render(Graphics g) {
         float x = getX() - xoffset;
         float y = getY() - yoffset;
-        if(!contents.startsWith("T")) {
+        if(isHighlighted) {
+            g.drawImage(ResourceManager.getImage(Board.HIGHLIGHTED_TILE_RSC), x, y);
+        }
+        else if(!contents.startsWith("T")) {
             g.drawImage(ResourceManager.getImage(Board.TILE_RSC), x, y);
         }
-        if (contents.equals("1")) {	// blue
+        else if (contents.equals("1")) {	// blue
           //  g.drawImage(ResourceManager.getImage(Board.SLIME1_RSC), x+1, y+1);
         }
-        if (contents.equals("2")) { // green
+        else if (contents.equals("2")) { // green
           //  g.drawImage(ResourceManager.getImage(Board.SLIME2_RSC), x+1, y+1);
         }
-        if (contents.equals("3")) { // orange
+        else if (contents.equals("3")) { // orange
           //  g.drawImage(ResourceManager.getImage(Board.SLIME3_RSC), x+1, y+1);
         }
-        if (contents.equals("4")) { // red
+        else if (contents.equals("4")) { // red
           //  g.drawImage(ResourceManager.getImage(Board.SLIME4_RSC), x+1, y+1);
         }
 
