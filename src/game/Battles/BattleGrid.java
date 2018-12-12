@@ -274,7 +274,7 @@ public class BattleGrid {
                 }
                 else if( playerOne != entities.get(i).getClientID() ){
                     playerOne = entities.get(i).getClientID();
-                }e
+                }
             }
         }
         setWinner(playerOne);

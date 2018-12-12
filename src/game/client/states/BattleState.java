@@ -1,6 +1,7 @@
 package game.client.states;
 
 import game.Battles.BattleEntity;
+import game.Battles.SlimBox;
 import game.IGameState;
 import game.api.GameApi;
 import game.api.GameApiListener;
@@ -244,8 +245,12 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
         if(this.battleGrid.getTile(mousePosition) != null){
             this.battleGrid.mouseoverHighlight(mousePosition, g);
-            if( this.battleGrid.getTile(mousePosition).hasOccupent() ) {
+            BattleGridTile tile = this.battleGrid.getTile(mousePosition);
+
+            if( tile.hasOccupent() && tile.getOccupent() instanceof Slime ) {
                 displayCoolDown(g, this.battleGrid.getTile(mousePosition));
+                SlimBox slimeBox = new SlimBox( (Slime)this.battleGrid.getTile(mousePosition).getOccupent() );
+                slimeBox.render(g);
             }
         }
     }
