@@ -24,7 +24,6 @@ public class GameApi {
     public static String SetGameStateBattle = "setBattle";
     public static String EndTurn = "endTurn";
 
-
     public static String LobbyClientListUpdate = "lobbyClientListUpdate";
     public static String LobbyIsFull = "lobbyIsFull";
     public static String LobbyStartGame ="lobbyStartGame";
@@ -136,12 +135,16 @@ public class GameApi {
     }
 
     IEntity loadEntity(String entityType, JSONObject entityData) {
+        System.out.println("entity Type: " +entityType);
+
         switch (entityType) {
             case "BattleGridTile": return new BattleGridTile(entityData);
 
             case "Slime": return new Slime(entityData);
 
             case "Factory": return new SlimeFactory(entityData);
+
+            case "slime_lord": return new SlimeLord(entityData);
 
             default: return null;
         }

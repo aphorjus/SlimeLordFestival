@@ -29,7 +29,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     String entityType = "slime_lord";
     public int clientID;
     public String id;
-    String name;
+    String name = "";
     int totalMovement;
     int remainingMovement;
     LinkedList<BattleAbility> battleAbilities;
@@ -37,29 +37,41 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     public LinkedList<SlimeFactory> factories;
     public LinkedList<String> specialSlimes;
 
-    private float xoffset = 0;
-    private float yoffset = 0;
-    private float xpos;
-    private float ypos;
+
+    public Vector cameraOffset = new Vector(0, 0);
+    public float xpos;
+    public float ypos;
     private Turn turn;
     String color = "blue";
 
     public SlimeLord(int clientID){
-       // System.out.println("slimelord created" + clientID);
         this.clientID = clientID;
+
+        switch (clientID) {
+            case 0:
+                this.color = "blue";
+                break;
+            case 1:
+                this.color = "green";
+                break;
+            case 2:
+                this.color = "red";
+                break;
+            case 3:
+                this.color = "yellow";
+                break;
+        }
+        System.out.println(this.color);
+
         this.id = UUID.randomUUID().toString();
         this.totalMovement = 10;
         this.remainingMovement = totalMovement;
         this.abilities = new LinkedList<>();
         this.factories = new LinkedList<>();
-        this.factories.add(new SlimeFactory(this.clientID));    // Austin, what is this?
+        this.factories.add(new SlimeFactory(this.clientID));
         this.factories.add(new SlimeFactory(this.clientID));
 
         this.initializeAnimations();
-//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));
-//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));
-//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));
-//        addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));
     }
 
     void initializeAnimations() {
@@ -87,6 +99,10 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         putAnimation("idle", new Animation(idleSheet, 99999), new Vector(8, 0));
         putAnimation("victory", new Animation(idleSheet, 250), new Vector(8, 0));
         playAnimation("idle");
+    }
+
+    public void moveTo(float x, float y) {
+        this.translate(x - this.getX(),y - this.getY());
     }
 
     public boolean makeMove() {
@@ -117,9 +133,17 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         }
     }
 
-    public void setOffsets(float xoffset, float yoffset) {
-        this.xoffset = xoffset;
-        this.yoffset = yoffset;
+
+    public void setCameraOffset(Vector offset) {
+        cameraOffset = offset;
+    }
+
+    public void positionForCamera() {
+        translate(-cameraOffset.getX(), -cameraOffset.getY());
+    }
+
+    public void positionToOrigin() {
+        translate(cameraOffset.getX(), cameraOffset.getY());
     }
 
     public void setPosition(float x, float y) {
@@ -138,6 +162,8 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         name = data.getString("name");
         totalMovement = data.getInt("totalMovement");
         remainingMovement = data.getInt("remainingMovement");
+        xpos = data.getFloat("Xposition");
+        ypos = data.getFloat("Yposition");
 
         if (data.has("abilities")) {
             JSONArray jsonAbilities = data.getJSONArray("abilities");
@@ -168,7 +194,8 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
             data.put("name", name);
             data.put("totalMovement", totalMovement);
             data.put("remainingMovement", remainingMovement);
-
+            data.put("Xposition", this.getX());
+            data.put("Yposition", this.getY());
             if (abilities.size() > 0) {
                 JSONArray jsonAbilities = new JSONArray();
 

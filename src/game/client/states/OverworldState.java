@@ -60,6 +60,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         Board board = bg.getBoard();
         // board.setUp(gameApi, gameClient);
         board.updateSlimelord();
+        board.showHighlightedPaths(input.getMouseX(), input.getMouseY());
+        if(input.isMousePressed(input.MOUSE_LEFT_BUTTON)){
+            board.moveTo(input.getMouseX(), input.getMouseY());
+        }
         if (input.isKeyDown(Input.KEY_LEFT)){
             board.moveLeft();
         }
@@ -124,12 +128,11 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     public void onAlterPlayerState(Player player) {}
 
     public void onCreateEntity(IEntity entity) {
-        System.out.println("entity created.");
-        // System.out.println(entity.getEntityType());
+        board.onCreateEntity(entity);
     }
 
     public void onDeleteEntity(int entityId) {
-        System.out.println("entity deleted.");
+        board.onDeleteEntity(entityId);
     }
 
     public void onMessage(int senderId, String message) {
