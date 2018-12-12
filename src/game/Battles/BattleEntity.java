@@ -6,4 +6,5 @@ public interface BattleEntity {
     public void takeDamage(int amount);
     public boolean isAlive();
     public void setIndexes( int x, int y );
+    public int getClientID();
 }

@@ -1,5 +1,6 @@
 package game.client.states;
 
+import game.Battles.BattleEntity;
 import game.IGameState;
 import game.api.GameApi;
 import game.api.GameApiListener;
@@ -20,6 +21,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class BattleState extends BasicGameState implements GameApiListener {
     InputManager inputManager;
@@ -28,10 +30,12 @@ public class BattleState extends BasicGameState implements GameApiListener {
     GameClient gameClient;
     SlimeLord slimeLordOne;
     SlimeLord slimeLordTwo;
+    SlimeLord activeSlimeLord;
 
     int playerOne;
     int playerTwo;
     int activePlayer;
+
 
 
     public static int[][] PLAIN_MAP =
@@ -87,11 +91,20 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
         this.slimeLordOne = new SlimeLord(0);
         this.slimeLordTwo = new SlimeLord(1);
+
+        this.slimeLordOne.addAbility("summonBasicSlime");
+        this.slimeLordOne.addAbility("slimeBall");
+        this.slimeLordOne.addAbility("damage");
+
+        this.slimeLordTwo.addAbility("slimeStrike");
+        this.slimeLordTwo.addAbility("summonLancer");
+
         spawnInFactories();
 
         playerOne = slimeLordOne.clientID;
         playerTwo = slimeLordTwo.clientID;
         activePlayer = playerOne;
+        activeSlimeLord = slimeLordOne;
 
         //END TEMP
 
@@ -123,27 +136,31 @@ public class BattleState extends BasicGameState implements GameApiListener {
     }
 
     public void endTurn(){
-        ArrayList<IEntity> entitys = battleGrid.getEntityList();
+        LinkedList<BattleEntity> entitys = battleGrid.getEntityList();
 
         for( int i = 0; i < entitys.size(); i++ ){
 
             if( entitys.get(i) instanceof Slime && ((Slime) entitys.get(i)).clientID == activePlayer){
-                ((Slime) entitys.get(i)).onNextTurn();
+                entitys.get(i).onNextTurn();
             }
             if( entitys.get(i) instanceof SlimeFactory && ((SlimeFactory) entitys.get(i)).clientID != activePlayer){
                 BattleGridTile tile = ((SlimeFactory) entitys.get(i)).spawnSlime();
                 if( tile != null ) {
-                    gameApi.createEntity((IEntity) tile);
+                    gameApi.createEntity(tile);
                 }
             }
         }
         if (activePlayer == playerOne){
             activePlayer = playerTwo;
+            activeSlimeLord = slimeLordTwo;
         }
         else{
             activePlayer = playerOne;
+            activeSlimeLord = slimeLordOne;
         }
         System.out.println("activePlay: " + activePlayer);
+        battleGrid.ability.onEndTurn(activePlayer);
+        battleGrid.setMode(BattleGrid.MOVMENT_MODE);
     }
 
 
@@ -181,7 +198,15 @@ public class BattleState extends BasicGameState implements GameApiListener {
         if (input.isKeyPressed(Input.KEY_S)){
             battleGrid.switchMode();
         }
-
+        if ( input.isKeyPressed(Input.KEY_1) ){// && isMyTurn()){
+            battleGrid.enterAblityMode(activeSlimeLord.getAbility(0));
+        }
+        if ( input.isKeyPressed(Input.KEY_2) ){// && isMyTurn()){
+            battleGrid.enterAblityMode(activeSlimeLord.getAbility(1));
+        }
+        if ( input.isKeyPressed(Input.KEY_3) ){// && isMyTurn()){
+            battleGrid.enterAblityMode(activeSlimeLord.getAbility(2));
+        }
         gameApi.update();
     }
 
@@ -196,7 +221,6 @@ public class BattleState extends BasicGameState implements GameApiListener {
         }
     }
 
-
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         GameClient bg = (GameClient)sbg;
@@ -210,7 +234,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
         if(this.battleGrid.getTile(mousePosition) != null){
             this.battleGrid.mouseoverHighlight(mousePosition, g);
-            if(this.battleGrid.getTile(mousePosition).hasOccupent()) {
+            if( this.battleGrid.getTile(mousePosition).hasOccupent() ) {
                 displayCoolDown(g, this.battleGrid.getTile(mousePosition));
             }
         }
@@ -227,12 +251,26 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
     public void onCreateEntity(IEntity entity) {
 
-        BattleGridTile tile = (BattleGridTile) entity;
-
-        battleGrid.replaceOccupent(tile);
+        if(entity instanceof BattleGridTile) {
+            BattleGridTile tile = (BattleGridTile) entity;
+            battleGrid.replaceOccupent(tile);
+        }
+        else if (entity instanceof BattleEntity){
+            battleGrid.getTile(((Slime) entity).getPosition()).setOccupent((BattleEntity) entity);
+        }
     }
 
-    public void onDeleteEntity(int entityId) {}
+    public void onDeleteEntity(int entityId) {
+
+        LinkedList<BattleEntity> entities = battleGrid.getEntityList();
+
+        for(int i = 0; i < entities.size(); i++){
+//            if( ((IEntity)entities.get(i)).id.equals(entityId) ){
+//
+//            }
+        }
+
+    }
 
     public void onMessage(int senderId, String message) {}
 
@@ -247,7 +285,6 @@ public class BattleState extends BasicGameState implements GameApiListener {
         this.playerTwo = slimeLordTwo.clientID;
 
         this.activePlayer = slimeLordOne.clientID;
-
     }
 
     public void onSetStateToOverworld() {}
@@ -259,5 +296,6 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void onLobbyClientListUpdate(String[] clientNames) {}
 
     public void onLobbyIsFull() {}
+
     public void onConnectionConfirmation(int myId) { }
 }

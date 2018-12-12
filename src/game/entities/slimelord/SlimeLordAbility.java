@@ -5,6 +5,10 @@ import org.json.JSONObject;
 
 public class SlimeLordAbility implements IEntity {
 
+    public int type;
+
+    public SlimeLordAbility(){ }
+
     public SlimeLordAbility(JSONObject data) {}
 
     public String getEntityType() {

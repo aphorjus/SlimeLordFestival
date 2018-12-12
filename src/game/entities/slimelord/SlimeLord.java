@@ -20,10 +20,10 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 public class SlimeLord extends AnimatedEntity implements IEntity {
-    String GREEN_IDLE = "game/client/resource/yellow-slimelord.png";
-    String BLUE_IDLE = "game/client/resource/blue-slimelord.png";
-    String YELLOW_IDLE = "game/client/resource/yellow-slimelord.png";
-    String RED_IDLE = "game/client/resource/red-slimelord.png";
+    String GREEN_IDLE = "game/client/resource/slime-lord-green.png";
+    String BLUE_IDLE = "game/client/resource/slime-lord-blue.png";
+    String YELLOW_IDLE = "game/client/resource/slime-lord-yellow.png";
+    String RED_IDLE = "game/client/resource/slime-lord-red.png";
 
 
     String entityType = "slime_lord";
@@ -32,7 +32,8 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     String name;
     int totalMovement;
     int remainingMovement;
-    LinkedList<SlimeLordAbility> abilities;
+    LinkedList<BattleAbility> battleAbilities;
+    LinkedList<String> abilities;
     public LinkedList<SlimeFactory> factories;
     public LinkedList<String> specialSlimes;
 
@@ -143,7 +144,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
             JSONArray jsonAbilities = data.getJSONArray("abilities");
 
             for (int i = 0; i < jsonAbilities.length(); i++) {
-                abilities.add(new SlimeLordAbility(jsonAbilities.getJSONObject(i)));
+                abilities.add(jsonAbilities.getString(i));
             }
         }
 
@@ -172,8 +173,8 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
             if (abilities.size() > 0) {
                 JSONArray jsonAbilities = new JSONArray();
 
-                for (SlimeLordAbility ability : abilities) {
-                    jsonAbilities.put(ability.toJson());
+                for (String ability : abilities) {
+                    jsonAbilities.put(ability);
                 }
 
                 data.put("abilities", jsonAbilities);
@@ -189,5 +190,16 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
                 data.put("factories", jsonFactories);
             }
         return data;
+    }
+
+    public void addAbility(String ability){
+        abilities.add(ability);
+    }
+
+    public String getAbility(int i){
+        if( abilities.size() > i ) {
+            return abilities.get(i);
+        }
+        return "NONE";
     }
 }
