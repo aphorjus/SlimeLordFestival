@@ -1,5 +1,6 @@
 package game.Battles;
 
+import jig.Entity;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -9,10 +10,10 @@ public class HealthBar {
     float currentHealth;
     float height;
     float width;
-    float xpos;
-    float ypos;
+    public float xpos;
+    public float ypos;
 
-    float buffer = 5;
+    float buffer = 1;
 
     Color outerColor = Color.black;
     Color inerColor = Color.gray;
@@ -27,6 +28,20 @@ public class HealthBar {
         this.height = height;
         this.currentHealth = currentHealth;
         this.maxHealth = maxHealth;
+
+    }
+
+    public HealthBar( float width, float height, BattleEntity entity ){
+
+
+        this.width = width;
+        this.height = height;
+
+        this.xpos = ((Entity)entity).getPosition().getX() - (width/2);
+        this.ypos = ((Entity)entity).getPosition().getY() - (2*height);
+
+        this.currentHealth = entity.getCurrentHP();
+        this.maxHealth = entity.getMaxHP();
 
     }
 

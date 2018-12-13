@@ -142,4 +142,14 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
     public int getClientID() {
         return clientID;
     }
+
+    @Override
+    public int getMaxHP() {
+        return maxHP;
+    }
+
+    @Override
+    public int getCurrentHP() {
+        return currentHP;
+    }
 }

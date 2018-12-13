@@ -1,7 +1,6 @@
 package game.client.states;
 
-import game.Battles.BattleEntity;
-import game.Battles.SlimBox;
+import game.Battles.*;
 import game.IGameState;
 import game.api.GameApi;
 import game.api.GameApiListener;
@@ -11,8 +10,6 @@ import game.entities.slime.Slime;
 import game.entities.slimefactory.SlimeFactory;
 import game.entities.slimelord.SlimeLord;
 import jig.Vector;
-import game.Battles.BattleGrid;
-import game.Battles.BattleGridTile;
 import game.InputManager;
 import game.client.GameClient;
 import org.json.JSONObject;
@@ -232,6 +229,22 @@ public class BattleState extends BasicGameState implements GameApiListener {
         }
     }
 
+    public void displayBasicInfo(Graphics g, BattleGridTile tile){
+
+        if( tile.hasOccupent() ){
+
+            HealthBar healthBar = new HealthBar(30, 5, tile.getOccupent());
+            healthBar.render(g);
+
+            if( tile.getOccupent() instanceof Slime && ((Slime) tile.getOccupent()).onCooldown() ) {
+
+                String cooldown = String.valueOf(((Slime) tile.getOccupent()).getCurrentCooldown());
+                g.drawString(cooldown, healthBar.xpos-9, healthBar.ypos-7);
+            }
+        }
+
+    }
+
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         GameClient bg = (GameClient)sbg;
@@ -240,18 +253,11 @@ public class BattleState extends BasicGameState implements GameApiListener {
         g.setBackground(Color.green);
         battleGrid.render(g);
 
-//        g.setColor(Color.black);
         Vector mousePosition = new Vector(input.getMouseX(), input.getMouseY());
 
         if(this.battleGrid.getTile(mousePosition) != null){
             this.battleGrid.mouseoverHighlight(mousePosition, g);
-            BattleGridTile tile = this.battleGrid.getTile(mousePosition);
-
-            if( tile.hasOccupent() && tile.getOccupent() instanceof Slime ) {
-                displayCoolDown(g, this.battleGrid.getTile(mousePosition));
-                SlimBox slimeBox = new SlimBox( (Slime)this.battleGrid.getTile(mousePosition).getOccupent() );
-                slimeBox.render(g);
-            }
+            displayBasicInfo(g, battleGrid.getTile(mousePosition));
         }
     }
 

@@ -274,7 +274,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         }
     }
 
-    public LinkedList<String> getAvailableUpgrades(){
+    public LinkedList<String> getAvailableUpgrades(LinkedList<String> specialSlimes){
 
         LinkedList<String> availableUpgrades = new LinkedList<>();
 
@@ -293,6 +293,13 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         if ( size >= 6 ){
             availableUpgrades.add("mortar");
         }
+
+        for( int i = 0; i < availableUpgrades.size(); i++ ){
+            if( !specialSlimes.contains(availableUpgrades.get(i)) ){
+                availableUpgrades.remove(i);
+            }
+        }
+
         return availableUpgrades;
     }
 
@@ -397,6 +404,16 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
     @Override
     public boolean isAlive() {
         return currentHP > 0;
+    }
+
+    @Override
+    public int getMaxHP() {
+        return maxHP;
+    }
+
+    @Override
+    public int getCurrentHP() {
+        return currentHP;
     }
 }
 
