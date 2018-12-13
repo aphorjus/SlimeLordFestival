@@ -539,8 +539,10 @@ public class Board {
     public void showHighlightedPaths(int x, int y){
        // System.out.println(x + " " + y);
         if(x >= 0 && x <= 1000 && y >= 0 && y <= 500 && turn.isMyMove()){
-            int row = y/16;
-            int col = x/16;
+//            int row = y/16;
+//            int col = x/16;
+            int row = current.getRow();
+            int col = current.getCol();
             if(row < NUMROWS && col < NUMCOLS && tiles[row][col] != null){
                 showHighlighted(row, col);
             }
