@@ -20,17 +20,21 @@ import java.util.List;
 public class Board {
     public static final String OVERWORLD_RSC = "game/client/resource/overworld.png";
     public static final String TILE_RSC = "game/client/resource/tile.png";
-    //public static final String BLUE_SLIMELORD_RSC = "game/client/resource/blue-slimelord.png";
-   // public static final String GREEN_SLIMELORD_RSC = "game/client/resource/yellow-slimelord.png";
-   // public static final String ORANGE_SLIMELORD_RSC = "game/client/resource/orange-slimelord.png";
-   // public static final String RED_SLIMELORD_RSC = "game/client/resource/red-slimelord.png";
-    public static final String TOKENTENT_RSC = "game/client/resource/tokentent.png";    // unconquered
     public static final String HIGHLIGHTED_TILE_RSC = "game/client/resource/highlight.png";
 
-    //public static final String SLIME1_RSC = "game/client/resource/slime1.png";
-   // public static final String SLIME2_RSC = "game/client/resource/slime2.png";
-   // public static final String SLIME3_RSC = "game/client/resource/slime3.png";
-   // public static final String SLIME4_RSC = "game/client/resource/slime4.png";
+    // Tents
+    public static final String OPEN_TOKENTENT = "game/client/resource/tokentent.png";    // unconquered
+    public static final String GREEN_TOKENTENT = "game/client/resource/green-tokentent.png";
+    public static final String RED_TOKENTENT = "game/client/resource/red-tokentent.png";
+    public static final String YELLOW_TOKENTENT = "game/client/resource/orange-tokentent.png";
+    public static final String BLUE_TOKENTENT = "game/client/resource/blue-tokentent.png";
+
+    // Arenas
+    public static final String OPEN_ARENA = "game/client/resource/arena.png";           // unconquered
+    public static final String GREEN_ARENA= "game/client/resource/green-arena.png";
+    public static final String RED_ARENA = "game/client/resource/red-arena.png";
+    public static final String YELLOW_ARENA = "game/client/resource/orange-arena.png";
+    public static final String BLUE_ARENA= "game/client/resource/blue-arena.png";
 
     public static int NUMROWS = 50;
     public static int NUMCOLS = 200;
@@ -70,10 +74,6 @@ public class Board {
         this.slimeLordTwo = new SlimeLord(1);
         this.slimeLordThree = new SlimeLord(2);
         this.slimeLordFour = new SlimeLord(3);
-        //gameApi.createEntity(slimeLordOne);
-        //gameApi.createEntity(slimeLordTwo);
-        //gameApi.createEntity(slimeLordThree);
-        //gameApi.createEntity(slimeLordFour);
 
         turn = new Turn(gameApi, gameClient.myId);
 
@@ -180,17 +180,20 @@ public class Board {
     public void initialize() {
         ResourceManager.loadImage(OVERWORLD_RSC);
         ResourceManager.loadImage(TILE_RSC);
-        //ResourceManager.loadImage(BLUE_SLIMELORD_RSC);
-        //ResourceManager.loadImage(GREEN_SLIMELORD_RSC);
-        //ResourceManager.loadImage(ORANGE_SLIMELORD_RSC);
-        //ResourceManager.loadImage(RED_SLIMELORD_RSC);
-        ResourceManager.loadImage(TOKENTENT_RSC);
-
-        //ResourceManager.loadImage(SLIME1_RSC);
-       // ResourceManager.loadImage(SLIME2_RSC);
-       // ResourceManager.loadImage(SLIME3_RSC);
-       // ResourceManager.loadImage(SLIME4_RSC);
         ResourceManager.loadImage(HIGHLIGHTED_TILE_RSC);
+
+        ResourceManager.loadImage(OPEN_TOKENTENT);
+        ResourceManager.loadImage(GREEN_TOKENTENT);
+        ResourceManager.loadImage(RED_TOKENTENT);
+        ResourceManager.loadImage(YELLOW_TOKENTENT);
+        ResourceManager.loadImage(BLUE_TOKENTENT);
+
+        ResourceManager.loadImage(OPEN_ARENA);
+        ResourceManager.loadImage(GREEN_ARENA);
+        ResourceManager.loadImage(RED_ARENA);
+        ResourceManager.loadImage(YELLOW_ARENA);
+        ResourceManager.loadImage(BLUE_ARENA);
+
         // place = 0
         // placeUp = 1
         // placeRight = 2
