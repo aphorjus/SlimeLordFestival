@@ -30,6 +30,8 @@ Slimes can also be combined and upgraded. To combine slimes the player simply mo
 
 Every slime can move and attack once every turn, and each Slimelord can use one ability each turn. The goal of a battle is to destroy the opposing Slimelords two factories.
 
+A test battle state can be entered from the Overworld by pressing "b". This will enter a battle between to slimeLords that between the two of them have every ability and special slime in the game. 
+
 
 ### Prerequisites
 
