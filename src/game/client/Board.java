@@ -178,6 +178,14 @@ public class Board {
         lord.tilePosition = new Vector(row, col);
     }
 
+    public void removeLoser(int loserId) {
+        for (SlimeLord lord : slimeLords) {
+            if (lord.clientID == loserId) {
+                tiles[(int)lord.tilePosition.getX()][(int)lord.tilePosition.getY()].heldSlimeLord = null;
+            }
+        }
+    }
+
     public void render(GameContainer container, StateBasedGame game,
                        Graphics g) throws SlickException {
         float x1 = 0;
@@ -210,7 +218,7 @@ public class Board {
         if (turn.turnID == gameClient.myId) {
             g.drawString("My turn!", 500, 470);
         } else {
-            g.drawString("Player " + turn.turnID + 1 + "'s turn", 500, 470);
+            g.drawString("Player " + (turn.turnID + 1) + "'s turn", 500, 470);
         }
 
         if (fightPopup != null) fightPopup.render(g);

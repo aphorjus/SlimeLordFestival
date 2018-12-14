@@ -49,6 +49,7 @@ public class GameClient extends StateBasedGame {
     public static int ImageHeight = 800;
 
     public int battleStateWinner = -1;
+    public int battleStateLoser = -1;
 
     public int myId = -1;
 
@@ -84,6 +85,10 @@ public class GameClient extends StateBasedGame {
 
     public void setBattleStateWinner(int id) {
         battleStateWinner = id;
+    }
+
+    public void setBattleStateLoser(int id){
+        battleStateLoser = id;
     }
 
     public int getTokens(){
