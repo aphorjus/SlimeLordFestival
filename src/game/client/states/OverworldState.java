@@ -109,27 +109,20 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         GameClient bg = (GameClient)sbg;
         Board board = bg.getBoard();
         // board.setUp(gameApi, gameClient);
-        board.updateSlimelord();
         // board.showHighlightedPaths(input.getMouseX(), input.getMouseY());
 
-        /*
-        if(input.isMousePressed(input.MOUSE_LEFT_BUTTON)){
-            board.moveTo(input.getMouseX(), input.getMouseY());
-        }
-        */
-
-        if (input.isKeyDown(Input.KEY_LEFT)){
-            board.moveLeft();
-        }
-        if (input.isKeyDown(Input.KEY_RIGHT)){
-            board.moveRight();
-        }
-        if (input.isKeyDown(Input.KEY_UP)){
-            board.moveUp();
-        }
-        if (input.isKeyDown(Input.KEY_DOWN)){
-            board.moveDown();
-        }
+//        if (input.isKeyDown(Input.KEY_LEFT)){
+//            board.moveLeft();
+//        }
+//        if (input.isKeyDown(Input.KEY_RIGHT)){
+//            board.moveRight();
+//        }
+//        if (input.isKeyDown(Input.KEY_UP)){
+//            board.moveUp();
+//        }
+//        if (input.isKeyDown(Input.KEY_DOWN)){
+//            board.moveDown();
+//        }
 
         board.update(delta);
         if (input.isKeyDown(Input.KEY_A)) {
@@ -165,6 +158,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
                 }
             } else if (gameClient.myId == board.turn.turnID && endButton.checkClick(input.getMouseX(), input.getMouseY())) {
                 gameApi.endTurn();
+            } else {
+                board.click(input.getMouseX(), input.getMouseY());
             }
         }
 
@@ -204,7 +199,6 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     }
 
     public void onDeleteEntity(int entityId) {
-        board.onDeleteEntity(entityId);
     }
 
     public void onMessage(int senderId, String message) {
@@ -216,7 +210,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     public void onEndTurn() {
         System.out.println("end turn detected.");
-        board.endTurn();
+        board.endTurn(gameClient);
     }
 
     public void onLobbyClientListUpdate(String[] clientNames) {}
