@@ -4,7 +4,7 @@ import game.api.GameApi;
 import org.newdawn.slick.Game;
 
 public class Turn {
-    public static int NUM_MOVES = 10;
+    public static int NUM_MOVES = 15;
     public static int NUM_PLAYERS = 4;
     private int currentID;
     private int turnID;
@@ -28,6 +28,17 @@ public class Turn {
             return true;
         }
         return false;
+    }
+
+    public void updateMoves(int delta){
+        move = move + delta;
+        if(move == NUM_MOVES){
+            gameApi.endTurn();
+        }
+    }
+
+    public int getMove(){
+        return move;
     }
 
     public boolean isMyMove() {
