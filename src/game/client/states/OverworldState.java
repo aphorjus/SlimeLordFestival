@@ -156,6 +156,12 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             shopMusic.loop();
         }
 
+        if (input.isKeyDown(Input.KEY_P)){
+            currentShop.viewPrices = true;
+        }else{
+            currentShop.viewPrices = false;
+        }
+
 
         if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
             if(inShop == true){
