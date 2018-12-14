@@ -29,7 +29,7 @@ public class GameClient extends StateBasedGame {
     String name;
     int width;
     int height;
-    int tokens = 5000;
+    int tokens = 0;
     LinkedList<SlimeLord> slimeLords;
     public Player[] players;
 

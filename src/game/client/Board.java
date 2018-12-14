@@ -145,13 +145,13 @@ public class Board {
         }
 
         if (gameClient.players.length > 2) {
-            moveSlimelordTo(slimeLordThree, 41, 81);
+            moveSlimelordTo(slimeLordThree, 39, 81);
             slimeLords.add(slimeLordThree);
 
         }
 
         if (gameClient.players.length > 3) {
-            moveSlimelordTo(slimeLordFour, 41, 5);
+            moveSlimelordTo(slimeLordFour, 39, 5);
             slimeLords.add(slimeLordFour);
         }
     }

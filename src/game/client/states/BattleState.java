@@ -236,15 +236,15 @@ public class BattleState extends BasicGameState implements GameApiListener {
         if (input.isKeyPressed(Input.KEY_S)){
             battleGrid.switchMode();
         }
-        if ( input.isKeyPressed(Input.KEY_1) ){//&& isMyTurn()){
+        if ( input.isKeyPressed(Input.KEY_1) && isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(0));
             this.currentAbility = 0;
         }
-        if ( input.isKeyPressed(Input.KEY_2) ){//&& isMyTurn()){
+        if ( input.isKeyPressed(Input.KEY_2) && isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(1));
             this.currentAbility = 1;
         }
-        if ( input.isKeyPressed(Input.KEY_3) ){//&& isMyTurn()){
+        if ( input.isKeyPressed(Input.KEY_3) && isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(2));
             this.currentAbility = 2;
         }
