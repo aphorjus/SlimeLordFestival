@@ -143,6 +143,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
                 currentShop.checkClick(input.getMouseX(), input.getMouseY());
                 if(exitButton.checkClick(input.getMouseX(),input.getMouseY())){
                     inShop = false;
+                    currentShop.exitShop();
                     shopMusic.stop();
                     overworldMusic.loop();
                 }

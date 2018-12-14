@@ -26,6 +26,8 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     public static final String STARTGAME = "game/client/resource/StartGame.png";
     public static final String LOBBYBOARD = "game/client/resource/LobbyBoard.png";
     public static final String LOBBYBACKGROUND = "game/client/resource/LobbyBackground.png";
+    public static final String LOBBYFOREGROUND = "game/client/resource/LobbyForeground.png";
+
     public static final String LOBBYBACKGROUND2 = "game/client/resource/LobbyBackground.png";
     public static final String LOBBYTITLE = "game/client/resource/LobbyTitle.png";
     public static final String HOSTTITLE = "game/client/resource/ServerInfo.png";
@@ -62,6 +64,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         ResourceManager.loadImage(STARTGAME);
         ResourceManager.loadImage(LOBBYBACKGROUND);
         ResourceManager.loadImage(LOBBYBACKGROUND2);
+        ResourceManager.loadImage(LOBBYFOREGROUND);
         ResourceManager.loadImage(LOBBYBOARD);
         ResourceManager.loadImage(HOSTTITLE);
         ResourceManager.loadImage(LOBBYTITLE);
@@ -114,6 +117,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         }
         g.drawImage(ResourceManager.getImage(LOBBYBACKGROUND),(float)backgroundOneX,0);
         g.drawImage(ResourceManager.getImage(LOBBYBACKGROUND),(float)backgroundTwoX,0);
+        //g.drawImage(ResourceManager.getImage(LOBBYFOREGROUND), 0,0);
     }
 
     @Override

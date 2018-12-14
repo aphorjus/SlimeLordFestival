@@ -2,7 +2,9 @@ package game.entities.building;
 
 import game.client.Button;
 import game.client.GameClient;
+import game.entities.ShopkeepAnimation;
 import game.entities.slimelord.SlimeLord;
+import jig.Vector;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.*;
@@ -41,7 +43,7 @@ public class Shop{
     Button buyMassHeal = null;
     Button buySummonBasicSlime = null;
     Button buySummonLancer = null;
-
+    ShopkeepAnimation idleA = new ShopkeepAnimation(new Vector(290, 345));
     SlimeLord currentSlimeLord = null;
     String currentMessage = "Welcome to my shop Slime Lord!";
     public static final String LOBBYBOARD = "game/client/resource/LobbyBoard.png";
@@ -293,7 +295,8 @@ public class Shop{
         g.drawString("Abilities",455,215);
 
         if(currentShopkeeper == 1){
-            g.drawImage(shopkeeper,230,300);
+            //g.drawImage(shopkeeper,230,300);
+            idleA.render(g);
         }else{
             g.drawImage(shopkeeper2,230,300);
         }
