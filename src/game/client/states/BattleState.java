@@ -261,6 +261,8 @@ public class BattleState extends BasicGameState implements GameApiListener {
             // DO SOMETHING?!?
             // Enter overworld and tell it who won somehow
             //
+            gameClient.setBattleWinner(winner);
+            gameClient.enterState(GameClient.OVERWORLD_STATE);
         }
     }
 
