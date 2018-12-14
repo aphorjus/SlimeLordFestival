@@ -185,6 +185,14 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
                 factories.add(new SlimeFactory(jsonFactories.getJSONObject(i)));
             }
         }
+
+        if (data.has("specialSlimes")){
+            JSONArray jsonSlimes = data.getJSONArray("specialSlimes");
+
+            for (int i = 0; i < jsonSlimes.length(); i++){
+                specialSlimes.add(jsonSlimes.getString(i));
+            }
+        }
     }
 
     public String getEntityType() {
@@ -223,6 +231,16 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
             }
 
             data.put("factories", jsonFactories);
+        }
+
+        if (specialSlimes.size() > 0) {
+            JSONArray jsonSlimes = new JSONArray();
+
+            for (String slime : specialSlimes) {
+                jsonSlimes.put(slime);
+            }
+
+            data.put("specialSlimes", jsonSlimes);
         }
 
         return data;
