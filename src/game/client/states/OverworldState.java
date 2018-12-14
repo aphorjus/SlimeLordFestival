@@ -117,6 +117,26 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
         board.turn.addLoser(loserId);
         board.removeLoser(loserId);
+
+        boolean iAmALoser = false;
+
+        for (int i : board.turn.loserIds) {
+            if (i == gameClient.myId) iAmALoser = true;
+        }
+
+        if (iAmALoser) callMeALoser();
+
+        if (!iAmALoser && board.turn.loserIds.size() == gameClient.players.length - 1) {
+            callMeAWinner();
+        }
+    }
+
+    void callMeALoser() {
+        // This is where you set all the logic to call the player a loser
+    }
+
+    void callMeAWinner() {
+        // this is wher you set all the logic to call the player a winner
     }
 
     void battleWon() {
