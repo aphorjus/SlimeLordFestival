@@ -147,8 +147,8 @@ public class GameClient extends StateBasedGame {
 
     public static void main(String[] args) {
         AppGameContainer app;
-        int width = 1392;
-        int height = 800;
+        int width = 1000;
+        int height = 500;
 
         try {
             app = new AppGameContainer(new GameClient("SlimeLordFestival", width, height));

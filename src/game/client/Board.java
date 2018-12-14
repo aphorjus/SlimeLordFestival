@@ -78,7 +78,7 @@ public class Board {
 
         turn = new Turn(gameApi, gameClient.myId);
         tents = new ArrayList<>();
-        for(int i = 0; i < 12; i++){
+        for(int i = 0; i < 1; i++){
             TokenTents tent = new TokenTents(4,0,0);
             tents.add(tent);
         }
