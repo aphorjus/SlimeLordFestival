@@ -37,7 +37,7 @@ public class Board {
 
     public static int NUMROWS = 50;
     public static int NUMCOLS = 200;
-    public static int KEYBOARD_COUNTDOWN = 800;
+    public static int KEYBOARD_COUNTDOWN = 100;
     private int countdown = KEYBOARD_COUNTDOWN;
     private boolean acceptKeyboard = false;
     private final Tile[][] tiles;
@@ -210,8 +210,12 @@ public class Board {
             slimeLord.render(g);
             slimeLord.positionToOrigin();
         }
+
         for(TokenTents tent: tents){
+            tent.setCameraOffset(new Vector(xoffset, yoffset));
+            tent.positionForCamera();
             tent.render(g);
+            tent.positionToOrigin();
         }
     }
 

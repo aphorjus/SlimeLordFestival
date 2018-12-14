@@ -1,6 +1,7 @@
 package game.entities.building;
 
 import game.client.Board;
+import jig.Vector;
 import org.newdawn.slick.Graphics;
 
 import jig.Entity;
@@ -9,6 +10,7 @@ import jig.ResourceManager;
 public class TokenTents extends Entity {
 
     public int owner;
+    public Vector cameraOffset = new Vector(0, 0);
 
     public TokenTents(final int owner, final int x, final int y) {
         super((float) x, (float) y);
@@ -21,6 +23,19 @@ public class TokenTents extends Entity {
         addImageWithBoundingBox(ResourceManager.getImage(Board.YELLOW_TOKENTENT));
 
     }
+
+    public void setCameraOffset(Vector offset) {
+        cameraOffset = offset;
+    }
+
+    public void positionForCamera() {
+        translate(-cameraOffset.getX(), -cameraOffset.getY());
+    }
+
+    public void positionToOrigin() {
+        translate(cameraOffset.getX(), cameraOffset.getY());
+    }
+
 
     public void render(Graphics g) {
         float x = getX();

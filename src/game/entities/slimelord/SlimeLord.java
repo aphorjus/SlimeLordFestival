@@ -61,7 +61,6 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
                 this.color = "yellow";
                 break;
         }
-        System.out.println(this.color);
 
         this.id = UUID.randomUUID().toString();
         this.totalMovement = 10;
