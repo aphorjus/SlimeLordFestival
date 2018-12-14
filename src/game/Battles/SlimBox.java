@@ -1,7 +1,9 @@
 package game.Battles;
 
+import game.client.Button;
 import game.entities.slime.Slime;
 import game.entities.slimelord.SlimeLord;
+import jig.ResourceManager;
 import jig.Vector;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -21,9 +23,10 @@ public class SlimBox {
     int maxHP;
     int currentHP;
 
-//    Slime slime;
+    //    Slime slime;
     HealthBar healthBar;
     LinkedList<String> availableUpgrades;
+    LinkedList<Button> upgradeButtons;
 
 
     public SlimBox( Slime slime, SlimeLord slimeLord ){
@@ -42,9 +45,30 @@ public class SlimBox {
         if( slime.clientID == slimeLord.clientID ) {
             this.availableUpgrades = slime.getAvailableUpgrades(slimeLord.specialSlimes);
         }
+
+    }
+
+    public void initButtons(){
+        for( int i = 0; i < availableUpgrades.size(); i++ ){
+
+            switch( availableUpgrades.get(i) ){
+
+                case "basic":
+                    upgradeButtons.add(new Button(position.getX(), position.getY()+(16*i), ResourceManager.getImage(  )));
+                    break;
+                case "mortar":              ;           break;
+                case "striker":             ;          break;
+                case "lancer":              ;           break;
+                case "advancedStriker":     ;  break;
+                case "advancedLancer":      ;   break;
+
+            }
+
+        }
     }
 
     public void render(Graphics g){
+
         Color c = g.getColor();
         g.setColor(Color.gray);
         g.fillRect(position.getX(), position.getY(), width, height);
@@ -53,3 +77,4 @@ public class SlimBox {
         g.setColor(c);
     }
 }
+
