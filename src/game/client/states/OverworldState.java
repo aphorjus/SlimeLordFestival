@@ -4,12 +4,15 @@ import game.*;
 import game.api.GameApi;
 import game.client.Board;
 import game.api.GameApiListener;
+import game.client.Button;
 import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
+import game.entities.TokenAnimation;
 import game.entities.building.Shop;
 import game.entities.slimelord.SlimeLord;
 import jig.ResourceManager;
+import jig.Vector;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
@@ -20,7 +23,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     String BLUE_SLIMELORD_IDLE = "game/client/resource/slime-lord-blue.png";
     String YELLOW_SLIMELORD_IDLE = "game/client/resource/slime-lord-yellow.png";
     String RED_SLIMELORD_IDLE = "game/client/resource/slime-lord-red.png";
-
+    Music overworldMusic = null;
+    Music shopMusic = null;
     String GREEN_IDLE = "game/client/resource/green-slime-idle.png";
     String GREEN_ATTACK = "game/client/resource/green-slime-attack.png";
     String GREEN_DEATH = "game/client/resource/green-slime-death.png";
@@ -43,6 +47,9 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     GameClient gameClient;
     Shop currentShop = null;
     boolean inShop = false;
+    Button endButton;
+    Button exitButton;
+    TokenAnimation tokenAnimation = new TokenAnimation(new Vector(25, 480));
 
     private Board board;
 
@@ -51,10 +58,20 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         gameClient = (GameClient)sbg;
         gameApi = new GameApi((GameClient)sbg, this);
         inputManager = gameClient.inputManager;
+
+        try {
+            overworldMusic = new Music("game/client/resource/Caketown1.wav");
+            shopMusic = new Music("game/client/resource/blanchet.wav");
+            endButton = new Button(950, 450, new Image("game/client/resource/end-button.png"));
+            exitButton = new Button(700, 430, new Image("game/client/resource/ExitShop.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
+        overworldMusic.loop();
         ResourceManager.loadImage(GREEN_SLIMELORD_IDLE);
         ResourceManager.loadImage(BLUE_SLIMELORD_IDLE);
         ResourceManager.loadImage(YELLOW_SLIMELORD_IDLE);
@@ -92,23 +109,21 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         GameClient bg = (GameClient)sbg;
         Board board = bg.getBoard();
         // board.setUp(gameApi, gameClient);
-        board.updateSlimelord();
-        board.showHighlightedPaths(input.getMouseX(), input.getMouseY());
-        if(input.isMousePressed(input.MOUSE_LEFT_BUTTON)){
-            board.moveTo(input.getMouseX(), input.getMouseY());
-        }
-        if (input.isKeyDown(Input.KEY_LEFT)){
-            board.moveLeft();
-        }
-        if (input.isKeyDown(Input.KEY_RIGHT)){
-            board.moveRight();
-        }
-        if (input.isKeyDown(Input.KEY_UP)){
-            board.moveUp();
-        }
-        if (input.isKeyDown(Input.KEY_DOWN)){
-            board.moveDown();
-        }
+        // board.showHighlightedPaths(input.getMouseX(), input.getMouseY());
+
+//        if (input.isKeyDown(Input.KEY_LEFT)){
+//            board.moveLeft();
+//        }
+//        if (input.isKeyDown(Input.KEY_RIGHT)){
+//            board.moveRight();
+//        }
+//        if (input.isKeyDown(Input.KEY_UP)){
+//            board.moveUp();
+//        }
+//        if (input.isKeyDown(Input.KEY_DOWN)){
+//            board.moveDown();
+//        }
+
         board.update(delta);
         if (input.isKeyDown(Input.KEY_A)) {
             board.shiftLeft();
@@ -129,11 +144,22 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             SlimeLord testSlimeLord = new SlimeLord(0);
             currentShop.setCurrentSlimeLord(testSlimeLord);
             inShop = true;
+            overworldMusic.pause();
+            shopMusic.loop();
         }
 
         if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
             if(inShop == true){
                 currentShop.checkClick(input.getMouseX(), input.getMouseY());
+                if(exitButton.checkClick(input.getMouseX(),input.getMouseY())){
+                    inShop = false;
+                    shopMusic.stop();
+                    overworldMusic.loop();
+                }
+            } else if (gameClient.myId == board.turn.turnID && endButton.checkClick(input.getMouseX(), input.getMouseY())) {
+                gameApi.endTurn();
+            } else {
+                board.click(input.getMouseX(), input.getMouseY());
             }
         }
 
@@ -146,9 +172,17 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         Board board = bg.getBoard();
         board.render(gc, sbg, g);
 
-        if(inShop == true){
+        if (inShop == true){
             currentShop.render(g);
+            exitButton.render(g);
         }
+
+        if (!inShop && gameClient.myId == board.turn.turnID) {
+            endButton.render(g);
+        }
+
+        tokenAnimation.render(g);
+        g.drawString(gameClient.getTokens() + "", 40, 470);
     }
 
     @Override
@@ -165,12 +199,9 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     }
 
     public void onDeleteEntity(int entityId) {
-        board.onDeleteEntity(entityId);
     }
 
     public void onMessage(int senderId, String message) {
-        System.out.println(senderId);
-        System.out.println(message);
     }
 
     public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {}
@@ -179,7 +210,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     public void onEndTurn() {
         System.out.println("end turn detected.");
-        board.endTurn();
+        board.endTurn(gameClient);
     }
 
     public void onLobbyClientListUpdate(String[] clientNames) {}

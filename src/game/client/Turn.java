@@ -4,10 +4,10 @@ import game.api.GameApi;
 import org.newdawn.slick.Game;
 
 public class Turn {
-    public static int NUM_MOVES = 15;
+    public static int NUM_MOVES = 60;
     public static int NUM_PLAYERS = 4;
     private int currentID;
-    private int turnID;
+    public int turnID;
     private int move;
     private GameApi gameApi;
 
@@ -42,13 +42,13 @@ public class Turn {
     }
 
     public boolean isMyMove() {
-        // System.out.println(currentID + " " + turnID + " " + move);
+        //System.out.println(currentID + " " + turnID + " " + move);
         return currentID == turnID && move < NUM_MOVES;
     }
 
     // called by gameApi to let players know that the current turn has ended.
-    public void turnHasEnded() {
-        turnID = (turnID + 1) % NUM_PLAYERS;
+    public void turnHasEnded(GameClient gc) {
+        turnID = (turnID + 1) % gc.players.length;
         move = 0;
     }
 

@@ -30,7 +30,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     public static final String LOBBYTITLE = "game/client/resource/LobbyTitle.png";
     public static final String HOSTTITLE = "game/client/resource/ServerInfo.png";
     public static final String START = "game/client/resource/Start.png";
-
+    Music titleMusic = null;
     Button joinButton = null;
     Button hostButton = null;
     Button startButton = null;
@@ -71,6 +71,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         joinButton = new Button(60, 440, joinGame);
         hostButton = new Button(640, 440, hostGame);
         startButton = new Button(604, 358, startGame);
+        titleMusic = new Music("game/client/resource/mainTitle.wav");
         gameApi = new GameApi((GameClient) sbg, this);
         failedConnect = false;
         connected = false;
@@ -97,6 +98,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
+        titleMusic.loop();
         gameApi = new GameApi((GameClient)sbg, this);
 
     }

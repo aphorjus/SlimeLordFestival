@@ -52,7 +52,7 @@ public class Pathfinding {
 
     public void find(Tile node, char last, String path, List<String> paths) {
         if (node != null && !node.visited) {
-            if (path.length() == numSteps || node.getContents().equals("T")) {
+            if (path.length() == numSteps || node.getContents().startsWith("T")) {
                 if ( !paths.contains(path) ) {
                     paths.add(path);
                 }

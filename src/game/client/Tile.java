@@ -1,5 +1,7 @@
 package game.client;
 
+import game.entities.slimelord.SlimeLord;
+import jig.Vector;
 import org.newdawn.slick.Graphics;
 
 import jig.Entity;
@@ -19,6 +21,7 @@ public class Tile extends Entity {
     private float yoffset = 0;
     public boolean visited;
     public boolean isHighlighted;
+    public SlimeLord heldSlimeLord;
 
     public Tile(final String contents, final int row, final int col) {
         super((float) col*16, (float) row*16);
@@ -27,35 +30,32 @@ public class Tile extends Entity {
         this.col = col;
 
         addImageWithBoundingBox(ResourceManager.getImage(Board.TILE_RSC));
-        //addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));	// blue
-        //addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));	// green
-        //addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));	// orange
-        //addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));	    // red
         addImageWithBoundingBox(ResourceManager.getImage(Board.HIGHLIGHTED_TILE_RSC));
     }
 
-    public void render(Graphics g) {
+    public void setHeldSlimeLord(SlimeLord lord) {
+        heldSlimeLord = lord;
+    }
+
+    public void render(Graphics g, Vector cameraOffset) {
         float x = getX() - xoffset;
         float y = getY() - yoffset;
         if(isHighlighted) {
             g.drawImage(ResourceManager.getImage(Board.HIGHLIGHTED_TILE_RSC), x, y);
         }
-        else if(!contents.startsWith("T")) {
+        else if(contents.startsWith("T")) {
+            int id = Integer.parseInt(contents.split(":")[1]);
+        } else {
             g.drawImage(ResourceManager.getImage(Board.TILE_RSC), x, y);
         }
-        else if (contents.equals("1")) {	// blue
-          //  g.drawImage(ResourceManager.getImage(Board.SLIME1_RSC), x+1, y+1);
-        }
-        else if (contents.equals("2")) { // green
-          //  g.drawImage(ResourceManager.getImage(Board.SLIME2_RSC), x+1, y+1);
-        }
-        else if (contents.equals("3")) { // orange
-          //  g.drawImage(ResourceManager.getImage(Board.SLIME3_RSC), x+1, y+1);
-        }
-        else if (contents.equals("4")) { // red
-          //  g.drawImage(ResourceManager.getImage(Board.SLIME4_RSC), x+1, y+1);
-        }
 
+
+        if (heldSlimeLord != null) {
+            heldSlimeLord.setCameraOffset(cameraOffset);
+            heldSlimeLord.positionForCamera();
+            heldSlimeLord.render(g);
+            heldSlimeLord.positionToOrigin();
+        }
     }
 
     public int getRow() {

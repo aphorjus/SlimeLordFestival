@@ -68,7 +68,7 @@ public class BattleAbility extends SlimeLordAbility {
            case "damage":           selectDamage();             break;
            case "slimeStrike":      selectSlimeStrike();        break;
            case "slimeBall":        selectSlimeBall();          break;
-           case "massHeal":         selectMassHeal();
+           case "massHeal":         selectMassHeal();           break;
            case "summonBasicSlime": selectSummonBasicSlime();   break;
            case "summonLancer":     selectSummonLancer();       break;
            default: System.err.println("No battle ability "+ability); return;
@@ -194,7 +194,9 @@ public class BattleAbility extends SlimeLordAbility {
 
             if( effectsThis( effectedTile ) ){
                 effectedTile.damageOccupent(ablityDamage);
+                used = true;
             }
+            effectedTile.addSplash(currentPlayerId);
         }
     }
 
@@ -207,6 +209,8 @@ public class BattleAbility extends SlimeLordAbility {
                 Slime summon = new Slime(1, currentPlayerId);
                 summon.upgradeTo(summonType);
                 effectedTile.addOccupent(summon);
+                effectedTile.addSplash(currentPlayerId);
+                used = true;
             }
         }
     }
@@ -226,7 +230,12 @@ public class BattleAbility extends SlimeLordAbility {
     public void onEndTurn(int activePlayer){
 
         currentPlayerId = activePlayer;
+        attackPattern.set(AttackPattern.SINGLE_TARGET, false);
         selected = false;
         used = false;
+    }
+
+    public int getCurrentPlayerId() {
+        return currentPlayerId;
     }
 }
