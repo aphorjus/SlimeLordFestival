@@ -108,8 +108,8 @@ public class StartUpState extends BasicGameState implements GameApiListener {
 
     public void backgoundMotion(Graphics g){
         //Parallex lobby background
-        backgroundOneX =backgroundOneX+.009;
-        backgroundTwoX=backgroundTwoX+.009;
+        backgroundOneX =backgroundOneX+.25;
+        backgroundTwoX=backgroundTwoX+.25;
         if(backgroundOneX>=999) {
             backgroundOneX = -1000;
         }else if(backgroundTwoX >=999){
