@@ -145,6 +145,11 @@ public class GameClient extends StateBasedGame {
         addState(new BattleState());
     }
 
+    public void startBattle(SlimeLord one, SlimeLord two) {
+        System.out.println(one.id);
+        System.out.println(two.id);
+    }
+
     public static void main(String[] args) {
         AppGameContainer app;
         int width = 1000;

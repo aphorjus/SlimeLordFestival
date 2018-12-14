@@ -195,7 +195,9 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     public void onMessage(int senderId, String message) {
     }
 
-    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {}
+    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {
+        gameClient.startBattle(lordOne, lordTwo);
+    }
 
     public void onSetStateToOverworld() {}
 

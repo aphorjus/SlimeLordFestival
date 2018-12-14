@@ -564,6 +564,9 @@ public class Board {
                     currentSlimelord.tilePosition = new Vector(row, col);
                     currentSlimelord.hasMoved = true;
                     gameApi.createEntity(currentSlimelord);
+
+                    checkForBattle(currentSlimelord);
+
                     currentSlimelord = null;
                 }
             } else { // select a slime lord if available
@@ -578,6 +581,33 @@ public class Board {
         }
 
         return false;
+    }
+
+    void checkForBattle(SlimeLord lord) {
+        int x = (int)lord.tilePosition.getX();
+        int y = (int)lord.tilePosition.getY();
+
+        SlimeLord opponent = null;
+
+        if (x > 0) {
+            if (tiles[x - 1][y] != null && tiles[x - 1][y].heldSlimeLord != null) opponent = tiles[x - 1][y].heldSlimeLord;
+        }
+
+        if (x < NUMROWS) {
+            if (tiles[x + 1][y] != null && tiles[x + 1][y].heldSlimeLord != null) opponent = tiles[x + 1][y].heldSlimeLord;
+        }
+
+        if (y > 0) {
+            if (tiles[x][y - 1] != null && tiles[x][y - 1].heldSlimeLord != null) opponent = tiles[x][y - 1].heldSlimeLord;
+        }
+
+        if (y < NUMCOLS) {
+            if (tiles[x][y + 1] != null && tiles[x][y + 1].heldSlimeLord != null) opponent = tiles[x][y + 1].heldSlimeLord;
+        }
+
+        if (opponent != null) {
+            gameApi.startBattle(lord, opponent);
+        }
     }
 
     public void highlightMovement(int row, int col, int rmvmt) {
