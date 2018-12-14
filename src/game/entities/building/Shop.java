@@ -75,6 +75,11 @@ public class Shop{
         currentSlimeLord = nsl;
     }
 
+    public void exitShop(){
+        currentMessage = "Welcome back slime lord, did ya miss me?";
+        currentShopkeeper = 1;
+    }
+
     public void checkClick(int x, int y) {
 
         if(buyStriker.checkClick(x,y) == true){

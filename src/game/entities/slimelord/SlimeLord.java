@@ -68,6 +68,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         this.remainingMovement = totalMovement;
         this.abilities = new LinkedList<>();
         this.factories = new LinkedList<>();
+        this.specialSlimes = new LinkedList<>();
         this.factories.add(new SlimeFactory(this.clientID));
         this.factories.add(new SlimeFactory(this.clientID));
 

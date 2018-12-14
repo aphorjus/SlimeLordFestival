@@ -15,6 +15,8 @@ import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import java.util.LinkedList;
+
 public class OverworldState extends BasicGameState implements GameApiListener {
     String GREEN_SLIMELORD_IDLE = "game/client/resource/slime-lord-green.png";
     String BLUE_SLIMELORD_IDLE = "game/client/resource/slime-lord-blue.png";
@@ -95,7 +97,11 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         board.updateSlimelord();
         board.showHighlightedPaths(input.getMouseX(), input.getMouseY());
         if(input.isMousePressed(input.MOUSE_LEFT_BUTTON)){
-            board.moveTo(input.getMouseX(), input.getMouseY());
+            if(inShop == true){
+                currentShop.checkClick(input.getMouseX(),input.getMouseY());
+            }else {
+                board.moveTo(input.getMouseX(), input.getMouseY());
+            }
         }
         if (input.isKeyDown(Input.KEY_LEFT)){
             board.moveLeft();
@@ -129,6 +135,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             SlimeLord testSlimeLord = new SlimeLord(0);
             currentShop.setCurrentSlimeLord(testSlimeLord);
             inShop = true;
+        }
+        if(input.isKeyPressed(Input.KEY_ESCAPE)){
+            currentShop.exitShop();
+            inShop = false;
         }
 
         if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
