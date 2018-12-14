@@ -49,6 +49,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     GameClient gameClient;
     Shop currentShop = null;
     boolean inShop = false;
+    boolean winState = false;
     Button endButton;
     Button exitButton;
     TokenAnimation tokenAnimation = new TokenAnimation(new Vector(25, 480));
@@ -107,6 +108,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         if (gameClient.battleStateWinner != -1 && gameClient.battleStateWinner == gameClient.myId) {
             gameClient.battleStateWinner = -1;
             battleWon();
+        }else{
+            //batteLoss();
         }
 
         removeLoser(gameClient.battleStateLoser);
@@ -117,10 +120,25 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
         board.turn.addLoser(loserId);
         board.removeLoser(loserId);
+        for (int i = 0; i < board.slimeLords.size(); i++) {
+            if(board.slimeLords.get(i).clientID == gameClient.myId){
+                board.slimeLords.remove(i);
+                break;
+            }
+        }
+
+    }
+
+    void battleLoss() {
+        gameClient.setTokens(gameClient.getTokens() + 600);
     }
 
     void battleWon() {
+
         gameClient.setTokens(gameClient.getTokens() + 600);
+        if(board.slimeLords.size() == 2){
+            winState = true;
+        }
     }
 
     @Override
@@ -151,7 +169,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 //            bg.enterState(GameClient.BATTLE_STATE);
 //        }
         
-        if (input.isKeyDown(Input.KEY_X)) {
+        if (input.isKeyDown(Input.KEY_X) && winState == false) {
             SlimeLord shopSlimeLord = null;
             for (int i = 0; i < board.slimeLords.size(); i++) {
                 if(board.slimeLords.get(i).clientID == gameClient.myId){
@@ -188,6 +206,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             } else {
                 board.click(input.getMouseX(), input.getMouseY());
             }
+        }
+
+        if (input.isKeyPressed(Input.KEY_ENTER) && winState == true){
+            gameApi.setGameState("StartUpState");
         }
 
         gameApi.update();
