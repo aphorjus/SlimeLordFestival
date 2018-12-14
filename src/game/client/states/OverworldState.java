@@ -134,8 +134,14 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         }
         
         if (input.isKeyDown(Input.KEY_X)) {
-            SlimeLord testSlimeLord = new SlimeLord(0);
-            currentShop.setCurrentSlimeLord(testSlimeLord);
+            SlimeLord shopSlimeLord = null;
+            for (int i = 0; i < board.slimeLords.size(); i++) {
+                if(board.slimeLords.get(i).clientID == gameClient.myId){
+                    shopSlimeLord = board.slimeLords.get(i);
+                    break;
+                }
+            }
+            currentShop.setCurrentSlimeLord(shopSlimeLord);
             currentShop.setAPI(gameApi);
             inShop = true;
             overworldMusic.pause();

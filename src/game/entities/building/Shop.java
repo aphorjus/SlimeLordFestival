@@ -120,7 +120,7 @@ public class Shop{
     public void exitShop(){
         currentMessage = "Welcome back slime lord, did ya miss me?";
         currentShopkeeper = 1;
-        currentGA.createEntity(currentSlimeLord);
+        //currentGA.createEntity(currentSlimeLord);
     }
 
     public void checkClick(int x, int y) {
