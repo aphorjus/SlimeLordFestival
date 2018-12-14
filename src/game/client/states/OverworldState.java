@@ -55,7 +55,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         inputManager = gameClient.inputManager;
 
         try {
-            endButton = new Button(100, 100, new Image("game/client/resource/end-button.png"));
+            endButton = new Button(950, 450, new Image("game/client/resource/end-button.png"));
         } catch (Exception e) {
             e.printStackTrace();
         }
