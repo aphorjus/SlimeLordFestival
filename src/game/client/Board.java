@@ -106,20 +106,7 @@ public class Board {
         tents.get(11).setPosition(new Vector(26*16, 4));           // tent 12
 
 //        updateSlimelord();
-        switch(gameClient.myId) {
-            case 0:
-                place("", 9, 5);
-                break;
-            case 1:
-                place("", 4, 75);
-                break;
-            case 2:
-                place("", 41, 81);
-                break;
-            case 3:
-                place("", 41, 5);
-                break;
-        }
+
         tents.get(0).setPosition(new Vector(8*16, 10*16));           // tent
 
         /*
@@ -572,11 +559,13 @@ public class Board {
             if (tile == null) return false;
 
             if (currentSlimelord != null) { // where i have selected a slime lord ready to move
-                dehighlightMovement((int)currentSlimelord.tilePosition.getX(), (int)currentSlimelord.tilePosition.getY(), currentSlimelord.totalMovement);
-                currentSlimelord.tilePosition = new Vector(row, col);
-                currentSlimelord.hasMoved = true;
-                gameApi.createEntity(currentSlimelord);
-                currentSlimelord = null;
+                if (tile.isHighlighted) {
+                    dehighlightMovement((int)currentSlimelord.tilePosition.getX(), (int)currentSlimelord.tilePosition.getY(), currentSlimelord.totalMovement);
+                    currentSlimelord.tilePosition = new Vector(row, col);
+                    currentSlimelord.hasMoved = true;
+                    gameApi.createEntity(currentSlimelord);
+                    currentSlimelord = null;
+                }
             } else { // select a slime lord if available
                 currentSlimelord = (tile.heldSlimeLord != null && !tile.heldSlimeLord.hasMoved) ? tile.heldSlimeLord : null;
 
