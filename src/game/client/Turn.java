@@ -4,7 +4,7 @@ import game.api.GameApi;
 import org.newdawn.slick.Game;
 
 public class Turn {
-    public static int NUM_MOVES = 60;
+    public static int NUM_MOVES = 25;
     public static int NUM_PLAYERS = 4;
     private int currentID;
     private int turnID;
