@@ -68,7 +68,7 @@ public class BattleAbility extends SlimeLordAbility {
            case "damage":           selectDamage();             break;
            case "slimeStrike":      selectSlimeStrike();        break;
            case "slimeBall":        selectSlimeBall();          break;
-           case "massHeal":         selectMassHeal();
+           case "massHeal":         selectMassHeal();           break;
            case "summonBasicSlime": selectSummonBasicSlime();   break;
            case "summonLancer":     selectSummonLancer();       break;
            default: System.err.println("No battle ability "+ability); return;

@@ -50,6 +50,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         this.id = UUID.randomUUID().toString();
         this.totalMovement = 10;
         this.remainingMovement = totalMovement;
+        this.specialSlimes = new LinkedList<>();
         this.abilities = new LinkedList<>();
         this.factories = new LinkedList<>();
         this.factories.add(new SlimeFactory(this.clientID));    // Austin, what is this?
