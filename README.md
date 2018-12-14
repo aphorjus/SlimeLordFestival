@@ -14,7 +14,13 @@ Start off by hosting a game with 2-4 players, or joining someone else's game. Up
 4 corners of the Overworld map. Player 1 (Blue Slimelord) will start off by moving their slime 15 tiles in any direction on the path. The 
 highlighted path provides a 15 tiled path for the player, in which they can click to move to any of the highlighted tiles. After player 1 
 makes all his/her moves, it's player 2's turn (Green Slimelord), and so on. Every player can conquer a Token Tent, which generates 100 
-tokens per turn for that player, and can also be conquered by another player. 
+tokens per turn for that player, and can also be conquered by another player. Every player can also press 'X' to enter the Shop, in which 
+they can buy Slimes (6 slimes: basic slimes, lancers, strikers, advanced lancers, advanced strikers, mortars) and Abilities 
+(5 available: slime strike, slime ball, mass heal, summon basic slime, summon advanced lancer). These slimes and abilities are available 
+to use in the Battle State when Slimelords battle each other. 
+If two slimelords run into each other on the Overworld map, they have the option of battling one another or passing each other. If a 
+Slimelord is defeated in battle, that player is eliminated from the game and can no longer play. A winner is declared if they win 3 
+battles, one against each of the other players (if 4 players are playing), and that means that they conquered all of the Arenas. 
 
 ### Prerequisites
 
