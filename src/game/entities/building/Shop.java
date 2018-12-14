@@ -5,10 +5,10 @@ import game.client.GameClient;
 import game.entities.slimelord.SlimeLord;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Rectangle;
 
 
-import java.awt.*;
 import java.util.Arrays;
 
 public class Shop{
@@ -29,6 +29,19 @@ public class Shop{
     Button buyAdvancedStriker = null;
     Button buyAdvancedLancer = null;
     Button buyMortar = null;
+
+    Image slimeStrikeImage = null;
+    Image slimeBallImage = null;
+    Image massHealImage = null;
+    Image summonBasicImage = null;
+    Image summonLancerImage = null;
+
+    Button buySlimeStrike = null;
+    Button buySlimeBall = null;
+    Button buyMassHeal = null;
+    Button buySummonBasicSlime = null;
+    Button buySummonLancer = null;
+
     SlimeLord currentSlimeLord = null;
     String currentMessage = "Welcome to my shop Slime Lord!";
     public static final String LOBBYBOARD = "game/client/resource/LobbyBoard.png";
@@ -43,6 +56,12 @@ public class Shop{
     public static final String ADVANCEDSTRIKER = "game/client/resource/ShopStriker.png";
     public static final String MORTAR = "game/client/resource/ShopStriker.png";
 
+    public static final String SLIMESTRIKE = "game/client/resource/SlimeStrike.png";
+    public static final String SLIMEBALL = "game/client/resource/SlimeBall.png";
+    public static final String MASSHEAL = "game/client/resource/MassHeal.png";
+    public static final String SUMMONBASIC = "game/client/resource/BasicSummon.png";
+    public static final String SUMMONLANCER = "game/client/resource/LancerSummon.png";
+
     GameClient currentG = null;
 
 
@@ -56,6 +75,13 @@ public class Shop{
             shopkeeper2 = new Image(SHOPKEEPER2);
             lancerImage = new Image(LANCER);
             strikerImage = new Image(STRIKER);
+
+            slimeBallImage = new Image(SLIMEBALL);
+            slimeStrikeImage = new Image(SLIMESTRIKE);
+            massHealImage = new Image(MASSHEAL);
+            summonBasicImage = new Image(SUMMONBASIC);
+            summonLancerImage = new Image(SUMMONLANCER);
+
             advancedLancerImage = new Image(ADVANCEDLANCER);
             advancedStrikerImage = new Image(ADVANCEDSTRIKER);
             mortarImage = new Image(MORTAR);
@@ -64,11 +90,18 @@ public class Shop{
         } catch ( Exception e){
             e.printStackTrace();
         }
-        buyStriker = new Button(260, 190, buyImage);
-        buyLancer = new Button(360, 190, buyImage);
-        buyAdvancedStriker = new Button(460, 190, buyImage);
-        buyAdvancedLancer = new Button(560, 190, buyImage);
-        buyMortar = new Button(660, 190, buyImage);
+        buyStriker = new Button(260, 180, buyImage);
+        buyLancer = new Button(360, 180, buyImage);
+        buyAdvancedStriker = new Button(460, 180, buyImage);
+        buyAdvancedLancer = new Button(560, 180, buyImage);
+        buyMortar = new Button(660, 180, buyImage);
+
+        buySlimeStrike = new Button(260, 280, buyImage);
+        buySlimeBall = new Button(360, 280, buyImage);
+        buyMassHeal = new Button(460, 280, buyImage);
+        buySummonBasicSlime = new Button(560, 280, buyImage);
+        buySummonLancer = new Button(660, 280, buyImage);
+
     }
 
     public void setCurrentSlimeLord(SlimeLord nsl){
@@ -167,16 +200,128 @@ public class Shop{
                 currentShopkeeper = 1;
                 currentMessage = "You already own that my dude!";
             }
+        }else if(buySlimeStrike.checkClick(x,y) == true){
+            //If you can buy it
+            if(currentSlimeLord.abilities.contains("slimeStrike") == false){
+                if(currentG.getTokens() >= 500){
+                    currentG.setTokens(currentG.getTokens() - 500);
+                    currentMessage = "Nice purchase!";
+                    buySlimeStrike.setCurrentImage(soldImage);
+                    currentSlimeLord.abilities.add("slimeStrike");
+                    currentShopkeeper = 2;
+                }else{
+                    currentMessage = "Sorry pal, looks like you can't afford that!";
+                    currentShopkeeper = 1;
+                }
+            } else{ //If you already own it
+                currentShopkeeper = 1;
+                currentMessage = "You already own that my dude!";
+            }
+        }else if(buySlimeBall.checkClick(x,y) == true) {
+            //If you can buy it
+            if (currentSlimeLord.abilities.contains("slimeBall") == false) {
+                if (currentG.getTokens() >= 500) {
+                    currentG.setTokens(currentG.getTokens() - 500);
+                    currentMessage = "Nice purchase!";
+                    buySlimeBall.setCurrentImage(soldImage);
+                    currentSlimeLord.abilities.add("slimeBall");
+                    currentShopkeeper = 2;
+                } else {
+                    currentMessage = "Sorry pal, looks like you can't afford that!";
+                    currentShopkeeper = 1;
+                }
+            } else { //If you already own it
+                currentShopkeeper = 1;
+                currentMessage = "You already own that my dude!";
+            }
+        }else if(buyMassHeal.checkClick(x,y) == true) {
+            //If you can buy it
+            if (currentSlimeLord.abilities.contains("massHeal") == false) {
+                if (currentG.getTokens() >= 500) {
+                    currentG.setTokens(currentG.getTokens() - 500);
+                    currentMessage = "Nice purchase!";
+                    buyMassHeal.setCurrentImage(soldImage);
+                    currentSlimeLord.abilities.add("massHeal");
+                    currentShopkeeper = 2;
+                } else {
+                    currentMessage = "Sorry pal, looks like you can't afford that!";
+                    currentShopkeeper = 1;
+                }
+            } else { //If you already own it
+                currentShopkeeper = 1;
+                currentMessage = "You already own that my dude!";
+            }
+        }else if(buySummonBasicSlime.checkClick(x,y) == true) {
+            //If you can buy it
+            if (currentSlimeLord.abilities.contains("summonBasicSlime") == false) {
+                if (currentG.getTokens() >= 500) {
+                    currentG.setTokens(currentG.getTokens() - 500);
+                    currentMessage = "Nice purchase!";
+                    buySummonBasicSlime.setCurrentImage(soldImage);
+                    currentSlimeLord.abilities.add("summonBasicSlime");
+                    currentShopkeeper = 2;
+                } else {
+                    currentMessage = "Sorry pal, looks like you can't afford that!";
+                    currentShopkeeper = 1;
+                }
+            } else { //If you already own it
+                currentShopkeeper = 1;
+                currentMessage = "You already own that my dude!";
+            }
+        }else if(buySummonLancer.checkClick(x,y) == true) {
+            //If you can buy it
+            if (currentSlimeLord.abilities.contains("summonLancer") == false) {
+                if (currentG.getTokens() >= 500) {
+                    currentG.setTokens(currentG.getTokens() - 500);
+                    currentMessage = "Nice purchase!";
+                    buySummonLancer.setCurrentImage(soldImage);
+                    currentSlimeLord.abilities.add("summonLancer");
+                    currentShopkeeper = 2;
+                } else {
+                    currentMessage = "Sorry pal, looks like you can't afford that!";
+                    currentShopkeeper = 1;
+                }
+            } else { //If you already own it
+                currentShopkeeper = 1;
+                currentMessage = "You already own that my dude!";
+            }
         }
-
     }
     public void render(Graphics g) {
         g.drawImage(currentImage,0,0);
+        g.drawString("Slimes",465,90);
+        g.drawString("Abilities",455,215);
+
         if(currentShopkeeper == 1){
-            g.drawImage(shopkeeper,221,245);
+            g.drawImage(shopkeeper,230,300);
         }else{
-            g.drawImage(shopkeeper2,225,270);
+            g.drawImage(shopkeeper2,230,300);
         }
+
+        g.setColor(Color.orange);
+        g.drawString("Slime\nStrike",260,240);
+        g.drawString("Slime\nBall",360,240);
+        g.drawString("Mass\nHeal",460,240);
+        g.drawString("Summon\nBasic",560,240);
+        g.drawString("Summon\nLancer",660,240);
+
+        //g.drawImage(slimeStrikeImage, 260, 220);
+        //g.drawImage(slimeBallImage, 260, 220);
+        //g.drawImage(massHealImage, 260, 220);
+        //g.drawImage(summonBasicImage, 260, 220);
+        //g.drawImage(summonLancerImage, 260, 220);
+        g.drawString("Striker",260,130);
+        g.drawString("Lancer",360,130);
+        g.drawString("Advanced\nStriker",460,110);
+        g.drawString("Advanced\nLancer",560,110);
+        g.drawString("Mortar",660,130);
+        g.setColor(Color.white);
+        g.drawImage(lancerImage,270,140);
+        g.drawImage(lancerImage,370,140);
+        g.drawImage(lancerImage,470,140);
+        g.drawImage(lancerImage,570,140);
+        g.drawImage(lancerImage,670,140);
+
 
         g.drawString(currentMessage,355,350);
         buyStriker.render(g);
@@ -185,18 +330,35 @@ public class Shop{
         buyAdvancedLancer.render(g);
         buyMortar.render(g);
 
-        g.drawImage(strikerImage, 270,150);
-        g.drawImage(lancerImage, 370,150);
-        g.drawImage(advancedStrikerImage, 470,150);
-        g.drawImage(advancedLancerImage, 570,150);
-        g.drawImage(mortarImage, 670,150);
+        buySlimeStrike.render(g);
+        buySlimeBall.render(g);
+        buyMassHeal.render(g);
+        buySummonLancer.render(g);
+        buySummonBasicSlime.render(g);
+
+        //g.drawString("Tokens:" + String.valueOf(currentG.getTokens()),900,480);
 
         /*
-        buyStriker = new Button(260, 190, buyImage);
+
+        buySlimeStrike = new Button(260, 250, buyImage);
+        buySlimeBall = new Button(360, 250, buyImage);
+        buyMassHeal = new Button(460, 250, buyImage);
+        buySummonBasicSlime = new Button(560, 250, buyImage);
+        buySummonLancer = new Button(660, 250, buyImage);
+
         buyLancer = new Button(360, 190, buyImage);
         buyAdvancedStriker = new Button(460, 190, buyImage);
         buyAdvancedLancer = new Button(560, 190, buyImage);
         buyMortar = new Button(660, 190, buyImage);
+
+       g.drawString("Tokens:" + String.valueOf(bg.getTokens()),900,480);
+       case "damage":           selectDamage();             break;
+       case "slimeStrike":      selectSlimeStrike();        break;
+       case "slimeBall":        selectSlimeBall();          break;
+       case "massHeal":         selectMassHeal();
+       case "summonBasicSlime": selectSummonBasicSlime();   break;
+       case "summonLancer":     selectSummonLancer();       break;
+
         */
     }
 }

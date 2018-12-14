@@ -45,7 +45,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     GameClient gameClient;
     Shop currentShop = null;
     boolean inShop = false;
-
+    SlimeLord testSlimeLord = new SlimeLord(0);
     private Board board;
 
     @Override
@@ -132,7 +132,6 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             bg.enterState(GameClient.BATTLE_STATE);
         }
         if (input.isKeyDown(Input.KEY_X)) {
-            SlimeLord testSlimeLord = new SlimeLord(0);
             currentShop.setCurrentSlimeLord(testSlimeLord);
             inShop = true;
         }
@@ -155,7 +154,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         GameClient bg = (GameClient)sbg;
         Board board = bg.getBoard();
         board.render(gc, sbg, g);
-
+        g.drawString("Tokens:" + String.valueOf(bg.getTokens()),900,10);
         if(inShop == true){
             currentShop.render(g);
         }

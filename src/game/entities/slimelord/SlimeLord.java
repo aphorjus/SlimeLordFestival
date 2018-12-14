@@ -33,7 +33,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     int totalMovement;
     int remainingMovement;
     LinkedList<BattleAbility> battleAbilities;
-    LinkedList<String> abilities;
+    public LinkedList<String> abilities;
     public LinkedList<SlimeFactory> factories;
     public LinkedList<String> specialSlimes;
 
