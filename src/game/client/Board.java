@@ -165,6 +165,7 @@ public class Board {
     public void moveSlimelordTo(SlimeLord lord, int row, int col) {
         tiles[col][row].heldSlimeLord = lord;
         lord.setPosition(tiles[col][row].getPosition());
+        lord.tilePosition = new Vector(row, col);
     }
 
     public void render(GameContainer container, StateBasedGame game,
