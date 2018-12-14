@@ -9,10 +9,7 @@ import game.entities.slime.Slime;
 import game.entities.slimelord.SlimeLord;
 import jig.Vector;
 import org.lwjgl.Sys;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 import org.newdawn.slick.state.StateBasedGame;
 import jig.ResourceManager;
 
@@ -24,6 +21,9 @@ public class Board {
     public static final String OVERWORLD_RSC = "game/client/resource/overworld.png";
     public static final String TILE_RSC = "game/client/resource/tile.png";
     public static final String HIGHLIGHTED_TILE_RSC = "game/client/resource/highlight.png";
+
+    public static final String BACKGROUND_RSC = "game/client/resource/battle-background.png";
+    public static final String TOKEN_ANIM = "game/client/resource/token_anim.png";
 
     // Tents
     public static final String OPEN_TOKENTENT = "game/client/resource/tokentent.png";    // unconquered
@@ -38,6 +38,12 @@ public class Board {
     public static final String RED_ARENA = "game/client/resource/red-arena.png";
     public static final String YELLOW_ARENA = "game/client/resource/orange-arena.png";
     public static final String BLUE_ARENA= "game/client/resource/blue-arena.png";
+
+    // Factories
+    public static final String GREEN_FACTORY_RSC = "game/client/resource/slime-factory-green.png";
+    public static final String RED_FACTORY_RSC = "game/client/resource/slime-factory-red.png";
+    public static final String YELLOW_FACTORY_RSC = "game/client/resource/slime-factory-yellow.png";
+    public static final String BLUE_FACTORY_RSC = "game/client/resource/slime-factory-blue.png";
 
     public static int NUMROWS = 50;
     public static int NUMCOLS = 200;
@@ -110,31 +116,6 @@ public class Board {
 
         tents.get(0).setPosition(new Vector(8*16, 10*16));           // tent
 
-        /*
-        place("T:0", 16, 13);           // tent
-        place("T:0", 3, 31);            // tent
-        // place("T:0", 16, 31);                          // shop
-
-        // RED SLIME AREA
-        place("T:0", 27, 6);             // tent
-        place("T:0", 44, 18);            // tent
-        place("T:0", 34, 22);            // tent
-        place("T:0", 27, 31);            // tent
-        // place("T:0", 33, 31);                            // shop
-
-        // ORANGE SLIME AREA
-        place("T:0", 47, 48);           // path leading right tent DOES NOT WORK
-        //  place("T:0", 38, 54);                         // shop
-        place("T:0", 37, 66);           // tent
-        place("T:0", 29, 82);           // tent
-
-        // GREEN SLIME AREA
-        place("T:0", 15, 76);           // tent
-        place("T:0", 5, 65);            // tent
-        place("T:0", 22, 57);           // tent
-        // place("T:0", 11, 54);                          // shop
-
-         */
 
         moveSlimelordTo(slimeLordOne, 10, 5);
         slimeLords.add(slimeLordOne);
@@ -182,6 +163,7 @@ public class Board {
             selected.abilities = slimeLord.abilities;
             moveSlimelordTo(selected, tileX, tileY);
             checkForTent(selected);
+            ResourceManager.getSound("game/client/resource/sfx_ui_move.wav").play();
         } else {
             moveSlimelordTo(slimeLord, tileX, tileY);
             slimeLords.add(slimeLord);
@@ -252,6 +234,17 @@ public class Board {
         ResourceManager.loadImage(YELLOW_ARENA);
         ResourceManager.loadImage(BLUE_ARENA);
 
+        ResourceManager.loadImage(GREEN_FACTORY_RSC);
+        ResourceManager.loadImage(BLUE_FACTORY_RSC);
+        ResourceManager.loadImage(YELLOW_FACTORY_RSC);
+        ResourceManager.loadImage(RED_FACTORY_RSC);
+
+        ResourceManager.loadImage(RED_FACTORY_RSC);
+        ResourceManager.loadImage(RED_FACTORY_RSC);
+
+        ResourceManager.loadImage(BACKGROUND_RSC);
+        ResourceManager.loadImage(TOKEN_ANIM);
+
         // place = 0
         // placeUp = 1
         // placeRight = 2
@@ -283,7 +276,7 @@ public class Board {
                         1, 3, 0,        // tent
                         0, 30, 22,
                         2, 9, 0,
-                        3, 2, 0,
+                        //3, 2, 0,
                         0, 30, 31,
                         1, 3, 0,
                         0, 30, 31,
@@ -293,7 +286,7 @@ public class Board {
                         0, 47, 45,
                         1, 7, 0,
                         2, 9, 0,
-                        1, 1, 0,
+                       // 1, 1, 0,
                         0, 40, 54,
                         2, 6, 0,
                         1, 14, 0,   // up
@@ -326,17 +319,16 @@ public class Board {
                         1, 4, 0,
                         2, 3, 0,
                         0, 8, 64,
-                        4, 10, 0,
-                        3, 2, 0,
-                        0, 8, 54,
-                        4, 23, 0,
+                        4, 33, 0,
+                        //3, 2, 0,
+                        //0, 8, 54,
+                        //4, 23, 0,
                         1, 1, 0,
                         0, 8, 31,
                         4, 9, 0,
                         3, 11, 0,
-                        2, 9, 0,
-                        1, 2, 0,
-                        0, 19, 22,
+                        //2, 9, 0,
+                        // 1, 2, 0,
                         4, 9, 0,
 
                 };
@@ -677,6 +669,13 @@ public class Board {
             String[] split = tile.getContents().split(":");
             int owner = Integer.parseInt(split[1]);
             int id = Integer.parseInt(split[2]);
+
+            if (owner == gameClient.myId && clientId != gameClient.myId) {
+                ResourceManager.getSound("game/client/resource/sfx_ailment.wav").play();
+            } else {
+                ResourceManager.getSound("game/client/resource/sfx_bubble.wav").play();
+            }
+
             tile.setContents("T:" + clientId + ":" + id);
             tents.get(id).owner = clientId;
             acceptKeyboard = false;
