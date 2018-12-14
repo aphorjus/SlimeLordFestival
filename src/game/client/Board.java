@@ -61,7 +61,7 @@ public class Board {
     SlimeLord slimeLordFour;
     FightPopup fightPopup;
 
-    LinkedList<SlimeLord> slimeLords = new LinkedList<>();
+    public LinkedList<SlimeLord> slimeLords = new LinkedList<>();
 
     public SlimeLord currentSlimelord;
 
