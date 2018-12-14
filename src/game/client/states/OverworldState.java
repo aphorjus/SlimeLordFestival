@@ -256,13 +256,13 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             g.setBackground(Color.black);
             g.drawImage(ResourceManager.getImage(BOARD),0,0);
             g.drawImage(ResourceManager.getImage(LOOSER),355,107);
-            g.drawString("Better luck next time!",300,200);
+            g.drawString("Better luck next time!",250,200);
             g.drawString("(press \"ENTER\" to exit)", 392,374);
         }else if(won == true){
             g.setBackground(Color.black);
             g.drawImage(ResourceManager.getImage(BOARD),0,0);
             g.drawImage(ResourceManager.getImage(WINNER),355,107);
-            g.drawString("You are the winner of this Slime Lord Festival!",300,200);
+            g.drawString("You are the winner of this Slime Lord Festival!",250,200);
             g.drawString("(press \"ENTER\" to exit)", 392,374);
         }
         if (!inShop && gameClient.myId == board.turn.turnID) {
