@@ -1,11 +1,9 @@
 package game.client;
 
-import javax.swing.JOptionPane;
-
 
 import game.api.GameApi;
 import game.entities.IEntity;
-import game.entities.slime.Slime;
+import game.entities.building.TokenTents;
 import game.entities.slimelord.SlimeLord;
 import jig.Vector;
 import org.newdawn.slick.GameContainer;
@@ -14,27 +12,32 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import jig.ResourceManager;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Board {
     public static final String OVERWORLD_RSC = "game/client/resource/overworld.png";
     public static final String TILE_RSC = "game/client/resource/tile.png";
-    //public static final String BLUE_SLIMELORD_RSC = "game/client/resource/blue-slimelord.png";
-   // public static final String GREEN_SLIMELORD_RSC = "game/client/resource/yellow-slimelord.png";
-   // public static final String ORANGE_SLIMELORD_RSC = "game/client/resource/orange-slimelord.png";
-   // public static final String RED_SLIMELORD_RSC = "game/client/resource/red-slimelord.png";
-    public static final String TOKENTENT_RSC = "game/client/resource/tokentent.png";    // unconquered
     public static final String HIGHLIGHTED_TILE_RSC = "game/client/resource/highlight.png";
 
-    //public static final String SLIME1_RSC = "game/client/resource/slime1.png";
-   // public static final String SLIME2_RSC = "game/client/resource/slime2.png";
-   // public static final String SLIME3_RSC = "game/client/resource/slime3.png";
-   // public static final String SLIME4_RSC = "game/client/resource/slime4.png";
+    // Tents
+    public static final String OPEN_TOKENTENT = "game/client/resource/tokentent.png";    // unconquered
+    public static final String GREEN_TOKENTENT = "game/client/resource/green-tokentent.png";
+    public static final String RED_TOKENTENT = "game/client/resource/red-tokentent.png";
+    public static final String YELLOW_TOKENTENT = "game/client/resource/orange-tokentent.png";
+    public static final String BLUE_TOKENTENT = "game/client/resource/blue-tokentent.png";
+
+    // Arenas
+    public static final String OPEN_ARENA = "game/client/resource/arena.png";           // unconquered
+    public static final String GREEN_ARENA= "game/client/resource/green-arena.png";
+    public static final String RED_ARENA = "game/client/resource/red-arena.png";
+    public static final String YELLOW_ARENA = "game/client/resource/orange-arena.png";
+    public static final String BLUE_ARENA= "game/client/resource/blue-arena.png";
 
     public static int NUMROWS = 50;
     public static int NUMCOLS = 200;
-    public static int KEYBOARD_COUNTDOWN = 800;
+    public static int KEYBOARD_COUNTDOWN = 100;
     private int countdown = KEYBOARD_COUNTDOWN;
     private boolean acceptKeyboard = false;
     private final Tile[][] tiles;
@@ -42,15 +45,18 @@ public class Board {
     private float xoffset = 0;
     private float yoffset = 0;
     private int slimeID = 0;
-    private Turn turn;
+    public Turn turn;
     GameClient gameClient;
     GameApi gameApi;
     Pathfinding pathfinding;
+
+    List<TokenTents> tents;
 
     SlimeLord slimeLordOne;
     SlimeLord slimeLordTwo;
     SlimeLord slimeLordThree;
     SlimeLord slimeLordFour;
+
 
     LinkedList<SlimeLord> slimeLords = new LinkedList<>();
 
@@ -70,12 +76,40 @@ public class Board {
         this.slimeLordTwo = new SlimeLord(1);
         this.slimeLordThree = new SlimeLord(2);
         this.slimeLordFour = new SlimeLord(3);
-        //gameApi.createEntity(slimeLordOne);
-        //gameApi.createEntity(slimeLordTwo);
-        //gameApi.createEntity(slimeLordThree);
-        //gameApi.createEntity(slimeLordFour);
 
         turn = new Turn(gameApi, gameClient.myId);
+        tents = new ArrayList<>();
+        for(int i = 0; i < 1; i++){
+            TokenTents tent = new TokenTents(4,0,0);
+            tents.add(tent);
+        }
+        tents.get(0).setPosition(new Vector(8*16, 10*16));           // tent
+
+        /*
+        place("T:0", 16, 13);           // tent
+        place("T:0", 3, 31);            // tent
+        // place("T:0", 16, 31);                          // shop
+
+        // RED SLIME AREA
+        place("T:0", 27, 6);             // tent
+        place("T:0", 44, 18);            // tent
+        place("T:0", 34, 22);            // tent
+        place("T:0", 27, 31);            // tent
+        // place("T:0", 33, 31);                            // shop
+
+        // ORANGE SLIME AREA
+        place("T:0", 47, 48);           // path leading right tent DOES NOT WORK
+        //  place("T:0", 38, 54);                         // shop
+        place("T:0", 37, 66);           // tent
+        place("T:0", 29, 82);           // tent
+
+        // GREEN SLIME AREA
+        place("T:0", 15, 76);           // tent
+        place("T:0", 5, 65);            // tent
+        place("T:0", 22, 57);           // tent
+        // place("T:0", 11, 54);                          // shop
+
+         */
 
         slimeLordOne.setPosition(new Vector(5*16,10*16));       //  blue
         slimeLordTwo.setPosition(new Vector(76*16,4*16));       // green
@@ -102,6 +136,7 @@ public class Board {
                 place("", 39,5);
                 break;
         }
+        showCurrentHighlightedPaths();
     }
 
     public void onCreateEntity(IEntity entity) {
@@ -124,8 +159,10 @@ public class Board {
                 slimeLordAlreadyExists = true;
             }
         }
+        System.out.println(slimeLord.xpos + " " + slimeLord.ypos + " " + slimeLord.id+ " " + slimeLordAlreadyExists + " " + gameClient.myId);
 
-        if (slimeLordAlreadyExists) {
+
+        if (!slimeLordAlreadyExists) {                   // Clay, i changed this from slimeLordAlreadyExists to !slimeLordAlreadyExists
             move(slimeLord.clientID, slimeLord.xpos, slimeLord.ypos);
         } else {
             slimeLords.add(slimeLord);
@@ -174,23 +211,33 @@ public class Board {
             slimeLord.render(g);
             slimeLord.positionToOrigin();
         }
+
+        for(TokenTents tent: tents){
+            tent.setCameraOffset(new Vector(xoffset, yoffset));
+            tent.positionForCamera();
+            tent.render(g);
+            tent.positionToOrigin();
+        }
     }
 
     // setting up tiles
     public void initialize() {
         ResourceManager.loadImage(OVERWORLD_RSC);
         ResourceManager.loadImage(TILE_RSC);
-        //ResourceManager.loadImage(BLUE_SLIMELORD_RSC);
-        //ResourceManager.loadImage(GREEN_SLIMELORD_RSC);
-        //ResourceManager.loadImage(ORANGE_SLIMELORD_RSC);
-        //ResourceManager.loadImage(RED_SLIMELORD_RSC);
-        ResourceManager.loadImage(TOKENTENT_RSC);
-
-        //ResourceManager.loadImage(SLIME1_RSC);
-       // ResourceManager.loadImage(SLIME2_RSC);
-       // ResourceManager.loadImage(SLIME3_RSC);
-       // ResourceManager.loadImage(SLIME4_RSC);
         ResourceManager.loadImage(HIGHLIGHTED_TILE_RSC);
+
+        ResourceManager.loadImage(OPEN_TOKENTENT);
+        ResourceManager.loadImage(GREEN_TOKENTENT);
+        ResourceManager.loadImage(RED_TOKENTENT);
+        ResourceManager.loadImage(YELLOW_TOKENTENT);
+        ResourceManager.loadImage(BLUE_TOKENTENT);
+
+        ResourceManager.loadImage(OPEN_ARENA);
+        ResourceManager.loadImage(GREEN_ARENA);
+        ResourceManager.loadImage(RED_ARENA);
+        ResourceManager.loadImage(YELLOW_ARENA);
+        ResourceManager.loadImage(BLUE_ARENA);
+
         // place = 0
         // placeUp = 1
         // placeRight = 2
@@ -260,7 +307,7 @@ public class Board {
                         0, 8, 65,
                         2, 7, 0,
                         1, 4, 0,
-                        2, 4, 0,
+                        2, 4, 0, //
                         0, 8, 64,
                         4, 10, 0,
                         3, 2, 0,
@@ -302,44 +349,29 @@ public class Board {
             }
         }
         // BLUE SLIME AREA
-        place("T:0", 16, 13);           // tent
-        place("T:0", 3, 31);            // tent
+        place("T:4:0", 16, 13);           // tent
+        place("T:4:1", 3, 31);            // tent
         // place("T:0", 16, 31);                          // shop
 
         // RED SLIME AREA
-        place("T:0", 27, 6);             // tent
-        place("T:0", 44, 18);            // tent
-        place("T:0", 34, 22);            // tent
-        place("T:0", 27, 31);            // tent
+        place("T:4:2", 27, 6);             // tent
+        place("T:4:3", 44, 18);            // tent
+        place("T:4:4", 34, 22);            // tent
+        place("T:4:5", 27, 31);            // tent
        // place("T:0", 33, 31);                            // shop
 
         // ORANGE SLIME AREA
-        place("T:0", 47, 48);           // path leading right tent DOES NOT WORK
+        place("T:4:6", 47, 48);           // path leading right tent DOES NOT WORK
         //  place("T:0", 38, 54);                         // shop
-        place("T:0", 37, 66);           // tent
-        place("T:0", 29, 82);           // tent
+        place("T:4:7", 37, 66);           // tent
+        place("T:4:8", 29, 82);           // tent
 
         // GREEN SLIME AREA
-        place("T:0", 15, 76);           // tent
-        place("T:0", 5, 65);            // tent
-        place("T:0", 22, 57);           // tent
+        place("T:4:9", 15, 76);           // tent
+        place("T:4:10", 5, 65);            // tent
+        place("T:4:11", 22, 57);           // tent
         // place("T:0", 11, 54);                          // shop
 
-       // place("2", 4, 76);  // green
-        //slimeLordTwo.setX(current.getX());
-        //slimeLordTwo.setY(current.getY());
-
-        //place("3", 39, 81);  // orange
-       // slimeLordThree.setX(current.getX());
-       // slimeLordThree.setY(current.getY());
-
-       // place("4", 39, 5);  // red
-       // slimeLordFour.setX(current.getX());
-       // slimeLordFour.setY(current.getY());
-
-        //place("1", 10, 5);  // blue
-       // slimeLordOne.setX(current.getX());
-       // slimeLordOne.setY(current.getY());
     }
 
     public boolean place(String contents, int row, int col) {
@@ -482,7 +514,18 @@ public class Board {
     }
 
     public void endTurn(){
+
         turn.turnHasEnded();
+        showCurrentHighlightedPaths();
+        System.out.println(current.getRow() + " " + current.getCol() + " " + tiles[current.getRow()][current.getCol()]);
+
+        if (isMyTurn()) {
+            for (TokenTents tent : tents) {
+                if (tent.owner == gameClient.myId) {
+                    gameClient.setTokens(gameClient.tokens + tent.TOKEN_AMOUNT);
+                }
+            }
+        }
     }
 
     public void move(int id, float xpos, float ypos) {
@@ -511,7 +554,8 @@ public class Board {
     }
 
     public boolean moveTo(int x, int y){
-        if(x >= 0 && x <= 1000 && y >= 0 && y <= 500 && turn.isMyMove()){
+
+        if(x >= 0 && x <= 1392 && y >= 0 && y <= 800 && turn.isMyMove()){
             int row = y/16;
             int col = x/16;
             if(row < NUMROWS && col < NUMCOLS && tiles[row][col] != null){
@@ -524,6 +568,7 @@ public class Board {
                     gameApi.createEntity(currentSlimelord);
                     current = tiles[row][col];
                     turn.updateMoves(numMoves);
+                    showCurrentHighlightedPaths();
                     return true;
                 }
                 return false;
@@ -533,9 +578,17 @@ public class Board {
         return false;
     }
 
+    public void showCurrentHighlightedPaths(){
+        int row = current.getRow();
+        int col = current.getCol();
+        if(row < NUMROWS && col < NUMCOLS && tiles[row][col] != null){
+            showHighlighted(row, col);
+        }
+    }
+
     public void showHighlightedPaths(int x, int y){
        // System.out.println(x + " " + y);
-        if(x >= 0 && x <= 1000 && y >= 0 && y <= 500 && turn.isMyMove()){
+        if(x >= 0 && x <= 1392 && y >= 0 && y <= 800 && turn.isMyMove()){
 //            int row = y/16;
 //            int col = x/16;
             int row = current.getRow();
@@ -550,6 +603,7 @@ public class Board {
         Tile tile = tiles[row][col];
         List<String> paths = pathfinding.showAllPaths(tile,Turn.NUM_MOVES - turn.getMove());
         Tile last = tile;
+        System.out.println(tile.getRow() + " " + tile.getCol() + " " + turn.getMove() + " " + paths.size());
         tile.isHighlighted = true;
         for(String path: paths){
             for(char c: path.toCharArray()){
@@ -581,6 +635,30 @@ public class Board {
         }
     }
 
+    public boolean isBattle() {
+        if(gameClient.myId == 0){
+            return currentSlimelord.getX() == slimeLordTwo.getX() && currentSlimelord.getY() == slimeLordTwo.getY() ||
+                    currentSlimelord.getX() == slimeLordThree.getX() && currentSlimelord.getY() == slimeLordThree.getY() ||
+                    currentSlimelord.getX() == slimeLordFour.getX() && currentSlimelord.getY() == slimeLordFour.getY();
+        }
+        if(gameClient.myId == 1){
+            return currentSlimelord.getX() == slimeLordOne.getX() && currentSlimelord.getY() == slimeLordOne.getY() ||
+                    currentSlimelord.getX() == slimeLordThree.getX() && currentSlimelord.getY() == slimeLordThree.getY() ||
+                    currentSlimelord.getX() == slimeLordFour.getX() && currentSlimelord.getY() == slimeLordFour.getY();
+        }
+        if(gameClient.myId == 2){
+            return currentSlimelord.getX() == slimeLordOne.getX() && currentSlimelord.getY() == slimeLordOne.getY() ||
+                    currentSlimelord.getX() == slimeLordTwo.getX() && currentSlimelord.getY() == slimeLordTwo.getY() ||
+                    currentSlimelord.getX() == slimeLordFour.getX() && currentSlimelord.getY() == slimeLordFour.getY();
+        }
+        if(gameClient.myId == 3){
+            return currentSlimelord.getX() == slimeLordOne.getX() && currentSlimelord.getY() == slimeLordOne.getY() ||
+                    currentSlimelord.getX() == slimeLordTwo.getX() && currentSlimelord.getY() == slimeLordTwo.getY() ||
+                    currentSlimelord.getX() == slimeLordThree.getX() && currentSlimelord.getY() == slimeLordThree.getY();
+        }
+       return false;
+    }
+
     public boolean moveLeft() {
         if(!acceptKeyboard) {
             return false;
@@ -595,11 +673,16 @@ public class Board {
             if(isTent()) {
                 current = current.getRight();
             } else {
+                if(isBattle()){
+                    System.out.println("contents: " + current.getContents());
+                    gameApi.setGameState(GameApi.SetGameStateBattle);
+                }
                 current.setContents("" + slimeID);
             }
             gameApi.deleteEntity(currentSlimelord.clientID);
             currentSlimelord.moveLeft();
             gameApi.createEntity(currentSlimelord);
+            showCurrentHighlightedPaths();
             return true;
         }
         return false;
@@ -620,11 +703,16 @@ public class Board {
             if(isTent()) {
                 current = current.getLeft();
             } else {
+                if(isBattle()){
+                    System.out.println("contents: " + current.getContents());
+                    gameApi.setGameState(GameApi.SetGameStateBattle);
+                }
                 current.setContents("" + slimeID);
             }
             gameApi.deleteEntity(currentSlimelord.clientID);
             currentSlimelord.moveRight();
             gameApi.createEntity(currentSlimelord);
+            showCurrentHighlightedPaths();
             return true;
         }
         return false;
@@ -641,14 +729,20 @@ public class Board {
             }
             current.setContents("");
             current = current.getUp();
+            System.out.println(current.getContents());
             if(isTent()) {
                 current = current.getDown();
             } else {
+                if(isBattle()){
+                    System.out.println("contents: " + current.getContents());
+                    gameApi.setGameState(GameApi.SetGameStateBattle);
+                }
                 current.setContents("" + slimeID);
             }
             gameApi.deleteEntity(currentSlimelord.clientID);
             currentSlimelord.moveUp();
             gameApi.createEntity(currentSlimelord);
+            showCurrentHighlightedPaths();
             return true;
         }
         return false;
@@ -669,12 +763,16 @@ public class Board {
             if(isTent()) {
                 current = current.getUp();
             } else {
+                if(isBattle()){
+                    System.out.println("contents: " + current.getContents());
+                    gameApi.setGameState(GameApi.SetGameStateBattle);
+                }
                 current.setContents("" + slimeID);
             }
             gameApi.deleteEntity(gameClient.myId);
             currentSlimelord.moveDown();
             gameApi.createEntity(currentSlimelord);
-            //showHighlighted();
+            showCurrentHighlightedPaths();
             return true;
         }
         return false;
@@ -685,15 +783,15 @@ public class Board {
         boolean isTent = current.getContents().startsWith("T");
         if(isTent){
             String[] split = current.getContents().split(":");
-            int id = Integer.parseInt(split[1]);
-            if(id == 0){
-                JOptionPane.showMessageDialog(null, "You now own this tent.");
-                current.setContents("T:" + slimeID);
-            } else if(id != slimeID){
-                JOptionPane.showMessageDialog(null, "tent is already owned by " + id);
+            int owner = Integer.parseInt(split[1]);
+            int id = Integer.parseInt(split[2]);
+            if(owner == 4){
+                current.setContents("T:" + slimeID + ":" + id);
+                tents.get(id).owner = gameClient.myId;
+            } else if(owner == gameClient.myId){
+                //JOptionPane.showMessageDialog(null, "You own this tent.");
             } else {
-                JOptionPane.showMessageDialog(null, "You own this tent.");
-
+                //JOptionPane.showMessageDialog(null, "tent is already owned by " + id);
             }
             acceptKeyboard = false;
         }

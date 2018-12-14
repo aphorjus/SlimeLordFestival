@@ -27,10 +27,6 @@ public class Tile extends Entity {
         this.col = col;
 
         addImageWithBoundingBox(ResourceManager.getImage(Board.TILE_RSC));
-        //addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME1_RSC));	// blue
-        //addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME2_RSC));	// green
-        //addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME3_RSC));	// orange
-        //addImageWithBoundingBox(ResourceManager.getImage(Board.SLIME4_RSC));	    // red
         addImageWithBoundingBox(ResourceManager.getImage(Board.HIGHLIGHTED_TILE_RSC));
     }
 
@@ -40,20 +36,10 @@ public class Tile extends Entity {
         if(isHighlighted) {
             g.drawImage(ResourceManager.getImage(Board.HIGHLIGHTED_TILE_RSC), x, y);
         }
-        else if(!contents.startsWith("T")) {
+        else if(contents.startsWith("T")) {
+            int id = Integer.parseInt(contents.split(":")[1]);
+        } else {
             g.drawImage(ResourceManager.getImage(Board.TILE_RSC), x, y);
-        }
-        else if (contents.equals("1")) {	// blue
-          //  g.drawImage(ResourceManager.getImage(Board.SLIME1_RSC), x+1, y+1);
-        }
-        else if (contents.equals("2")) { // green
-          //  g.drawImage(ResourceManager.getImage(Board.SLIME2_RSC), x+1, y+1);
-        }
-        else if (contents.equals("3")) { // orange
-          //  g.drawImage(ResourceManager.getImage(Board.SLIME3_RSC), x+1, y+1);
-        }
-        else if (contents.equals("4")) { // red
-          //  g.drawImage(ResourceManager.getImage(Board.SLIME4_RSC), x+1, y+1);
         }
 
     }
