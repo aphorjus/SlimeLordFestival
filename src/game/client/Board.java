@@ -74,15 +74,57 @@ public class Board {
         this.gameApi = gameApi;
         this.gameClient = gameClient;
         this.slimeLordOne = new SlimeLord(0);
+        slimeLordOne.id = "one";
         this.slimeLordTwo = new SlimeLord(1);
+        slimeLordTwo.id = "two";
         this.slimeLordThree = new SlimeLord(2);
+        slimeLordThree.id = "three";
         this.slimeLordFour = new SlimeLord(3);
+        slimeLordFour.id = "four";
 
         turn = new Turn(gameApi, gameClient.myId);
         tents = new ArrayList<>();
-        for(int i = 0; i < 1; i++){
+        for(int i = 0; i < 12; i++){
             TokenTents tent = new TokenTents(4,0,0);
             tents.add(tent);
+        }
+        tents.get(0).setPosition(new Vector(8*16, 10*16));          // tent 1
+        tents.get(1).setPosition(new Vector(1*16, 21*16));          // tent 2
+        tents.get(2).setPosition(new Vector(17*16, 21*16));         // tent 3
+        tents.get(3).setPosition(new Vector(17*16, 38*16));         // tent 4
+        tents.get(4).setPosition(new Vector(26*16, 21*16));         // tent 5
+        tents.get(5).setPosition(new Vector(49*16, 40*16));         // tent 6
+        tents.get(6).setPosition(new Vector(61*16, 31*16));         // tent 7
+        tents.get(7).setPosition(new Vector(77*16, 23*16));         // tent 8
+        tents.get(8).setPosition(new Vector(52*16, 16*16));         // tent 9
+        tents.get(9).setPosition(new Vector(71*16, 9*16));         // tent 10
+        tents.get(10).setPosition(new Vector(60*16, 4));            // tent 11
+        tents.get(11).setPosition(new Vector(26*16, 4));           // tent 12
+
+        slimeLordOne.setPosition(new Vector(5*16,9*16));       //  blue
+        slimeLordTwo.setPosition(new Vector(75*16,4*16));       // green
+        slimeLordThree.setPosition(new Vector(81*16,41*16));    // red
+        slimeLordFour.setPosition(new Vector(5*16,41*16));      // yellow
+
+        slimeLords.add(slimeLordOne);
+        slimeLords.add(slimeLordTwo);
+        slimeLords.add(slimeLordThree);
+        slimeLords.add(slimeLordFour);
+
+//        updateSlimelord();
+        switch(gameClient.myId) {
+            case 0:
+                place("", 9, 5);
+                break;
+            case 1:
+                place("", 4, 75);
+                break;
+            case 2:
+                place("", 41, 81);
+                break;
+            case 3:
+                place("", 41, 5);
+                break;
         }
         tents.get(0).setPosition(new Vector(8*16, 10*16));           // tent
 
@@ -113,21 +155,21 @@ public class Board {
          */
 
         slimeLords.add(slimeLordOne);
-        moveSlimelordTo(slimeLordOne, 5, 10);
+        moveSlimelordTo(slimeLordOne, 10, 5);
 
         if (gameClient.players.length > 1) {
-            moveSlimelordTo(slimeLordTwo, 76, 4);
+            moveSlimelordTo(slimeLordTwo, 4, 76);
             slimeLords.add(slimeLordTwo);
         }
 
         if (gameClient.players.length > 2) {
-            moveSlimelordTo(slimeLordThree, 81, 39);
+            moveSlimelordTo(slimeLordThree, 39, 81);
             slimeLords.add(slimeLordThree);
 
         }
 
         if (gameClient.players.length > 3) {
-            moveSlimelordTo(slimeLordFour, 5, 39);
+            moveSlimelordTo(slimeLordFour, 39, 5);
             slimeLords.add(slimeLordFour);
         }
     }
@@ -150,11 +192,12 @@ public class Board {
             if (lord.id.equals(slimeLord.id)) selected = lord;
         }
 
+
         int tileX = (int)slimeLord.tilePosition.getX();
         int tileY = (int)slimeLord.tilePosition.getY();
 
         if (selected != null) {
-            tiles[(int)selected.tilePosition.getY()][(int)selected.tilePosition.getX()].heldSlimeLord = null;
+            tiles[(int)selected.tilePosition.getX()][(int)selected.tilePosition.getY()].heldSlimeLord = null;
             moveSlimelordTo(selected, tileX, tileY);
         } else {
             moveSlimelordTo(slimeLord, tileX, tileY);
@@ -163,8 +206,10 @@ public class Board {
     }
 
     public void moveSlimelordTo(SlimeLord lord, int row, int col) {
-        tiles[col][row].heldSlimeLord = lord;
-        lord.setPosition(tiles[col][row].getPosition());
+        if (tiles[row][col] == null) return;
+
+        tiles[row][col].heldSlimeLord = lord;
+        lord.setPosition(tiles[row][col].getPosition());
         lord.tilePosition = new Vector(row, col);
     }
 
@@ -227,81 +272,82 @@ public class Board {
                         0, 10, 5,
                         3, 10, 0,
                         2, 8, 0,
-                        1, 4, 0,
+                        1, 4, 0,        // tent
                         0, 20, 11,
                         3, 14, 0,
                         4, 6, 0,
                         3, 5, 0,
                         0, 34, 6,
-                        1, 6, 0,
+                        1, 6, 0,        // tent
                         0, 34, 12,
                         2, 3, 0,
-                        3, 6, 0,
-                        2, 3, 0,
-                        3, 3, 0,
-                        0, 30, 11,
-                        2, 11, 0,
-                        3, 3, 0,
+                        3, 14, 0,
+                        2, 7, 0,
+                        1, 3, 0,        // tent
+                        0, 46, 23,
+                        2, 5, 0,
+                        1, 15, 0,
+                        0, 30, 12,
+                        2, 10, 0,
+                        1, 3, 0,        // tent
                         0, 30, 22,
                         2, 9, 0,
                         3, 2, 0,
                         0, 30, 31,
-                        1, 2, 0,
+                        1, 3, 0,
                         0, 30, 31,
                         2, 6, 0,
-                        3, 16, 0,
-                        2, 11, 0,
-                        0, 46, 45,
-                        1, 6, 0,
+                        3, 18, 0,
+                        2, 17, 0,       // tent 6
+                        0, 47, 45,
+                        1, 7, 0,
                         2, 9, 0,
                         1, 1, 0,
                         0, 40, 54,
                         2, 6, 0,
-                        1, 14, 0,
+                        1, 14, 0,   // up
                         0, 40, 60,
                         2, 6, 0,
                         1, 2, 0,
-                        0, 40, 66,
-                        2, 7, 0,
+                        0, 40, 67,
+                        2, 6, 0,
                         1, 7, 0,
                         2, 8, 0,
                         3, 6, 0,
                         0, 33, 81,
                         2, 1, 0,
-                        1, 3, 0,
+                        1, 3, 0,        // tent 8
                         0, 33, 77,
                         1, 7, 0,
                         4, 20, 0,
-                        1, 3, 0,
+                        1, 3, 0,    // tent 9
                         0, 26, 70,
                         1, 7, 0,
                         2, 6, 0,
-                        1, 3, 0,
+                        1, 3, 0,        // tent 10
                         0, 19, 70,
                         4, 6, 0,
                         1, 11, 0,
                         2, 1, 0,
-                        1, 2, 0,
+                        1, 2, 0,        // tent 11
                         0, 8, 65,
                         2, 7, 0,
                         1, 4, 0,
-                        2, 4, 0, //
+                        2, 3, 0,
                         0, 8, 64,
                         4, 10, 0,
                         3, 2, 0,
                         0, 8, 54,
-                        1, 3, 0,
-                        4, 12, 0,
-                        1, 4, 0,
-                        4, 11, 0,
-                        3, 1, 0,
-                        0, 1, 31,
+                        4, 23, 0,
+                        1, 1, 0,
+                        0, 8, 31,
                         4, 9, 0,
-                        3, 18, 0,
+                        3, 11, 0,
                         2, 9, 0,
                         1, 2, 0,
                         0, 19, 22,
                         4, 9, 0,
+
                 };
 
         for (int i = 0; i < placement.length / 3; i++) {
@@ -326,29 +372,19 @@ public class Board {
                     break;
             }
         }
-        // BLUE SLIME AREA
-        place("T:4:0", 16, 13);           // tent
-        place("T:4:1", 3, 31);            // tent
-        // place("T:0", 16, 31);                          // shop
 
-        // RED SLIME AREA
-        place("T:4:2", 27, 6);             // tent
-        place("T:4:3", 44, 18);            // tent
-        place("T:4:4", 34, 22);            // tent
-        place("T:4:5", 27, 31);            // tent
-       // place("T:0", 33, 31);                            // shop
-
-        // ORANGE SLIME AREA
-        place("T:4:6", 47, 48);           // path leading right tent DOES NOT WORK
-        //  place("T:0", 38, 54);                         // shop
-        place("T:4:7", 37, 66);           // tent
-        place("T:4:8", 29, 82);           // tent
-
-        // GREEN SLIME AREA
-        place("T:4:9", 15, 76);           // tent
-        place("T:4:10", 5, 65);            // tent
-        place("T:4:11", 22, 57);           // tent
-        // place("T:0", 11, 54);                          // shop
+        place("T:4:0", 16, 13);            // tent 1
+        place("T:4:1", 27, 6);             // tent 2
+        place("T:4:2", 28, 22);            // tent 3
+        place("T:4:3", 45, 22);            // tent 4
+        place("T:4:4", 28, 31);            // tent 5
+        place("T:4:5", 47, 54);            // tent 6
+        place("T:4:6", 38, 66);            // tent 7
+        place("T:4:7", 30, 82);            // tent 8
+        place("T:4:8", 23, 57);            // tent 9
+        place("T:4:9", 16, 76);            // tent 10
+        place("T:4:10", 7, 65);            // tent 11
+        place("T:4:11", 7, 31);            // tent 12
 
     }
 
@@ -493,9 +529,9 @@ public class Board {
 
     public void endTurn(GameClient gc){
         turn.turnHasEnded(gc);
-        showCurrentHighlightedPaths();
 
         if (gc.myId == turn.turnID) {
+            System.out.println("my turn");
             for (SlimeLord lord : slimeLords) {
                 lord.hasMoved = false;
             }
@@ -506,6 +542,7 @@ public class Board {
                 }
             }
         }
+
     }
 
     public void move(int id, float xpos, float ypos) {
@@ -532,26 +569,29 @@ public class Board {
         return false;
     }
 
+
     public boolean click(int x, int y){
         if(x >= 0 && x <= 1392 && y >= 0 && y <= 800 && turn.isMyMove()){
-            int row = y/16;
-            int col = x/16;
+            int row = (int)(y + yoffset)/16;
+            int col = (int)(x + xoffset)/16;
 
             Tile tile = tiles[row][col];
 
             if (tile == null) return false;
 
             if (currentSlimelord != null) { // where i have selected a slime lord ready to move
-                dehighlightMovement((int)currentSlimelord.tilePosition.getY(), (int)currentSlimelord.tilePosition.getX(), currentSlimelord.totalMovement);
-                currentSlimelord.tilePosition = new Vector(col, row);
+                dehighlightMovement((int)currentSlimelord.tilePosition.getX(), (int)currentSlimelord.tilePosition.getY(), currentSlimelord.totalMovement);
+                currentSlimelord.tilePosition = new Vector(row, col);
                 currentSlimelord.hasMoved = true;
                 gameApi.createEntity(currentSlimelord);
                 currentSlimelord = null;
             } else { // select a slime lord if available
                 currentSlimelord = (tile.heldSlimeLord != null && !tile.heldSlimeLord.hasMoved) ? tile.heldSlimeLord : null;
 
+                if (currentSlimelord != null && currentSlimelord.clientID != gameClient.myId) currentSlimelord = null;
+
                 if (currentSlimelord != null) {
-                    highlightMovement((int)currentSlimelord.tilePosition.getY(), (int)currentSlimelord.tilePosition.getX(), currentSlimelord.remainingMovement);
+                    highlightMovement((int)currentSlimelord.tilePosition.getX(), (int)currentSlimelord.tilePosition.getY(), currentSlimelord.remainingMovement);
                 }
             }
         }
@@ -559,54 +599,54 @@ public class Board {
         return false;
     }
 
-    public void highlightMovement(int col, int row, int rmvmt) {
+    public void highlightMovement(int row, int col, int rmvmt) {
         if (rmvmt <= 0 ||
                 col <= 0 || col >= NUMCOLS ||
                 row <= 0 || row >= NUMROWS ||
                 currentSlimelord == null ||
-                tiles[col][row] == null ||
-                tiles[col][row].visited) return;
+                tiles[row][col] == null ||
+                tiles[row][col].visited) return;
 
-        tiles[col][row].isHighlighted = true;
+        tiles[row][col].isHighlighted = true;
 
-        highlightMovement(col + 1, row + 1, rmvmt - 1);
-        highlightMovement(col + 1, row, rmvmt - 1);
-        highlightMovement(col + 1, row - 1, rmvmt - 1);
+        highlightMovement(row + 1, col + 1, rmvmt - 1);
+        highlightMovement(row + 1, col, rmvmt - 1);
+        highlightMovement(row + 1, col - 1, rmvmt - 1);
 
-        highlightMovement(col, row + 1, rmvmt - 1);
-        highlightMovement(col, row, rmvmt - 1);
-        highlightMovement(col, row - 1, rmvmt - 1);
+        highlightMovement(row, col + 1, rmvmt - 1);
+        highlightMovement(row, col, rmvmt - 1);
+        highlightMovement(row, col - 1, rmvmt - 1);
 
-        highlightMovement(col - 1, row + 1, rmvmt - 1);
-        highlightMovement(col - 1, row, rmvmt - 1);
-        highlightMovement(col - 1, row - 1, rmvmt - 1);
+        highlightMovement(row - 1, col + 1, rmvmt - 1);
+        highlightMovement(row - 1, col, rmvmt - 1);
+        highlightMovement(row - 1, col - 1, rmvmt - 1);
 
-        tiles[col][row].visited = false;
+        tiles[row][col].visited = false;
     }
 
-    public void dehighlightMovement(int col, int row, int rmvmt) {
+    public void dehighlightMovement(int row, int col, int rmvmt) {
         if (rmvmt <= 0 ||
                 col <= 0 || col >= NUMCOLS ||
                 row <= 0 || row >= NUMROWS ||
-                tiles[col][row] == null ||
-                tiles[col][row].visited) return;
+                tiles[row][col] == null ||
+                tiles[row][col].visited) return;
 
-        tiles[col][row].visited = true;
-        tiles[col][row].isHighlighted = false;
+        tiles[row][col].visited = true;
+        tiles[row][col].isHighlighted = false;
 
-        dehighlightMovement(col + 1, row + 1, rmvmt - 1);
-        dehighlightMovement(col + 1, row, rmvmt - 1);
-        dehighlightMovement(col + 1, row - 1, rmvmt - 1);
+        dehighlightMovement(row + 1, col + 1, rmvmt - 1);
+        dehighlightMovement(row + 1, col, rmvmt - 1);
+        dehighlightMovement(row + 1, col - 1, rmvmt - 1);
 
-        dehighlightMovement(col, row + 1, rmvmt - 1);
-        dehighlightMovement(col, row, rmvmt - 1);
-        dehighlightMovement(col, row - 1, rmvmt - 1);
+        dehighlightMovement(row, col + 1, rmvmt - 1);
+        dehighlightMovement(row, col, rmvmt - 1);
+        dehighlightMovement(row, col - 1, rmvmt - 1);
 
-        dehighlightMovement(col - 1, row + 1, rmvmt - 1);
-        dehighlightMovement(col - 1, row, rmvmt - 1);
-        dehighlightMovement(col - 1, row - 1, rmvmt - 1);
+        dehighlightMovement(row - 1, col + 1, rmvmt - 1);
+        dehighlightMovement(row - 1, col, rmvmt - 1);
+        dehighlightMovement(row - 1, col - 1, rmvmt - 1);
 
-        tiles[col][row].visited = false;
+        tiles[row][col].visited = false;
     }
 
     public void showCurrentHighlightedPaths(){
@@ -633,6 +673,9 @@ public class Board {
         Tile tile = tiles[row][col];
         List<String> paths = pathfinding.showAllPaths(tile,Turn.NUM_MOVES - turn.getMove());
         Tile last = tile;
+
+        //System.out.println(tile.getRow() + " " + tile.getCol() + " " + turn.getMove() + " " + paths.size());
+
         tile.isHighlighted = true;
         for(String path: paths){
             for(char c: path.toCharArray()){
@@ -703,6 +746,7 @@ public class Board {
                 current = current.getRight();
             } else {
                 if(isBattle()){
+                    // System.out.println("contents: " + current.getContents());
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);
@@ -732,6 +776,8 @@ public class Board {
                 current = current.getLeft();
             } else {
                 if(isBattle()){
+                    //System.out.println("contents: " + current.getContents());
+
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);
@@ -756,10 +802,12 @@ public class Board {
             }
             current.setContents("");
             current = current.getUp();
+            //System.out.println(current.getContents());
             if(isTent()) {
                 current = current.getDown();
             } else {
                 if(isBattle()){
+                    //System.out.println("contents: " + current.getContents());
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);
@@ -789,6 +837,7 @@ public class Board {
                 current = current.getUp();
             } else {
                 if(isBattle()){
+                    //System.out.println("contents: " + current.getContents());
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);

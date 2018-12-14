@@ -111,18 +111,6 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         // board.setUp(gameApi, gameClient);
         // board.showHighlightedPaths(input.getMouseX(), input.getMouseY());
 
-//        if (input.isKeyDown(Input.KEY_LEFT)){
-//            board.moveLeft();
-//        }
-//        if (input.isKeyDown(Input.KEY_RIGHT)){
-//            board.moveRight();
-//        }
-//        if (input.isKeyDown(Input.KEY_UP)){
-//            board.moveUp();
-//        }
-//        if (input.isKeyDown(Input.KEY_DOWN)){
-//            board.moveDown();
-//        }
 
         board.update(delta);
         if (input.isKeyDown(Input.KEY_A)) {
@@ -140,6 +128,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         if (input.isKeyDown(Input.KEY_B)) {
             bg.enterState(GameClient.BATTLE_STATE);
         }
+        
         if (input.isKeyDown(Input.KEY_X)) {
             SlimeLord testSlimeLord = new SlimeLord(0);
             currentShop.setCurrentSlimeLord(testSlimeLord);
@@ -147,6 +136,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             overworldMusic.pause();
             shopMusic.loop();
         }
+
 
         if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
             if(inShop == true){
@@ -156,11 +146,14 @@ public class OverworldState extends BasicGameState implements GameApiListener {
                     shopMusic.stop();
                     overworldMusic.loop();
                 }
-            } else if (gameClient.myId == board.turn.turnID && endButton.checkClick(input.getMouseX(), input.getMouseY())) {
+            } else if (gameClient.myId == board.turn.turnID &&
+                    endButton.checkClick(input.getMouseX(), input.getMouseY())) {
                 gameApi.endTurn();
             } else {
                 board.click(input.getMouseX(), input.getMouseY());
             }
+        } else if (gameClient.myId == board.turn.turnID && input.isKeyDown(Input.KEY_Q)) {
+            gameApi.endTurn();
         }
 
         gameApi.update();
