@@ -50,7 +50,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
     public int maxHP;
     public int currentHP;
 
-    public int maxCooldown = 1;
+    public int maxCooldown = 0;
     public int currentCooldown;
 
     public int size;

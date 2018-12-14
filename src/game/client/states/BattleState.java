@@ -101,6 +101,9 @@ public class BattleState extends BasicGameState implements GameApiListener {
         this.winner = -1;
         this.showHelp = false;
         battleMusic.loop();
+
+        this.slimeLordOne.addAbility("damage");
+        this.slimeLordTwo.addAbility("damage");
 //        System.out.println(gameClient.myId);
         //TEIMP
 
@@ -193,6 +196,8 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void update(GameContainer gc, StateBasedGame sbg, int delta) {
         Input input = gc.getInput();
 
+//        if(GameClient.)
+
         if ( input.isMousePressed(Input.MOUSE_LEFT_BUTTON) ){
             Vector mousePosition = new Vector(input.getMouseX(), input.getMouseY());
 
@@ -268,6 +273,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
             // DO SOMETHING?!?
             // Enter overworld and tell it who won somehow
             //
+            gameApi.sendMessage("I win");
             gameClient.setBattleStateWinner(winner);
             gameClient.enterState(GameClient.OVERWORLD_STATE);
         }
@@ -378,7 +384,9 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
     }
 
-    public void onMessage(int senderId, String message) {}
+    public void onMessage(int senderId, String message) {
+        winner = senderId;
+    }
 
     public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {
 
@@ -404,5 +412,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
     public void onLobbyIsFull() {}
 
-    public void onConnectionConfirmation(int myId) { }
+    public void onConnectionConfirmation(int myId) {
+
+    }
 }

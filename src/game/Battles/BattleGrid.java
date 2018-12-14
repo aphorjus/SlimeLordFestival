@@ -103,12 +103,6 @@ public class BattleGrid {
 
     public void switchMode(){
 
-//        if(mode == ABILITY_MODE){
-//            mode = MOVMENT_MODE;
-//        }
-//        else{
-//            mode += 1;
-//        }
         if(mode == MOVMENT_MODE){
             mode = ATTACK_MODE;
         }
