@@ -8,6 +8,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
 public class TokenAnimation extends Entity {
+
     public TokenAnimation(Vector pos) {
         super(pos.getX(), pos.getY());
 

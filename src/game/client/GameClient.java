@@ -74,16 +74,12 @@ public class GameClient extends StateBasedGame {
         board = new Board();
     }
 
-    public void connectToServer(String hostName, int port) {
-        try {
-            InetAddress ip = InetAddress.getByName(hostName);
-            serverSocket = new Socket(ip, port);
-            input = new DataInputStream(serverSocket.getInputStream());
-            output = new DataOutputStream(serverSocket.getOutputStream());
-            sendConnectionConfirmation();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void connectToServer(String hostName, int port) throws Exception {
+        InetAddress ip = InetAddress.getByName(hostName);
+        serverSocket = new Socket(ip, port);
+        input = new DataInputStream(serverSocket.getInputStream());
+        output = new DataOutputStream(serverSocket.getOutputStream());
+        sendConnectionConfirmation();
     }
 
     public void setBattleStateWinner(int id) {
@@ -132,6 +128,7 @@ public class GameClient extends StateBasedGame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return runningServer;
     }
 

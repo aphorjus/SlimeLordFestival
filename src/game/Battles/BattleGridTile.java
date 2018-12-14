@@ -56,6 +56,8 @@ public class BattleGridTile extends Entity implements IEntity {
         if (jsonTile.has("playSplashAnimation")) {
             splash = new SplashAnimation(getPosition(), jsonTile.getString("playSplashAnimation"));
             splashRemainingTime = maxSplashTime;
+            ResourceManager.getSound("game/client/resource/sfx_take_dmg.wav").play();
+
         }
 
 //        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
