@@ -8,9 +8,11 @@ import game.client.Button;
 import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
+import game.entities.TokenAnimation;
 import game.entities.building.Shop;
 import game.entities.slimelord.SlimeLord;
 import jig.ResourceManager;
+import jig.Vector;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
@@ -45,6 +47,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     Shop currentShop = null;
     boolean inShop = false;
     Button endButton;
+    TokenAnimation tokenAnimation = new TokenAnimation(new Vector(25, 480));
 
     private Board board;
 
@@ -168,6 +171,9 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         if (!inShop && gameClient.myId == board.turn.turnID) {
             endButton.render(g);
         }
+
+        tokenAnimation.render(g);
+        g.drawString(gameClient.getTokens() + "", 40, 470);
     }
 
     @Override
