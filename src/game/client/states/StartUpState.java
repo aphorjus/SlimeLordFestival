@@ -75,8 +75,8 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         Image joinGame = new Image(JOINGAME);
         Image hostGame = new Image(HOSTGAME);
         Image startGame = new Image(START);
-        joinButton = new Button(60, 440, joinGame);
-        hostButton = new Button(640, 440, hostGame);
+        joinButton = new Button(200, 440, joinGame);
+        hostButton = new Button(600, 440, hostGame);
         startButton = new Button(604, 358, startGame);
         titleMusic = new Music("game/client/resource/mainTitle.wav");
         gameApi = new GameApi((GameClient) sbg, this);
