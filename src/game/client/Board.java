@@ -496,9 +496,7 @@ public class Board {
 
         if (gc.myId == turn.turnID) {
             for (SlimeLord lord : slimeLords) {
-                if (lord.clientID == gameClient.myId) {
-                    lord.remainingMovement = lord.totalMovement;
-                }
+                lord.hasMoved = false;
             }
 
             for (TokenTents tent : tents) {
@@ -545,10 +543,11 @@ public class Board {
             if (currentSlimelord != null) { // where i have selected a slime lord ready to move
                 dehighlightMovement((int)currentSlimelord.tilePosition.getY(), (int)currentSlimelord.tilePosition.getX(), currentSlimelord.totalMovement);
                 currentSlimelord.tilePosition = new Vector(col, row);
+                currentSlimelord.hasMoved = true;
                 gameApi.createEntity(currentSlimelord);
                 currentSlimelord = null;
             } else { // select a slime lord if available
-                currentSlimelord = tile.heldSlimeLord;
+                currentSlimelord = (tile.heldSlimeLord != null && !tile.heldSlimeLord.hasMoved) ? tile.heldSlimeLord : null;
 
                 if (currentSlimelord != null) {
                     highlightMovement((int)currentSlimelord.tilePosition.getY(), (int)currentSlimelord.tilePosition.getX(), currentSlimelord.remainingMovement);
