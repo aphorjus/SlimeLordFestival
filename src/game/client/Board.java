@@ -642,6 +642,7 @@ public class Board {
                 tiles[row][col].visited) return;
 
         tiles[row][col].isHighlighted = true;
+        tiles[row][col].visited = true;
 
         highlightMovement(row + 1, col + 1, rmvmt - 1);
         highlightMovement(row + 1, col, rmvmt - 1);
