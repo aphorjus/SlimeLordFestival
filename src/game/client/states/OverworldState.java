@@ -142,10 +142,12 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     void callMeALoser() {
         // This is where you set all the logic to call the player a loser
+        gameClient.enterState(GameClient.STARTUP_STATE);
     }
 
     void callMeAWinner() {
         // this is wher you set all the logic to call the player a winner
+        gameClient.enterState(GameClient.STARTUP_STATE);
     }
 
     void battleWon() {
@@ -176,9 +178,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         if (input.isKeyDown(Input.KEY_S)) {
             board.shiftDown();
         }
-//        if (input.isKeyDown(Input.KEY_B)) {
-//            bg.enterState(GameClient.BATTLE_STATE);
-//        }
+        if (input.isKeyDown(Input.KEY_B)) {
+            BattleState.testBattle = true;
+            bg.enterState(GameClient.BATTLE_STATE);
+        }
         
         if (input.isKeyDown(Input.KEY_X)) {
             SlimeLord shopSlimeLord = null;
