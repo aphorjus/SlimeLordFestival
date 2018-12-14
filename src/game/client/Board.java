@@ -73,12 +73,16 @@ public class Board {
     public void setUp(GameApi gameApi, GameClient gameClient) {
         this.gameApi = gameApi;
         this.gameClient = gameClient;
+
         this.slimeLordOne = new SlimeLord(0);
         slimeLordOne.id = "one";
+
         this.slimeLordTwo = new SlimeLord(1);
         slimeLordTwo.id = "two";
+
         this.slimeLordThree = new SlimeLord(2);
         slimeLordThree.id = "three";
+
         this.slimeLordFour = new SlimeLord(3);
         slimeLordFour.id = "four";
 
@@ -100,16 +104,6 @@ public class Board {
         tents.get(9).setPosition(new Vector(71*16, 9*16));         // tent 10
         tents.get(10).setPosition(new Vector(60*16, 4));            // tent 11
         tents.get(11).setPosition(new Vector(26*16, 4));           // tent 12
-
-        slimeLordOne.setPosition(new Vector(5*16,9*16));       //  blue
-        slimeLordTwo.setPosition(new Vector(75*16,4*16));       // green
-        slimeLordThree.setPosition(new Vector(81*16,41*16));    // red
-        slimeLordFour.setPosition(new Vector(5*16,41*16));      // yellow
-
-        slimeLords.add(slimeLordOne);
-        slimeLords.add(slimeLordTwo);
-        slimeLords.add(slimeLordThree);
-        slimeLords.add(slimeLordFour);
 
 //        updateSlimelord();
         switch(gameClient.myId) {
@@ -154,22 +148,22 @@ public class Board {
 
          */
 
-        slimeLords.add(slimeLordOne);
         moveSlimelordTo(slimeLordOne, 10, 5);
+        slimeLords.add(slimeLordOne);
 
         if (gameClient.players.length > 1) {
-            moveSlimelordTo(slimeLordTwo, 4, 76);
+            moveSlimelordTo(slimeLordTwo, 4, 75);
             slimeLords.add(slimeLordTwo);
         }
 
         if (gameClient.players.length > 2) {
-            moveSlimelordTo(slimeLordThree, 39, 81);
+            moveSlimelordTo(slimeLordThree, 41, 81);
             slimeLords.add(slimeLordThree);
 
         }
 
         if (gameClient.players.length > 3) {
-            moveSlimelordTo(slimeLordFour, 39, 5);
+            moveSlimelordTo(slimeLordFour, 41, 5);
             slimeLords.add(slimeLordFour);
         }
     }
@@ -182,8 +176,7 @@ public class Board {
         }
     }
 
-    public void onDeleteEntity(String entityId) {
-    }
+    public void onDeleteEntity(String entityId) { }
 
     void onCreateSlimeLord(SlimeLord slimeLord) {
         SlimeLord selected = null;
@@ -191,7 +184,6 @@ public class Board {
         for (SlimeLord lord : slimeLords) {
             if (lord.id.equals(slimeLord.id)) selected = lord;
         }
-
 
         int tileX = (int)slimeLord.tilePosition.getX();
         int tileY = (int)slimeLord.tilePosition.getY();
