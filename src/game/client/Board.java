@@ -23,6 +23,9 @@ public class Board {
     public static final String TILE_RSC = "game/client/resource/tile.png";
     public static final String HIGHLIGHTED_TILE_RSC = "game/client/resource/highlight.png";
 
+    public static final String BACKGROUND_RSC = "game/client/resource/battle-background.png";
+    public static final String TOKEN_ANIM = "game/client/resource/token_anim.png";
+
     // Tents
     public static final String OPEN_TOKENTENT = "game/client/resource/tokentent.png";    // unconquered
     public static final String GREEN_TOKENTENT = "game/client/resource/green-tokentent.png";
@@ -36,6 +39,12 @@ public class Board {
     public static final String RED_ARENA = "game/client/resource/red-arena.png";
     public static final String YELLOW_ARENA = "game/client/resource/orange-arena.png";
     public static final String BLUE_ARENA= "game/client/resource/blue-arena.png";
+
+    // Factories
+    public static final String GREEN_FACTORY_RSC = "game/client/resource/slime-factory-green.png";
+    public static final String RED_FACTORY_RSC = "game/client/resource/slime-factory-red.png";
+    public static final String YELLOW_FACTORY_RSC = "game/client/resource/slime-factory-yellow.png";
+    public static final String BLUE_FACTORY_RSC = "game/client/resource/slime-factory-blue.png";
 
     public static int NUMROWS = 50;
     public static int NUMCOLS = 200;
@@ -123,32 +132,6 @@ public class Board {
                 break;
         }
         tents.get(0).setPosition(new Vector(8*16, 10*16));           // tent
-
-        /*
-        place("T:0", 16, 13);           // tent
-        place("T:0", 3, 31);            // tent
-        // place("T:0", 16, 31);                          // shop
-
-        // RED SLIME AREA
-        place("T:0", 27, 6);             // tent
-        place("T:0", 44, 18);            // tent
-        place("T:0", 34, 22);            // tent
-        place("T:0", 27, 31);            // tent
-        // place("T:0", 33, 31);                            // shop
-
-        // ORANGE SLIME AREA
-        place("T:0", 47, 48);           // path leading right tent DOES NOT WORK
-        //  place("T:0", 38, 54);                         // shop
-        place("T:0", 37, 66);           // tent
-        place("T:0", 29, 82);           // tent
-
-        // GREEN SLIME AREA
-        place("T:0", 15, 76);           // tent
-        place("T:0", 5, 65);            // tent
-        place("T:0", 22, 57);           // tent
-        // place("T:0", 11, 54);                          // shop
-
-         */
 
         slimeLords.add(slimeLordOne);
         moveSlimelordTo(slimeLordOne, 5, 10);
@@ -254,6 +237,17 @@ public class Board {
         ResourceManager.loadImage(RED_ARENA);
         ResourceManager.loadImage(YELLOW_ARENA);
         ResourceManager.loadImage(BLUE_ARENA);
+
+        ResourceManager.loadImage(GREEN_FACTORY_RSC);
+        ResourceManager.loadImage(BLUE_FACTORY_RSC);
+        ResourceManager.loadImage(YELLOW_FACTORY_RSC);
+        ResourceManager.loadImage(RED_FACTORY_RSC);
+
+        ResourceManager.loadImage(RED_FACTORY_RSC);
+        ResourceManager.loadImage(RED_FACTORY_RSC);
+
+        ResourceManager.loadImage(BACKGROUND_RSC);
+        ResourceManager.loadImage(TOKEN_ANIM);
 
         // place = 0
         // placeUp = 1
