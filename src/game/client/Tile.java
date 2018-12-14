@@ -40,10 +40,10 @@ public class Tile extends Entity {
     public void render(Graphics g, Vector cameraOffset) {
         float x = getX() - xoffset;
         float y = getY() - yoffset;
+
         if(isHighlighted) {
             g.drawImage(ResourceManager.getImage(Board.HIGHLIGHTED_TILE_RSC), x, y);
-        }
-        else if(contents.startsWith("T")) {
+        } else if(contents.startsWith("T")) {
             int id = Integer.parseInt(contents.split(":")[1]);
         } else {
             g.drawImage(ResourceManager.getImage(Board.TILE_RSC), x, y);

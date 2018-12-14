@@ -152,8 +152,6 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             } else {
                 board.click(input.getMouseX(), input.getMouseY());
             }
-        } else if (gameClient.myId == board.turn.turnID && input.isKeyDown(Input.KEY_Q)) {
-            gameApi.endTurn();
         }
 
         gameApi.update();
