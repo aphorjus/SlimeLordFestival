@@ -27,7 +27,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     public static final String LOBBYBOARD = "game/client/resource/LobbyBoard.png";
     public static final String LOBBYBACKGROUND = "game/client/resource/LobbyBackground.png";
     public static final String LOBBYFOREGROUND = "game/client/resource/LobbyForeground.png";
-
+    public static final String LOBBYFOREGROUND2 = "game/client/resource/LobbyForeground2.png";
     public static final String LOBBYBACKGROUND2 = "game/client/resource/LobbyBackground.png";
     public static final String LOBBYTITLE = "game/client/resource/LobbyTitle.png";
     public static final String HOSTTITLE = "game/client/resource/ServerInfo.png";
@@ -50,7 +50,10 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     double backgroundX;
     double backgroundOneX = 0;
     boolean failedToHost;
+    int lastDelta = 0;
+    int currentDelta = 0;
     double backgroundTwoX = -1000;
+    int forground = 1;
     int state = 0; // 0 is title screen, 1 is HostGame screen, 2 is JoinGame screen, 3 is join lobby
 
     @Override
@@ -119,7 +122,18 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         }
         g.drawImage(ResourceManager.getImage(LOBBYBACKGROUND),(float)backgroundOneX,0);
         g.drawImage(ResourceManager.getImage(LOBBYBACKGROUND),(float)backgroundTwoX,0);
-        //g.drawImage(ResourceManager.getImage(LOBBYFOREGROUND), 0,0);
+
+        if(lastDelta >= 300){
+            lastDelta = 0;
+            lastDelta = currentDelta;
+            forground = forground * -1;
+        }
+
+        if(forground == 1){
+            g.drawImage(ResourceManager.getImage(LOBBYFOREGROUND),0,0);
+        }else if(forground == -1){
+            g.drawImage(ResourceManager.getImage(LOBBYFOREGROUND2),0,0);
+        }
     }
 
     @Override
@@ -129,6 +143,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         Input input = gc.getInput();
         GameClient bg = (GameClient)sbg;
 
+        lastDelta = lastDelta + delta;
         if (connected == true){
             gameApi.update();
         }
@@ -159,6 +174,8 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             if(startButton.checkClick(mx,my) == true && host == true){
                 gameApi.setGameState(GameApi.SetGameStateOverworld);
             }
+
+
         }
 
         //if enter is inputted on Join Game try to join host at IP
