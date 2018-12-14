@@ -219,6 +219,12 @@ public class Board {
             tent.render(g);
             tent.positionToOrigin();
         }
+
+        if (turn.turnID == gameClient.myId) {
+            g.drawString("My turn!", 500, 470);
+        } else {
+            g.drawString("Player " + turn.turnID + "'s turn", 500, 470);
+        }
     }
 
     // setting up tiles
