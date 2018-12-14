@@ -210,7 +210,7 @@ public class Board {
         if (turn.turnID == gameClient.myId) {
             g.drawString("My turn!", 500, 470);
         } else {
-            g.drawString("Player " + turn.turnID + 1 + "'s turn", 500, 470);
+            g.drawString("Player " + (turn.turnID + 1) + "'s turn", 500, 470);
         }
 
         if (fightPopup != null) fightPopup.render(g);
