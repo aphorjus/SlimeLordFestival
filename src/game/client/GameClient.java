@@ -149,6 +149,7 @@ public class GameClient extends StateBasedGame {
 
     public void startBattle(SlimeLord one, SlimeLord two) {
         battleState.onSetStateToBattle(one, two);
+        enterState(battleState.getID());
     }
 
     public static void main(String[] args) {
