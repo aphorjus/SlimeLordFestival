@@ -32,6 +32,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     public static final String LOBBYTITLE = "game/client/resource/LobbyTitle.png";
     public static final String HOSTTITLE = "game/client/resource/ServerInfo.png";
     public static final String START = "game/client/resource/Start.png";
+
     Music titleMusic = null;
     Button joinButton = null;
     Button hostButton = null;
@@ -75,7 +76,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         Image joinGame = new Image(JOINGAME);
         Image hostGame = new Image(HOSTGAME);
         Image startGame = new Image(START);
-        joinButton = new Button(200, 440, joinGame);
+        joinButton = new Button(150, 440, joinGame);
         hostButton = new Button(600, 440, hostGame);
         startButton = new Button(604, 358, startGame);
         titleMusic = new Music("game/client/resource/mainTitle.wav");
@@ -111,7 +112,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
 
     }
 
-    public void backgoundMotion(Graphics g){
+    public void backgoundMotion(Graphics g, int phase){
         //Parallex lobby background
         backgroundOneX =backgroundOneX+.25;
         backgroundTwoX=backgroundTwoX+.25;
@@ -129,9 +130,9 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             forground = forground * -1;
         }
 
-        if(forground == 1){
+        if(forground == 1 && phase == 1){
             g.drawImage(ResourceManager.getImage(LOBBYFOREGROUND),0,0);
-        }else if(forground == -1){
+        }else if(forground == -1 && phase == 1){
             g.drawImage(ResourceManager.getImage(LOBBYFOREGROUND2),0,0);
         }
     }
@@ -235,6 +236,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         GameClient bg = (GameClient)sbg;
 
         if (state == 0){ //MAIN MENU
+            backgoundMotion(g,0);
             g.drawImage(ResourceManager.getImage(TITLE),
                     0, 0);
             joinButton.render(g);
@@ -242,7 +244,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         }else if(state == 1){ //DEPRECATED Host state
             g.drawString("You are Hosting a game at 192.181.1.3",300,83);
         }else if(state == 2){ //JOIN GAME MENU
-            backgoundMotion(g);
+            backgoundMotion(g,1);
             g.drawImage(ResourceManager.getImage(LOBBYBOARD), 0, 0);
             g.drawImage(ResourceManager.getImage(JOINGAME),355,107);
             g.drawString("(press \"ENTER\" to join)", 392,374);
@@ -256,7 +258,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
                 g.setColor(Color.white);
             }
         }else if (state == 3){ //LOBBY
-            backgoundMotion(g);
+            backgoundMotion(g,1);
             g.drawImage(ResourceManager.getImage(LOBBYBOARD), 0, 0);
             g.drawImage(ResourceManager.getImage(LOBBYTITLE),355,107);
             if (host == true){
@@ -273,7 +275,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
                 }
             }
         }else if(state == 4) { //HOST GAME MENU
-            backgoundMotion(g);
+            backgoundMotion(g,1);
             g.drawImage(ResourceManager.getImage(LOBBYBOARD), 0, 0);
             g.drawImage(ResourceManager.getImage(HOSTGAME),355,107);
             g.drawString("(press \"ENTER\" to host)", 392,374);
