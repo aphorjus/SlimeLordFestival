@@ -16,6 +16,13 @@ highlighted path provides a 15 tiled path for the player, in which they can clic
 makes all his/her moves, it's player 2's turn (Green Slimelord), and so on. Every player can conquer a Token Tent, which generates 100 
 tokens per turn for that player, and can also be conquered by another player. 
 
+#### BATTLE:
+
+The battle state contains the actions of the game. Each Slime Lord that is part of the battle has two slime factories that produce a single slime at the start of each turn. Each Slime Lord also has between zero and 5 abilities to use in battle. The Battle state has 3 "modes" attack mode, move mode, and ability mode. Pressing the "s" key will toggle between move and attack mode, and pressing the number keys 1-5 will select Slime Lord abilities and active ability mode. The player may end their turn at any time with the "e" key.
+
+Every slime can move and attack once every turn, and each Slime Lord can use one ability each turn. The goal of a battle is to destroy the opposing Slime Lords two factories.
+
+
 ### Prerequisites
 
 What things you need to install the software and how to install them
