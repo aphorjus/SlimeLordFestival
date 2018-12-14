@@ -47,6 +47,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     Shop currentShop = null;
     boolean inShop = false;
     Button endButton;
+    Button exitButton;
     TokenAnimation tokenAnimation = new TokenAnimation(new Vector(25, 480));
 
     private Board board;
@@ -59,6 +60,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
         try {
             endButton = new Button(950, 450, new Image("game/client/resource/end-button.png"));
+            exitButton = new Button(700, 430, new Image("game/client/resource/ExitShop.png"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -150,6 +152,9 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
             if(inShop == true){
                 currentShop.checkClick(input.getMouseX(), input.getMouseY());
+                if(exitButton.checkClick(input.getMouseX(),input.getMouseY())){
+                    inShop = false;
+                }
             } else if (gameClient.myId == board.turn.turnID && endButton.checkClick(input.getMouseX(), input.getMouseY())) {
                 gameApi.endTurn();
             }
@@ -166,6 +171,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
         if (inShop == true){
             currentShop.render(g);
+            exitButton.render(g);
         }
 
         if (!inShop && gameClient.myId == board.turn.turnID) {
