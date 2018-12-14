@@ -103,6 +103,14 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         Board board = bg.getBoard();
         board.setUp(gameApi, gameClient);
         this.board = board;
+
+        if (gameClient.battleStateWinner != -1 && gameClient.battleStateWinner == gameClient.myId) {
+            battleWon();
+        }
+    }
+
+    void battleWon() {
+        gameClient.setTokens(gameClient.getTokens() + 600);
     }
 
     @Override
