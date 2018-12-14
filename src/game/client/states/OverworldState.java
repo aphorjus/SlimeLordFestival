@@ -23,7 +23,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     String BLUE_SLIMELORD_IDLE = "game/client/resource/slime-lord-blue.png";
     String YELLOW_SLIMELORD_IDLE = "game/client/resource/slime-lord-yellow.png";
     String RED_SLIMELORD_IDLE = "game/client/resource/slime-lord-red.png";
-
+    Music overworldMusic = null;
+    Music shopMusic = null;
     String GREEN_IDLE = "game/client/resource/green-slime-idle.png";
     String GREEN_ATTACK = "game/client/resource/green-slime-attack.png";
     String GREEN_DEATH = "game/client/resource/green-slime-death.png";
@@ -59,6 +60,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         inputManager = gameClient.inputManager;
 
         try {
+            overworldMusic = new Music("game/client/resource/Caketown1.wav");
+            shopMusic = new Music("game/client/resource/blanchet.wav");
             endButton = new Button(950, 450, new Image("game/client/resource/end-button.png"));
             exitButton = new Button(700, 430, new Image("game/client/resource/ExitShop.png"));
         } catch (Exception e) {
@@ -68,6 +71,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
+        overworldMusic.loop();
         ResourceManager.loadImage(GREEN_SLIMELORD_IDLE);
         ResourceManager.loadImage(BLUE_SLIMELORD_IDLE);
         ResourceManager.loadImage(YELLOW_SLIMELORD_IDLE);
@@ -147,6 +151,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             SlimeLord testSlimeLord = new SlimeLord(0);
             currentShop.setCurrentSlimeLord(testSlimeLord);
             inShop = true;
+            overworldMusic.pause();
+            shopMusic.loop();
         }
 
         if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
@@ -154,6 +160,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
                 currentShop.checkClick(input.getMouseX(), input.getMouseY());
                 if(exitButton.checkClick(input.getMouseX(),input.getMouseY())){
                     inShop = false;
+                    shopMusic.stop();
+                    overworldMusic.loop();
                 }
             } else if (gameClient.myId == board.turn.turnID && endButton.checkClick(input.getMouseX(), input.getMouseY())) {
                 gameApi.endTurn();
