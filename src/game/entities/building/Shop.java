@@ -47,6 +47,7 @@ public class Shop{
     ShopkeepAnimation idleA = new ShopkeepAnimation(new Vector(290, 345));
     GameApi currentGA = null;
     SlimeLord currentSlimeLord = null;
+    public Boolean viewPrices = null;
     String currentMessage = "Welcome to my shop Slime Lord!";
     public static final String LOBBYBOARD = "game/client/resource/LobbyBoard.png";
     public static final String BUYIMAGE = "game/client/resource/BuyButton.png";
@@ -335,17 +336,33 @@ public class Shop{
 
 
         g.drawString(currentMessage,355,350);
-        buyStriker.render(g);
-        buyLancer.render(g);
-        buyAdvancedStriker.render(g);
-        buyAdvancedLancer.render(g);
-        buyMortar.render(g);
 
-        buySlimeStrike.render(g);
-        buySlimeBall.render(g);
-        buyMassHeal.render(g);
-        buySummonLancer.render(g);
-        buySummonBasicSlime.render(g);
+        if(viewPrices == true){
+            g.drawString("$100",260,180);
+            g.drawString("$100",360,180);
+            g.drawString("$300",460,180);
+            g.drawString("$300",560,180);
+            g.drawString("$600",660,180);
+
+            g.drawString("$500",260,280);
+            g.drawString("$500",360,280);
+            g.drawString("$500",460,280);
+            g.drawString("$500",560,280);
+            g.drawString("$500",660,280);
+
+        }else{
+            buyStriker.render(g);
+            buyLancer.render(g);
+            buyAdvancedStriker.render(g);
+            buyAdvancedLancer.render(g);
+            buyMortar.render(g);
+
+            buySlimeStrike.render(g);
+            buySlimeBall.render(g);
+            buyMassHeal.render(g);
+            buySummonLancer.render(g);
+            buySummonBasicSlime.render(g);
+        }
 
         //g.drawString("Tokens:" + String.valueOf(currentG.getTokens()),900,480);
 
