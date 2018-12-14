@@ -587,7 +587,9 @@ public class BattleGrid {
     }
 
     public void render(Graphics g){
+
         background.render(g);
+        this.drawGrid(g);
 
         for(int i = 0; i < this.gridWidth; i++){
             for( int j = 0; j < this.gridHeight; j++){
@@ -605,7 +607,6 @@ public class BattleGrid {
 
             }
         }
-        this.drawGrid(g);
     }
 
     public void update(int delta){
