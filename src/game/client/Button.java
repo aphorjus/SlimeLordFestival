@@ -1,5 +1,6 @@
 package game.client;
 
+import org.lwjgl.Sys;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Rectangle;
 import game.InputManager;
@@ -25,6 +26,9 @@ public class Button {
         currentImage = image;
     }
 
+    public void setCurrentImage(Image newImage){
+        currentImage = newImage;
+    }
     //where x and y define the location of the mouse cursor
     public boolean checkClick(int x, int y) {
         Rectangle mouseShape = new Rectangle(x,y,1,1);

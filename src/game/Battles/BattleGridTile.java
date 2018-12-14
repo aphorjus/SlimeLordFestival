@@ -2,6 +2,7 @@ package game.Battles;
 
 import game.client.Board;
 import game.entities.IEntity;
+import game.entities.SplashAnimation;
 import game.entities.slime.Slime;
 import game.entities.slimefactory.SlimeFactory;
 import jig.Entity;
@@ -12,15 +13,18 @@ import org.newdawn.slick.Graphics;
 
 public class BattleGridTile extends Entity implements IEntity {
 
-    private IEntity occupent;
+    private String entityType = "BattleGridTile";
+    private BattleEntity occupent;
 //    public Vector position;
     private int xIndex;
     private int yIndex;
     private boolean shaded;
+    SplashAnimation splash;
+    int maxSplashTime = 1050;
+    int splashRemainingTime = 0;
 
     public BattleGridTile(Vector position, int x, int y){
         super(position);
-//        this.position = position;
         this.xIndex = x;
         this.yIndex = y;
         this.occupent = null;
@@ -45,15 +49,38 @@ public class BattleGridTile extends Entity implements IEntity {
                 this.addOccupent(new SlimeFactory(jsonTile.getJSONObject("occupent")));
             }
             else {
-                System.err.println(occupent.getEntityType()+" is not a valid type for 'occupent'");
+                System.err.println(((IEntity)occupent).getEntityType()+" is not a valid type for 'occupent'");
             }
         }
+
+        if (jsonTile.has("playSplashAnimation")) {
+            splash = new SplashAnimation(getPosition(), jsonTile.getString("playSplashAnimation"));
+            splashRemainingTime = maxSplashTime;
+        }
+
 //        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
+    }
+
+    public void addSplash(int clientID){
+        splash = new SplashAnimation(this.getPosition(), clientID);
+        splashRemainingTime = maxSplashTime;
+    }
+
+    public void update(int delta) {
+        if (splash == null) return;
+
+        splashRemainingTime -= delta;
+
+        if (splashRemainingTime <= 0) {
+            splashRemainingTime = maxSplashTime;
+            splash = null;
+        }
     }
 
     @Override
     public String getEntityType() {
-        return "BattleGridTile";
+
+        return entityType;
     }
 
     @Override
@@ -62,7 +89,7 @@ public class BattleGridTile extends Entity implements IEntity {
 
         jsonTile.put("entityType", getEntityType());
         if( this.hasOccupent() ) {
-            jsonTile.put("occupent", occupent.toJson());
+            jsonTile.put("occupent", ((IEntity)occupent).toJson());
         }
         jsonTile.put("xPosition", this.getPosition().getX());
         jsonTile.put("yPosition", this.getPosition().getY());
@@ -70,7 +97,6 @@ public class BattleGridTile extends Entity implements IEntity {
         jsonTile.put("xIndex", xIndex);
         jsonTile.put("yIndex", yIndex);
         jsonTile.put("shaded", shaded);
-
 
         return jsonTile;
     }
@@ -83,7 +109,7 @@ public class BattleGridTile extends Entity implements IEntity {
         return yIndex;
     }
 
-    public IEntity getOccupent(){
+    public BattleEntity getOccupent(){
         return this.occupent;
     }
 
@@ -92,22 +118,15 @@ public class BattleGridTile extends Entity implements IEntity {
     }
 
     public void setShaded( boolean shaded ){
-        if(this.shaded == shaded){
-            return;
-        }
+
         this.shaded = shaded;
-        if( shaded ){
-            this.addImage(ResourceManager.getImage(Board.SLIME2_RSC));
-        }
-        else{
-            this.removeImage(ResourceManager.getImage(Board.SLIME2_RSC));
-        }
     }
 
-    public boolean addOccupent(IEntity newOccupent){
-        if( !this.hasOccupent() ) {
+    public boolean addOccupent(BattleEntity newOccupent){
+        if( !this.hasOccupent() && newOccupent != null ) {
             this.occupent = newOccupent;
             ((Entity)this.occupent).setPosition(this.getPosition());
+            this.occupent.setIndexes(xIndex, yIndex);
             return true;
         }
         return false;
@@ -119,21 +138,37 @@ public class BattleGridTile extends Entity implements IEntity {
         }
     }
 
-    public void setOccupent(IEntity occupent){
+    public void setOccupent(BattleEntity occupent){
         this.occupent = occupent;
         if(hasOccupent()){
             ((Entity)this.occupent).setPosition(this.getPosition());
         }
     }
 
-    public void replaceOccupent( IEntity newOccupent ){
+    public void replaceOccupent( BattleEntity newOccupent ){
         this.removeOccupent();
         this.addOccupent( newOccupent );
+    }
+
+    public void damageOccupent(int amount) {
+        if(!hasOccupent()){
+            return;
+        }
+        this.getOccupent().takeDamage(amount);
+        if (!this.getOccupent().isAlive()) {
+            this.removeOccupent();
+        }
     }
 
     public boolean hasOccupent(){
 
         return this.occupent != null;
+    }
+
+    public void render(Graphics g) {
+        renderOccupent(g);
+
+        if (splash != null) splash.render(g);
     }
 
     public void renderOccupent(Graphics g){

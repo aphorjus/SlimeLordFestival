@@ -7,7 +7,10 @@ import game.api.GameApiListener;
 import game.client.GameClient;
 import game.client.Player;
 import game.entities.IEntity;
+import game.entities.slimelord.SlimeLord;
+import game.server.GameServer;
 import jig.ResourceManager;
+import org.lwjgl.Sys;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
@@ -21,9 +24,17 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     public static final String JOINGAME = "game/client/resource/JoinGame.png";
     public static final String HOSTGAME = "game/client/resource/HostGame.png";
     public static final String STARTGAME = "game/client/resource/StartGame.png";
+    public static final String LOBBYBOARD = "game/client/resource/LobbyBoard.png";
+    public static final String LOBBYBACKGROUND = "game/client/resource/LobbyBackground.png";
+    public static final String LOBBYBACKGROUND2 = "game/client/resource/LobbyBackground.png";
+    public static final String LOBBYTITLE = "game/client/resource/LobbyTitle.png";
+    public static final String HOSTTITLE = "game/client/resource/ServerInfo.png";
+    public static final String START = "game/client/resource/Start.png";
+
     Button joinButton = null;
     Button hostButton = null;
     Button startButton = null;
+    GameServer currentGameServer = null;
     GameClient gameClient;
     GameApi gameApi;
     TextField ipAdd;
@@ -32,50 +43,51 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     boolean failedConnect;
     boolean connected;
     boolean host;
+    boolean isLobbyFull;
     String[] clientList;
+    double backgroundX;
+    double backgroundOneX = 0;
+    double backgroundTwoX = -1000;
     int state = 0; // 0 is title screen, 1 is HostGame screen, 2 is JoinGame screen, 3 is join lobby
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        GameClient game = (GameClient)sbg;
-        gameClient = (GameClient)sbg;
+        GameClient game = (GameClient) sbg;
+        gameClient = (GameClient) sbg;
         inputManager = game.inputManager;
         ResourceManager.loadImage(TITLE);
         ResourceManager.loadImage(HOSTGAME);
         ResourceManager.loadImage(JOINGAME);
+        ResourceManager.loadImage(START);
         ResourceManager.loadImage(STARTGAME);
+        ResourceManager.loadImage(LOBBYBACKGROUND);
+        ResourceManager.loadImage(LOBBYBACKGROUND2);
+        ResourceManager.loadImage(LOBBYBOARD);
+        ResourceManager.loadImage(HOSTTITLE);
+        ResourceManager.loadImage(LOBBYTITLE);
         Image joinGame = new Image(JOINGAME);
         Image hostGame = new Image(HOSTGAME);
-        Image startGame = new Image(STARTGAME);
-        joinButton = new Button(60,440,joinGame);
-        hostButton = new Button(640,440,hostGame);
-        startButton = new Button(640,40,startGame);
+        Image startGame = new Image(START);
+        joinButton = new Button(60, 440, joinGame);
+        hostButton = new Button(640, 440, hostGame);
+        startButton = new Button(604, 358, startGame);
         gameApi = new GameApi((GameClient) sbg, this);
         failedConnect = false;
         connected = false;
         host = false;
-
+        backgroundX = 0;
         //Creating text field for IP address
-        ipAdd = new TextField(gc, gc.getDefaultFont(), 300, 130, 150, 40);
-        ipAdd.setBackgroundColor(Color.darkGray);
+        ipAdd = new TextField(gc, gc.getDefaultFont(), 417, 252, 150, 20);
+        ipAdd.setBackgroundColor(Color.black);
         ipAdd.setBorderColor(Color.white);
         ipAdd.setTextColor(Color.white);
         ipAdd.setMaxLength(253);
         ipAdd.setFocus(true);
         ipAdd.isAcceptingInput();
 
-        //Creating text field for Number of Players
-        playerNumb = new TextField(gc, gc.getDefaultFont(), 300, 330, 150, 40);
-        playerNumb.setBackgroundColor(Color.darkGray);
-        playerNumb.setBorderColor(Color.white);
-        playerNumb.setTextColor(Color.white);
-        playerNumb.setMaxLength(253);
-        playerNumb.setFocus(true);
-        playerNumb.isAcceptingInput();
-
         //Creating text field for port number
-        portNum = new TextField(gc, gc.getDefaultFont(), 300, 200, 150, 40);
-        portNum.setBackgroundColor(Color.darkGray);
+        portNum = new TextField(gc, gc.getDefaultFont(), 417, 190, 150, 20);
+        portNum.setBackgroundColor(Color.black);
         portNum.setBorderColor(Color.white);
         portNum.setTextColor(Color.white);
         portNum.setMaxLength(253);
@@ -85,7 +97,21 @@ public class StartUpState extends BasicGameState implements GameApiListener {
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) {
+        gameApi = new GameApi((GameClient)sbg, this);
 
+    }
+
+    public void backgoundMotion(Graphics g){
+        //Parallex lobby background
+        backgroundOneX =backgroundOneX+.009;
+        backgroundTwoX=backgroundTwoX+.009;
+        if(backgroundOneX>=999) {
+            backgroundOneX = -1000;
+        }else if(backgroundTwoX >=999){
+            backgroundTwoX = -1000;
+        }
+        g.drawImage(ResourceManager.getImage(LOBBYBACKGROUND),(float)backgroundOneX,0);
+        g.drawImage(ResourceManager.getImage(LOBBYBACKGROUND),(float)backgroundTwoX,0);
     }
 
     @Override
@@ -94,6 +120,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         inputManager.update();
         Input input = gc.getInput();
         GameClient bg = (GameClient)sbg;
+
         if (connected == true){
             gameApi.update();
         }
@@ -107,6 +134,9 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             if(hostButton.checkClick(mx,my) == true && state == 0){
                 System.out.println("Host Game button clicked");
                 state = 4;
+                //Empty ipadd input, so it can be used for player count
+                portNum.setText("");
+                ipAdd.setText("");
             }
 
             //If join game button gets clicked switch to join game
@@ -114,8 +144,8 @@ public class StartUpState extends BasicGameState implements GameApiListener {
                 System.out.println("Join Game button clicked");
                 state = 2;
                 //enabling buttons for join page
-                ipAdd.isAcceptingInput();
-                portNum.isAcceptingInput();
+                portNum.setText("");
+                ipAdd.setText("");
             }
 
             if(startButton.checkClick(mx,my) == true && host == true){
@@ -143,7 +173,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             //If in host state attempt to host server with given inputs
             else if(state == 4){
                 System.out.println("Creating Server");
-                gameClient.hostGame(Integer.parseInt(portNum.getText()), Integer.parseInt(playerNumb.getText()));
+                currentGameServer = gameClient.hostGame(Integer.parseInt(portNum.getText()), Integer.parseInt(ipAdd.getText()));
                 host = true;
                 state = 3;
                 connected = true;
@@ -153,8 +183,18 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         }
 
         if(input.isKeyPressed(Input.KEY_ESCAPE)){
+            //resetting all variables
             state = 0;
             failedConnect = false;
+            connected = false;
+            isLobbyFull = false;
+
+            //gameClient.exit();
+            //if you are hosting a game stop it
+            if(currentGameServer!=null){
+                currentGameServer.end();
+                currentGameServer = null;
+            }
         }
 
     }
@@ -163,39 +203,53 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         GameClient bg = (GameClient)sbg;
 
-        if (state == 0){
+        if (state == 0){ //MAIN MENU
             g.drawImage(ResourceManager.getImage(TITLE),
                     0, 0);
             joinButton.render(g);
             hostButton.render(g);
-        }else if(state == 1){
+        }else if(state == 1){ //DEPRECATED Host state
             g.drawString("You are Hosting a game at 192.181.1.3",300,83);
-        }else if(state == 2){ //Join game state
-            g.drawString("Enter IP address and portnumber then press enter to join game",300,83);
-            g.drawString("IP ADDRESS:",200,130);
-            g.drawString("PORT NUMBER:",190,200);
+        }else if(state == 2){ //JOIN GAME MENU
+            backgoundMotion(g);
+            g.drawImage(ResourceManager.getImage(LOBBYBOARD), 0, 0);
+            g.drawImage(ResourceManager.getImage(JOINGAME),355,107);
+            g.drawString("(press \"ENTER\" to join)", 392,374);
+            g.drawString("IP Address", 417, 230);
+            g.drawString("Port Number", 417, 170);
             ipAdd.render(gc,g);
             portNum.render(gc,g);
             if(failedConnect == true){
-                g.drawString("Could not connect please try again",300,40);
+                g.setColor(Color.red);
+                g.drawString("Could not connect please try again",334,354);
+                g.setColor(Color.white);
             }
-        }else if (state == 3){ //Lobby state
+        }else if (state == 3){ //LOBBY
+            backgoundMotion(g);
+            g.drawImage(ResourceManager.getImage(LOBBYBOARD), 0, 0);
+            g.drawImage(ResourceManager.getImage(LOBBYTITLE),355,107);
             if (host == true){
-                g.drawString("GAME LOBBY: You are the host", 300,40);
-                startButton.render(g);
+                //g.drawString("GAME LOBBY: You are the host", 300,40);
+                if(isLobbyFull == true){
+                    startButton.render(g);
+                }
             }else{
-                g.drawString("GAME LOBBY: Waiting on host", 300,40);
+                //g.drawString("GAME LOBBY: Waiting on host", 300,40);
             }
             if (clientList != null){
                 for (int i = 0; i < clientList.length; i++) {
-                    g.drawString("Client: "+clientList[i]+ " in Lobby", (20 + (250 * i)),240);
+                    g.drawString("Player "+(Integer.parseInt(clientList[i]) + 1) + " in Lobby", 253,(158 + (i*40)));
                 }
             }
-        }else if(state == 4) { //Host Game State
-            g.drawString("Enter Port Number and Player Count then press enter to host", 300, 83);
-            g.drawString("PLAYER COUNT:", 180, 330);
-            g.drawString("PORT NUMBER:", 190, 200);
-            playerNumb.render(gc, g);
+        }else if(state == 4) { //HOST GAME MENU
+            backgoundMotion(g);
+            g.drawImage(ResourceManager.getImage(LOBBYBOARD), 0, 0);
+            g.drawImage(ResourceManager.getImage(HOSTGAME),355,107);
+            g.drawString("(press \"ENTER\" to host)", 392,374);
+            //g.drawString("Enter Port Number and Player Count then press enter to host", 233, 114);
+            g.drawString("Player Count", 417, 230);
+            g.drawString("Port Number", 417, 170);
+            ipAdd.render(gc, g);
             portNum.render(gc, g);
         }
 
@@ -218,7 +272,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
 
     public void onMessage(int senderId, String message) { }
 
-    public void onSetStateToBattle() {}
+    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {}
 
     public void onSetStateToOverworld() {
         gameClient.enterState(GameClient.OVERWORLD_STATE);
@@ -232,11 +286,18 @@ public class StartUpState extends BasicGameState implements GameApiListener {
 
     public void onLobbyIsFull() {
         gameClient.players = new Player[clientList.length];
-
+        isLobbyFull = true;
         for (int i = 0; i < gameClient.players.length; i++) {
             gameClient.players[i] = new Player();
         }
 
         gameApi.updatePlayerState(gameClient.players[0]);
+    }
+
+    public void onConnectionConfirmation(int myId) {
+        if (gameClient.myId == -1) {
+            gameClient.myId = myId;
+            System.out.println("MyId is: " + myId);
+        }
     }
 }
