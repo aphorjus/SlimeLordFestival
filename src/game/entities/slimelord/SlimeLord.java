@@ -156,6 +156,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     public SlimeLord(JSONObject data) {
         abilities = new LinkedList<>();
         factories = new LinkedList<>();
+        specialSlimes = new LinkedList<>();
 
         entityType = data.getString("entityType");
         clientID = data.getInt("clientID");
@@ -182,6 +183,14 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
 
             for (int i = 0; i < jsonFactories.length(); i++) {
                 factories.add(new SlimeFactory(jsonFactories.getJSONObject(i)));
+            }
+        }
+
+        if (data.has("specialSlimes")){
+            JSONArray jsonSlimes = data.getJSONArray("specialSlimes");
+
+            for (int i = 0; i < jsonSlimes.length(); i++){
+                specialSlimes.add(jsonSlimes.getString(i));
             }
         }
     }
@@ -222,6 +231,16 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
             }
 
             data.put("factories", jsonFactories);
+        }
+
+        if (specialSlimes.size() > 0) {
+            JSONArray jsonSlimes = new JSONArray();
+
+            for (String slime : specialSlimes) {
+                jsonSlimes.put(slime);
+            }
+
+            data.put("specialSlimes", jsonSlimes);
         }
 
         return data;

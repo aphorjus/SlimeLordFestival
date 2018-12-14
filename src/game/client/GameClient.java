@@ -48,6 +48,8 @@ public class GameClient extends StateBasedGame {
     public static int ImageWidth = 1392;
     public static int ImageHeight = 800;
 
+    public int battleStateWinner = -1;
+
     public int myId = -1;
 
     private Board board;
@@ -82,6 +84,10 @@ public class GameClient extends StateBasedGame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setBattleStateWinner(int id) {
+        battleStateWinner = id;
     }
 
     public int getTokens(){
@@ -160,6 +166,7 @@ public class GameClient extends StateBasedGame {
         try {
             app = new AppGameContainer(new GameClient("SlimeLordFestival", width, height));
             app.setDisplayMode(width, height, false);
+            app.setVSync(true);
             app.start();
         } catch (SlickException e) {
             e.printStackTrace();

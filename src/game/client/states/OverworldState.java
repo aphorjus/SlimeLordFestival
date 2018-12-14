@@ -41,6 +41,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     String BLUE_ATTACK = "game/client/resource/blue-slime-attack.png";
     String BLUE_DEATH = "game/client/resource/blue-slime-death.png";
 
+    String FIGHT_POPUP = "game/client/resource/fight-popup.png";
+
     InputManager inputManager;
     TextField textField;
     GameApi gameApi;
@@ -93,12 +95,22 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         ResourceManager.loadImage(BLUE_ATTACK);
         ResourceManager.loadImage(BLUE_DEATH);
 
+        ResourceManager.loadImage(FIGHT_POPUP);
+
         gameApi = new GameApi((GameClient)sbg, this);
         GameClient bg = (GameClient)sbg;
-        currentShop = new Shop(bg);
+        currentShop = new Shop(bg,gameApi);
         Board board = bg.getBoard();
         board.setUp(gameApi, gameClient);
         this.board = board;
+
+        if (gameClient.battleStateWinner != -1 && gameClient.battleStateWinner == gameClient.myId) {
+            battleWon();
+        }
+    }
+
+    void battleWon() {
+        gameClient.setTokens(gameClient.getTokens() + 600);
     }
 
     @Override
@@ -112,7 +124,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         // board.showHighlightedPaths(input.getMouseX(), input.getMouseY());
 
 
-        board.update(delta);
+        board.update(delta, input);
         if (input.isKeyDown(Input.KEY_A)) {
             board.shiftLeft();
         }
@@ -130,8 +142,15 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         }
         
         if (input.isKeyDown(Input.KEY_X)) {
-            SlimeLord testSlimeLord = new SlimeLord(0);
-            currentShop.setCurrentSlimeLord(testSlimeLord);
+            SlimeLord shopSlimeLord = null;
+            for (int i = 0; i < board.slimeLords.size(); i++) {
+                if(board.slimeLords.get(i).clientID == gameClient.myId){
+                    shopSlimeLord = board.slimeLords.get(i);
+                    break;
+                }
+            }
+            currentShop.setCurrentSlimeLord(shopSlimeLord);
+            currentShop.setAPI(gameApi);
             inShop = true;
             overworldMusic.pause();
             shopMusic.loop();
@@ -143,6 +162,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
                 currentShop.checkClick(input.getMouseX(), input.getMouseY());
                 if(exitButton.checkClick(input.getMouseX(),input.getMouseY())){
                     inShop = false;
+                    currentShop.exitShop();
                     shopMusic.stop();
                     overworldMusic.loop();
                 }

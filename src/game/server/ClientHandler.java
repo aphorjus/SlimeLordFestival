@@ -45,10 +45,12 @@ public class ClientHandler extends Thread {
                 while (input.available() > 0) {
                     gameActions.push(new JSONObject(input.readUTF()));
                 }
+                sleep(15);
             } catch (Exception e) {
                 e.printStackTrace();
                 break;
             }
+
         }
 
         try {

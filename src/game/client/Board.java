@@ -2,6 +2,7 @@ package game.client;
 
 
 import game.api.GameApi;
+import game.entities.FightPopup;
 import game.entities.IEntity;
 import game.entities.building.TokenTents;
 import game.entities.slime.Slime;
@@ -10,6 +11,7 @@ import jig.Vector;
 import org.lwjgl.Sys;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import jig.ResourceManager;
@@ -57,11 +59,11 @@ public class Board {
     SlimeLord slimeLordTwo;
     SlimeLord slimeLordThree;
     SlimeLord slimeLordFour;
+    FightPopup fightPopup;
 
-    LinkedList<SlimeLord> slimeLords = new LinkedList<>();
+    public LinkedList<SlimeLord> slimeLords = new LinkedList<>();
 
     public SlimeLord currentSlimelord;
-
 
     public Board() {
         tiles = new Tile[NUMROWS][NUMCOLS];
@@ -176,6 +178,8 @@ public class Board {
 
         if (selected != null) {
             tiles[(int)selected.tilePosition.getX()][(int)selected.tilePosition.getY()].heldSlimeLord = null;
+            selected.specialSlimes = slimeLord.specialSlimes;
+            selected.abilities = slimeLord.abilities;
             moveSlimelordTo(selected, tileX, tileY);
         } else {
             moveSlimelordTo(slimeLord, tileX, tileY);
@@ -183,7 +187,7 @@ public class Board {
         }
     }
 
-    public void moveSlimelordTo(SlimeLord lord, int row, int col) {
+    void moveSlimelordTo(SlimeLord lord, int row, int col) {
         if (tiles[row][col] == null) return;
 
         tiles[row][col].heldSlimeLord = lord;
@@ -225,6 +229,8 @@ public class Board {
         } else {
             g.drawString("Player " + turn.turnID + "'s turn", 500, 470);
         }
+
+        if (fightPopup != null) fightPopup.render(g);
     }
 
     // setting up tiles
@@ -529,31 +535,6 @@ public class Board {
 
     }
 
-    public void move(int id, float xpos, float ypos) {
-        if(gameClient.myId != id && id == 0){
-            slimeLordOne.moveTo(xpos, ypos);
-        }
-        if(gameClient.myId != id && id == 1){
-            slimeLordTwo.moveTo(xpos, ypos);
-        }
-        if(gameClient.myId != id && id == 2){
-            slimeLordThree.moveTo(xpos, ypos);
-        }
-        if(gameClient.myId != id && id == 3){
-            slimeLordFour.moveTo(xpos, ypos);
-        }
-    }
-
-    // move function called by the network
-    public boolean move(int id, int row, int col) {
-        if(tiles[row][col] != null) {
-            tiles[row][col].setContents("" + id);
-            return true;
-        }
-        return false;
-    }
-
-
     public boolean click(int x, int y){
         if(x >= 0 && x <= 1392 && y >= 0 && y <= 800 && turn.isMyMove()){
             int row = (int)(y + yoffset)/16;
@@ -612,7 +593,7 @@ public class Board {
         }
 
         if (opponent != null) {
-            gameApi.startBattle(lord, opponent);
+            fightPopup = new FightPopup(new Vector(500, 250), lord, opponent);
         }
     }
 
@@ -748,11 +729,22 @@ public class Board {
         return true;
     }
 
-    public void update(int delta) {
+    public void update(int delta, Input input) {
         countdown = countdown - delta;
         if(countdown < 0) {
             countdown = KEYBOARD_COUNTDOWN;
             acceptKeyboard = true;
+        }
+
+        if (fightPopup != null) {
+            fightPopup.update(input);
+            
+            if (fightPopup.IsFighting) {
+                gameApi.startBattle(fightPopup.one, fightPopup.two);
+                fightPopup = null;
+            } else if (fightPopup.IsCoward) {
+                fightPopup = null;
+            }
         }
     }
 }

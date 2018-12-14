@@ -261,6 +261,8 @@ public class BattleState extends BasicGameState implements GameApiListener {
             // DO SOMETHING?!?
             // Enter overworld and tell it who won somehow
             //
+            gameClient.setBattleStateWinner(winner);
+            gameClient.enterState(GameClient.OVERWORLD_STATE);
         }
     }
 
@@ -376,14 +378,13 @@ public class BattleState extends BasicGameState implements GameApiListener {
         this.slimeLordOne = lordOne;
         this.slimeLordTwo = lordTwo;
 
-        spawnInFactories();
-
         this.playerOne = slimeLordOne.clientID;
         this.playerTwo = slimeLordTwo.clientID;
 
+        this.activeSlimeLord = slimeLordOne;
         this.activePlayer = slimeLordOne.clientID;
-        spawnInFactories();
 
+        spawnInFactories();
     }
 
     public void onSetStateToOverworld() {}
