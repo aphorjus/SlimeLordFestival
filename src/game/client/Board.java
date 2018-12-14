@@ -60,6 +60,8 @@ public class Board {
     SlimeLord slimeLordFour;
     FightPopup fightPopup;
 
+    boolean beenSetUp = false;
+
     public LinkedList<SlimeLord> slimeLords = new LinkedList<>();
 
     public SlimeLord currentSlimelord;
@@ -71,6 +73,12 @@ public class Board {
     }
 
     public void setUp(GameApi gameApi, GameClient gameClient) {
+
+        if(beenSetUp){
+            return;
+        }
+        beenSetUp = true;
+
         this.gameApi = gameApi;
         this.gameClient = gameClient;
 
