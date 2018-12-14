@@ -159,7 +159,6 @@ public class Board {
                 slimeLordAlreadyExists = true;
             }
         }
-        System.out.println(slimeLord.xpos + " " + slimeLord.ypos + " " + slimeLord.id+ " " + slimeLordAlreadyExists + " " + gameClient.myId);
 
 
         if (!slimeLordAlreadyExists) {                   // Clay, i changed this from slimeLordAlreadyExists to !slimeLordAlreadyExists
@@ -518,8 +517,9 @@ public class Board {
         showCurrentHighlightedPaths();
         System.out.println(current.getRow() + " " + current.getCol() + " " + tiles[current.getRow()][current.getCol()]);
 
-        if (isMyTurn()) {
+        if (gc.myId == turn.turnID) {
             for (TokenTents tent : tents) {
+                System.out.println(tent.owner);
                 if (tent.owner == gameClient.myId) {
                     gameClient.setTokens(gameClient.tokens + tent.TOKEN_AMOUNT);
                 }
@@ -602,7 +602,6 @@ public class Board {
         Tile tile = tiles[row][col];
         List<String> paths = pathfinding.showAllPaths(tile,Turn.NUM_MOVES - turn.getMove());
         Tile last = tile;
-        System.out.println(tile.getRow() + " " + tile.getCol() + " " + turn.getMove() + " " + paths.size());
         tile.isHighlighted = true;
         for(String path: paths){
             for(char c: path.toCharArray()){
@@ -673,7 +672,6 @@ public class Board {
                 current = current.getRight();
             } else {
                 if(isBattle()){
-                    System.out.println("contents: " + current.getContents());
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);
@@ -703,7 +701,6 @@ public class Board {
                 current = current.getLeft();
             } else {
                 if(isBattle()){
-                    System.out.println("contents: " + current.getContents());
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);
@@ -728,12 +725,10 @@ public class Board {
             }
             current.setContents("");
             current = current.getUp();
-            System.out.println(current.getContents());
             if(isTent()) {
                 current = current.getDown();
             } else {
                 if(isBattle()){
-                    System.out.println("contents: " + current.getContents());
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);
@@ -763,7 +758,6 @@ public class Board {
                 current = current.getUp();
             } else {
                 if(isBattle()){
-                    System.out.println("contents: " + current.getContents());
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);
