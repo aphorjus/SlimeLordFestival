@@ -95,7 +95,6 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         board.updateSlimelord();
         // board.showHighlightedPaths(input.getMouseX(), input.getMouseY());
 
-
         if(input.isMousePressed(input.MOUSE_LEFT_BUTTON)){
             board.moveTo(input.getMouseX(), input.getMouseY());
         }

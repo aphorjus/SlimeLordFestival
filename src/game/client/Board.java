@@ -82,33 +82,18 @@ public class Board {
             TokenTents tent = new TokenTents(4,0,0);
             tents.add(tent);
         }
-        tents.get(0).setPosition(new Vector(8*16, 10*16));           // tent
-
-        /*
-        place("T:0", 16, 13);           // tent
-        place("T:0", 3, 31);            // tent
-        // place("T:0", 16, 31);                          // shop
-
-        // RED SLIME AREA
-        place("T:0", 27, 6);             // tent
-        place("T:0", 44, 18);            // tent
-        place("T:0", 34, 22);            // tent
-        place("T:0", 27, 31);            // tent
-        // place("T:0", 33, 31);                            // shop
-
-        // ORANGE SLIME AREA
-        place("T:0", 47, 48);           // path leading right tent DOES NOT WORK
-        //  place("T:0", 38, 54);                         // shop
-        place("T:0", 37, 66);           // tent
-        place("T:0", 29, 82);           // tent
-
-        // GREEN SLIME AREA
-        place("T:0", 15, 76);           // tent
-        place("T:0", 5, 65);            // tent
-        place("T:0", 22, 57);           // tent
-        // place("T:0", 11, 54);                          // shop
-
-         */
+        tents.get(0).setPosition(new Vector(8*16, 10*16));          // tent 1
+        tents.get(1).setPosition(new Vector(1*16, 21*16));          // tent 2
+        tents.get(2).setPosition(new Vector(17*16, 21*16));         // tent 3
+        tents.get(3).setPosition(new Vector(17*16, 38*16));         // tent 4
+        tents.get(4).setPosition(new Vector(26*16, 21*16));         // tent 5
+        tents.get(5).setPosition(new Vector(49*16, 40*16));         // tent 6
+        tents.get(6).setPosition(new Vector(61*16, 31*16));         // tent 7
+        tents.get(7).setPosition(new Vector(77*16, 23*16));         // tent 8
+        tents.get(8).setPosition(new Vector(52*16, 16*16));         // tent 9
+        tents.get(9).setPosition(new Vector(71*16, 9*16));         // tent 10
+        tents.get(10).setPosition(new Vector(60*16, 4));            // tent 11
+        tents.get(11).setPosition(new Vector(26*16, 4));           // tent 12
 
         slimeLordOne.setPosition(new Vector(5*16,10*16));       //  blue
         slimeLordTwo.setPosition(new Vector(76*16,4*16));       // green
@@ -158,7 +143,7 @@ public class Board {
                 slimeLordAlreadyExists = true;
             }
         }
-        System.out.println(slimeLord.xpos + " " + slimeLord.ypos + " " + slimeLord.id+ " " + slimeLordAlreadyExists + " " + gameClient.myId);
+        System.out.println(slimeLord.xpos + " " + slimeLord.ypos);
 
 
         if (!slimeLordAlreadyExists) {                   // Clay, i changed this from slimeLordAlreadyExists to !slimeLordAlreadyExists
@@ -248,21 +233,24 @@ public class Board {
                         0, 10, 5,
                         3, 10, 0,
                         2, 8, 0,
-                        1, 4, 0,
+                        1, 4, 0,        // tent
                         0, 20, 11,
                         3, 14, 0,
                         4, 6, 0,
                         3, 5, 0,
                         0, 34, 6,
-                        1, 6, 0,
+                        1, 6, 0,        // tent
                         0, 34, 12,
                         2, 3, 0,
-                        3, 6, 0,
-                        2, 3, 0,
-                        3, 3, 0,
-                        0, 30, 11,
-                        2, 11, 0,
-                        3, 3, 0,
+                        3, 14, 0,
+                        2, 7, 0,
+                        1, 2, 0,        // tent
+                        0, 46, 23,
+                        2, 5, 0,
+                        1, 15, 0,
+                        0, 30, 12,
+                        2, 10, 0,
+                        1, 3, 0,        // tent
                         0, 30, 22,
                         2, 9, 0,
                         3, 2, 0,
@@ -270,59 +258,57 @@ public class Board {
                         1, 2, 0,
                         0, 30, 31,
                         2, 6, 0,
-                        3, 16, 0,
-                        2, 11, 0,
-                        0, 46, 45,
-                        1, 6, 0,
+                        3, 18, 0,
+                        2, 17, 0,       // tent 6
+                        0, 47, 45,
+                        1, 7, 0,
                         2, 9, 0,
                         1, 1, 0,
                         0, 40, 54,
                         2, 6, 0,
-                        1, 14, 0,
+                        1, 14, 0,   // up
                         0, 40, 60,
                         2, 6, 0,
                         1, 2, 0,
-                        0, 40, 66,
-                        2, 7, 0,
+                        0, 40, 67,
+                        2, 6, 0,
                         1, 7, 0,
                         2, 8, 0,
                         3, 6, 0,
                         0, 33, 81,
                         2, 1, 0,
-                        1, 3, 0,
+                        1, 3, 0,        // tent 8
                         0, 33, 77,
                         1, 7, 0,
                         4, 20, 0,
-                        1, 3, 0,
+                        1, 3, 0,    // tent 9
                         0, 26, 70,
                         1, 7, 0,
                         2, 6, 0,
-                        1, 3, 0,
+                        1, 3, 0,        // tent 10
                         0, 19, 70,
                         4, 6, 0,
                         1, 11, 0,
                         2, 1, 0,
-                        1, 2, 0,
+                        1, 2, 0,        // tent 11
                         0, 8, 65,
                         2, 7, 0,
                         1, 4, 0,
-                        2, 4, 0, //
+                        2, 4, 0,
                         0, 8, 64,
                         4, 10, 0,
                         3, 2, 0,
                         0, 8, 54,
-                        1, 3, 0,
-                        4, 12, 0,
-                        1, 4, 0,
-                        4, 11, 0,
-                        3, 1, 0,
-                        0, 1, 31,
+                        4, 23, 0,
+                        1, 1, 0,
+                        0, 8, 31,
                         4, 9, 0,
-                        3, 18, 0,
+                        3, 11, 0,
                         2, 9, 0,
                         1, 2, 0,
                         0, 19, 22,
                         4, 9, 0,
+
                 };
 
         for (int i = 0; i < placement.length / 3; i++) {
@@ -347,29 +333,19 @@ public class Board {
                     break;
             }
         }
-        // BLUE SLIME AREA
-        place("T:4:0", 16, 13);           // tent
-        place("T:4:1", 3, 31);            // tent
-        // place("T:0", 16, 31);                          // shop
 
-        // RED SLIME AREA
-        place("T:4:2", 27, 6);             // tent
-        place("T:4:3", 44, 18);            // tent
-        place("T:4:4", 34, 22);            // tent
-        place("T:4:5", 27, 31);            // tent
-       // place("T:0", 33, 31);                            // shop
-
-        // ORANGE SLIME AREA
-        place("T:4:6", 47, 48);           // path leading right tent DOES NOT WORK
-        //  place("T:0", 38, 54);                         // shop
-        place("T:4:7", 37, 66);           // tent
-        place("T:4:8", 29, 82);           // tent
-
-        // GREEN SLIME AREA
-        place("T:4:9", 15, 76);           // tent
-        place("T:4:10", 5, 65);            // tent
-        place("T:4:11", 22, 57);           // tent
-        // place("T:0", 11, 54);                          // shop
+        place("T:4:0", 16, 13);            // tent 1
+        place("T:4:1", 27, 6);             // tent 2
+        place("T:4:2", 28, 22);            // tent 3
+        place("T:4:3", 45, 22);            // tent 4
+        place("T:4:4", 28, 31);            // tent 5
+        place("T:4:5", 47, 54);            // tent 6
+        place("T:4:6", 38, 66);            // tent 7
+        place("T:4:7", 30, 82);            // tent 8
+        place("T:4:8", 23, 57);            // tent 9
+        place("T:4:9", 16, 76);            // tent 10
+        place("T:4:10", 7, 65);            // tent 11
+        place("T:4:11", 7, 31);            // tent 12
 
     }
 
@@ -516,7 +492,7 @@ public class Board {
 
         turn.turnHasEnded();
         showCurrentHighlightedPaths();
-        System.out.println(current.getRow() + " " + current.getCol() + " " + tiles[current.getRow()][current.getCol()]);
+        //System.out.println(current.getRow() + " " + current.getCol() + " " + tiles[current.getRow()][current.getCol()]);
     }
 
     public void move(int id, float xpos, float ypos) {
@@ -546,7 +522,7 @@ public class Board {
 
     public boolean moveTo(int x, int y){
 
-        if(x >= 0 && x <= 1392 && y >= 0 && y <= 800 && turn.isMyMove()){
+        if(x >= 0 && x <= 1000 && y >= 0 && y <= 500 && turn.isMyMove()){
             int row = y/16;
             int col = x/16;
             if(row < NUMROWS && col < NUMCOLS && tiles[row][col] != null){
@@ -579,7 +555,7 @@ public class Board {
 
     public void showHighlightedPaths(int x, int y){
        // System.out.println(x + " " + y);
-        if(x >= 0 && x <= 1392 && y >= 0 && y <= 800 && turn.isMyMove()){
+        if(x >= 0 && x <= 1000 && y >= 0 && y <= 500 && turn.isMyMove()){
 //            int row = y/16;
 //            int col = x/16;
             int row = current.getRow();
@@ -594,7 +570,7 @@ public class Board {
         Tile tile = tiles[row][col];
         List<String> paths = pathfinding.showAllPaths(tile,Turn.NUM_MOVES - turn.getMove());
         Tile last = tile;
-        System.out.println(tile.getRow() + " " + tile.getCol() + " " + turn.getMove() + " " + paths.size());
+        //System.out.println(tile.getRow() + " " + tile.getCol() + " " + turn.getMove() + " " + paths.size());
         tile.isHighlighted = true;
         for(String path: paths){
             for(char c: path.toCharArray()){
@@ -665,7 +641,7 @@ public class Board {
                 current = current.getRight();
             } else {
                 if(isBattle()){
-                    System.out.println("contents: " + current.getContents());
+                    // System.out.println("contents: " + current.getContents());
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);
@@ -695,7 +671,7 @@ public class Board {
                 current = current.getLeft();
             } else {
                 if(isBattle()){
-                    System.out.println("contents: " + current.getContents());
+                    //System.out.println("contents: " + current.getContents());
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);
@@ -720,12 +696,12 @@ public class Board {
             }
             current.setContents("");
             current = current.getUp();
-            System.out.println(current.getContents());
+            //System.out.println(current.getContents());
             if(isTent()) {
                 current = current.getDown();
             } else {
                 if(isBattle()){
-                    System.out.println("contents: " + current.getContents());
+                    //System.out.println("contents: " + current.getContents());
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);
@@ -755,7 +731,7 @@ public class Board {
                 current = current.getUp();
             } else {
                 if(isBattle()){
-                    System.out.println("contents: " + current.getContents());
+                    //System.out.println("contents: " + current.getContents());
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);
