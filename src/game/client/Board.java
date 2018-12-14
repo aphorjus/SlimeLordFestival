@@ -45,7 +45,7 @@ public class Board {
     private float xoffset = 0;
     private float yoffset = 0;
     private int slimeID = 0;
-    private Turn turn;
+    public Turn turn;
     GameClient gameClient;
     GameApi gameApi;
     Pathfinding pathfinding;
@@ -56,6 +56,7 @@ public class Board {
     SlimeLord slimeLordTwo;
     SlimeLord slimeLordThree;
     SlimeLord slimeLordFour;
+
 
     LinkedList<SlimeLord> slimeLords = new LinkedList<>();
 
@@ -143,8 +144,8 @@ public class Board {
                 slimeLordAlreadyExists = true;
             }
         }
-        System.out.println(slimeLord.xpos + " " + slimeLord.ypos);
 
+        System.out.println(slimeLord.xpos + " " + slimeLord.ypos);
 
         if (!slimeLordAlreadyExists) {                   // Clay, i changed this from slimeLordAlreadyExists to !slimeLordAlreadyExists
             move(slimeLord.clientID, slimeLord.xpos, slimeLord.ypos);
@@ -488,11 +489,21 @@ public class Board {
         return false;
     }
 
-    public void endTurn(){
-
-        turn.turnHasEnded();
+    public void endTurn(GameClient gc){
+        turn.turnHasEnded(gc);
         showCurrentHighlightedPaths();
         //System.out.println(current.getRow() + " " + current.getCol() + " " + tiles[current.getRow()][current.getCol()]);
+        System.out.println(current.getRow() + " " + current.getCol() + " " + tiles[current.getRow()][current.getCol()]);
+
+        if (gc.myId == turn.turnID) {
+            for (TokenTents tent : tents) {
+                System.out.println(tent.owner);
+                if (tent.owner == gameClient.myId) {
+                    gameClient.setTokens(gameClient.tokens + tent.TOKEN_AMOUNT);
+                }
+            }
+        }
+
     }
 
     public void move(int id, float xpos, float ypos) {
@@ -570,7 +581,9 @@ public class Board {
         Tile tile = tiles[row][col];
         List<String> paths = pathfinding.showAllPaths(tile,Turn.NUM_MOVES - turn.getMove());
         Tile last = tile;
+
         //System.out.println(tile.getRow() + " " + tile.getCol() + " " + turn.getMove() + " " + paths.size());
+
         tile.isHighlighted = true;
         for(String path: paths){
             for(char c: path.toCharArray()){
@@ -672,6 +685,7 @@ public class Board {
             } else {
                 if(isBattle()){
                     //System.out.println("contents: " + current.getContents());
+
                     gameApi.setGameState(GameApi.SetGameStateBattle);
                 }
                 current.setContents("" + slimeID);
