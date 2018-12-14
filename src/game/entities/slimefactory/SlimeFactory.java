@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class SlimeFactory extends Entity implements IEntity, BattleEntity {
-    String GREEN_RSC = "game/client/resource/slime-factory-green.png";
-    String RED_RSC = "game/client/resource/slime-factory-red.png";
-    String YELLOW_RSC = "game/client/resource/slime-factory-yellow.png";
-    String BLUE_RSC = "game/client/resource/slime-factory-blue.png";
+    String GREEN_FACTORY_RSC = "game/client/resource/slime-factory-green.png";
+    String RED_FACTORY_RSC = "game/client/resource/slime-factory-red.png";
+    String YELLOW_FACTORY_RSC = "game/client/resource/slime-factory-yellow.png";
+    String BLUE_FACTORY_RSC = "game/client/resource/slime-factory-blue.png";
 
     String entityType = "Factory";
     public int clientID;
@@ -67,19 +67,19 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
     }
 
     void initializeAnimation() {
-        String color = BLUE_RSC;
+        String color = BLUE_FACTORY_RSC;
         switch (clientID) {
             case 0:
-                color = BLUE_RSC;
+                color = BLUE_FACTORY_RSC;
                 break;
             case 1:
-                color = GREEN_RSC;
+                color = GREEN_FACTORY_RSC;
                 break;
             case 2:
-                color = YELLOW_RSC;
+                color = YELLOW_FACTORY_RSC;
                 break;
             case 3:
-                color = RED_RSC;
+                color = RED_FACTORY_RSC;
                 break;
         }
 
