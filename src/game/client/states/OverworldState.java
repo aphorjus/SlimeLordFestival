@@ -105,8 +105,18 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         this.board = board;
 
         if (gameClient.battleStateWinner != -1 && gameClient.battleStateWinner == gameClient.myId) {
+            gameClient.battleStateWinner = -1;
             battleWon();
         }
+
+        removeLoser(gameClient.battleStateLoser);
+    }
+
+    void removeLoser(int loserId) {
+        if (loserId == -1) return;
+
+        board.turn.addLoser(loserId);
+        board.removeLoser(loserId);
     }
 
     void battleWon() {

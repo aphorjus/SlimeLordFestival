@@ -3,6 +3,8 @@ package game.client;
 import game.api.GameApi;
 import org.newdawn.slick.Game;
 
+import java.util.LinkedList;
+
 public class Turn {
     public static int NUM_MOVES = 10;
     public static int NUM_PLAYERS = 4;
@@ -10,6 +12,7 @@ public class Turn {
     public int turnID;
     private int move;
     private GameApi gameApi;
+    LinkedList<Integer> loserIds = new LinkedList<>();
 
     public Turn(GameApi gameApi, int currentID) {
         this.gameApi = gameApi;
@@ -46,10 +49,23 @@ public class Turn {
         return currentID == turnID && move < NUM_MOVES;
     }
 
+    public void addLoser(int id) {
+        loserIds.add(id);
+    }
+
     // called by gameApi to let players know that the current turn has ended.
     public void turnHasEnded(GameClient gc) {
         turnID = (turnID + 1) % gc.players.length;
         move = 0;
+
+        boolean isLoser = false;
+        for (int id : loserIds) {
+            if (id == turnID) isLoser = true;
+        }
+
+        if (isLoser) {
+            turnHasEnded(gc);
+        }
     }
 
     public int getCurrentPlayer(){
