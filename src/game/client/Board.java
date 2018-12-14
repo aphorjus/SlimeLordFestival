@@ -147,7 +147,6 @@ public class Board {
         if (gameClient.players.length > 2) {
             moveSlimelordTo(slimeLordThree, 40, 81);
             slimeLords.add(slimeLordThree);
-
         }
 
         if (gameClient.players.length > 3) {
