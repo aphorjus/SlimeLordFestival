@@ -7,7 +7,7 @@ public class Turn {
     public static int NUM_MOVES = 60;
     public static int NUM_PLAYERS = 4;
     private int currentID;
-    private int turnID;
+    public int turnID;
     private int move;
     private GameApi gameApi;
 

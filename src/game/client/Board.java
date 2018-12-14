@@ -45,7 +45,7 @@ public class Board {
     private float xoffset = 0;
     private float yoffset = 0;
     private int slimeID = 0;
-    private Turn turn;
+    public Turn turn;
     GameClient gameClient;
     GameApi gameApi;
     Pathfinding pathfinding;
@@ -56,6 +56,7 @@ public class Board {
     SlimeLord slimeLordTwo;
     SlimeLord slimeLordThree;
     SlimeLord slimeLordFour;
+
 
     LinkedList<SlimeLord> slimeLords = new LinkedList<>();
 
