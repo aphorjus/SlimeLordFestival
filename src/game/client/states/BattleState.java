@@ -35,6 +35,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
     Boolean showHelp = null;
     Image helpMenu = null;
     Image controls = null;
+    int currentAbility = 0;
     int playerOne;
     int playerTwo;
     int activePlayer;
@@ -237,12 +238,15 @@ public class BattleState extends BasicGameState implements GameApiListener {
         }
         if ( input.isKeyPressed(Input.KEY_1) ){//&& isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(0));
+            this.currentAbility = 0;
         }
         if ( input.isKeyPressed(Input.KEY_2) ){//&& isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(1));
+            this.currentAbility = 1;
         }
         if ( input.isKeyPressed(Input.KEY_3) ){//&& isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(2));
+            this.currentAbility = 2;
         }
         if (input.isKeyDown(Input.KEY_C)){
             this.showHelp = true;
@@ -311,8 +315,11 @@ public class BattleState extends BasicGameState implements GameApiListener {
             g.setColor(Color.red);
             g.drawString("Attack Mode",495,385);
         }else{
+            g.drawString("Current Ability:",375,410);
             g.setColor(Color.blue);
             g.drawString("Ability Mode",495,385);
+            g.setColor(Color.cyan);
+            g.drawString(activeSlimeLord.getAbility(this.currentAbility),520,410);
         }
 
         g.setColor(Color.white);
