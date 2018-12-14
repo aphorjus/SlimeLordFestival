@@ -29,9 +29,11 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     String entityType = "slime_lord";
     public int clientID;
     public String id;
+    public Vector tilePosition = new Vector(0, 0);
     String name = "";
-    int totalMovement;
-    int remainingMovement;
+    public boolean hasMoved;
+    public int totalMovement;
+    public int remainingMovement;
     LinkedList<BattleAbility> battleAbilities;
     public LinkedList<String> abilities;
     public LinkedList<SlimeFactory> factories;
@@ -166,6 +168,9 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         xpos = data.getFloat("Xposition");
         ypos = data.getFloat("Yposition");
 
+        tilePosition = new Vector(data.getInt("tileX"), data.getInt("tileY"));
+        hasMoved = data.getBoolean("hasMoved");
+
         if (data.has("abilities")) {
             JSONArray jsonAbilities = data.getJSONArray("abilities");
 
@@ -189,33 +194,38 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
 
     public JSONObject toJson() {
         JSONObject data = new JSONObject();
-            data.put("entityType", entityType);
-            data.put("clientID", clientID);
-            data.put("id", id);
-            data.put("name", name);
-            data.put("totalMovement", totalMovement);
-            data.put("remainingMovement", remainingMovement);
-            data.put("Xposition", this.getX());
-            data.put("Yposition", this.getY());
-            if (abilities.size() > 0) {
-                JSONArray jsonAbilities = new JSONArray();
+        data.put("entityType", entityType);
+        data.put("clientID", clientID);
+        data.put("id", id);
+        data.put("name", name);
+        data.put("totalMovement", totalMovement);
+        data.put("remainingMovement", remainingMovement);
+        data.put("Xposition", this.getX());
+        data.put("Yposition", this.getY());
+        data.put("tileX", (int)this.tilePosition.getX());
+        data.put("tileY", (int)this.tilePosition.getY());
+        data.put("hasMoved", hasMoved);
 
-                for (String ability : abilities) {
-                    jsonAbilities.put(ability);
-                }
+        if (abilities.size() > 0) {
+            JSONArray jsonAbilities = new JSONArray();
 
-                data.put("abilities", jsonAbilities);
+            for (String ability : abilities) {
+                jsonAbilities.put(ability);
             }
 
-            if (factories.size() > 0) {
-                JSONArray jsonFactories = new JSONArray();
+            data.put("abilities", jsonAbilities);
+        }
 
-                for (SlimeFactory factory : factories) {
-                    jsonFactories.put(factory.toJson());
-                }
+        if (factories.size() > 0) {
+            JSONArray jsonFactories = new JSONArray();
 
-                data.put("factories", jsonFactories);
+            for (SlimeFactory factory : factories) {
+                jsonFactories.put(factory.toJson());
             }
+
+            data.put("factories", jsonFactories);
+        }
+
         return data;
     }
 

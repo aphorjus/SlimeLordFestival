@@ -1,5 +1,7 @@
 package game.client;
 
+import game.entities.slimelord.SlimeLord;
+import jig.Vector;
 import org.newdawn.slick.Graphics;
 
 import jig.Entity;
@@ -19,6 +21,7 @@ public class Tile extends Entity {
     private float yoffset = 0;
     public boolean visited;
     public boolean isHighlighted;
+    public SlimeLord heldSlimeLord;
 
     public Tile(final String contents, final int row, final int col) {
         super((float) col*16, (float) row*16);
@@ -30,7 +33,11 @@ public class Tile extends Entity {
         addImageWithBoundingBox(ResourceManager.getImage(Board.HIGHLIGHTED_TILE_RSC));
     }
 
-    public void render(Graphics g) {
+    public void setHeldSlimeLord(SlimeLord lord) {
+        heldSlimeLord = lord;
+    }
+
+    public void render(Graphics g, Vector cameraOffset) {
         float x = getX() - xoffset;
         float y = getY() - yoffset;
         if(isHighlighted) {
@@ -42,6 +49,13 @@ public class Tile extends Entity {
             g.drawImage(ResourceManager.getImage(Board.TILE_RSC), x, y);
         }
 
+
+        if (heldSlimeLord != null) {
+            heldSlimeLord.setCameraOffset(cameraOffset);
+            heldSlimeLord.positionForCamera();
+            heldSlimeLord.render(g);
+            heldSlimeLord.positionToOrigin();
+        }
     }
 
     public int getRow() {
