@@ -96,10 +96,10 @@ public class Board {
         tents.get(10).setPosition(new Vector(60*16, 4));            // tent 11
         tents.get(11).setPosition(new Vector(26*16, 4));           // tent 12
 
-        slimeLordOne.setPosition(new Vector(5*16,10*16));       //  blue
-        slimeLordTwo.setPosition(new Vector(76*16,4*16));       // green
-        slimeLordThree.setPosition(new Vector(81*16,39*16));    // orange
-        slimeLordFour.setPosition(new Vector(5*16,39*16));      // red
+        slimeLordOne.setPosition(new Vector(5*16,9*16));       //  blue
+        slimeLordTwo.setPosition(new Vector(75*16,4*16));       // green
+        slimeLordThree.setPosition(new Vector(81*16,41*16));    // red
+        slimeLordFour.setPosition(new Vector(5*16,41*16));      // yellow
 
         slimeLords.add(slimeLordOne);
         slimeLords.add(slimeLordTwo);
@@ -109,13 +109,13 @@ public class Board {
         updateSlimelord();
         switch(gameClient.myId) {
             case 0:
-                place("", 10,5);
+                place("", 9,5);
                 break;
             case 1:
                 place("", 4,76);
                 break;
             case 2:
-                place("", 39,81);
+                place("", 41,81);
                 break;
             case 3:
                 place("", 39,5);
@@ -295,7 +295,7 @@ public class Board {
                         0, 8, 65,
                         2, 7, 0,
                         1, 4, 0,
-                        2, 4, 0,
+                        2, 3, 0,
                         0, 8, 64,
                         4, 10, 0,
                         3, 2, 0,
