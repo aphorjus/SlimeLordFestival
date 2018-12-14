@@ -9,10 +9,7 @@ import game.entities.slime.Slime;
 import game.entities.slimelord.SlimeLord;
 import jig.Vector;
 import org.lwjgl.Sys;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 import org.newdawn.slick.state.StateBasedGame;
 import jig.ResourceManager;
 
@@ -679,6 +676,7 @@ public class Board {
             int id = Integer.parseInt(split[2]);
             tile.setContents("T:" + clientId + ":" + id);
             tents.get(id).owner = clientId;
+            ResourceManager.getSound("game/client/resource/sfx_bubble.wav").play();
             acceptKeyboard = false;
         }
 
