@@ -18,15 +18,15 @@ tokens per turn for that player, and can also be conquered by another player. Ev
 they can buy Slimes (6 slimes: basic slimes, lancers, strikers, advanced lancers, advanced strikers, mortars) and Abilities 
 (5 available: slime strike, slime ball, mass heal, summon basic slime, summon advanced lancer). These slimes and abilities are available 
 to use in the Battle State when Slimelords battle each other. 
-If two slimelords run into each other on the Overworld map, they have the option of battling one another or passing each other. If a 
+If two Slimelords run into each other on the Overworld map, they have the option of battling one another or passing each other. If a 
 Slimelord is defeated in battle, that player is eliminated from the game and can no longer play. A winner is declared if they win 3 
 battles, one against each of the other players (if 4 players are playing), and that means that they conquered all of the Arenas. 
 
 #### BATTLE:
 
-The battle state contains the actions of the game. Each Slime Lord that is part of the battle has two slime factories that produce a single slime at the start of each turn. Each Slime Lord also has between zero and 5 abilities to use in battle. The Battle state has 3 "modes" attack mode, move mode, and ability mode. Pressing the "s" key will toggle between move and attack mode, and pressing the number keys 1-5 will select Slime Lord abilities and active ability mode. The player may end their turn at any time with the "e" key.
+The battle state contains the actions of the game. Each Slimelord that is part of the battle has two slime factories that produce a single slime at the start of each turn. Each Slimelord also has between zero and 5 abilities to use in battle. The Battle state has 3 "modes" attack mode, move mode, and ability mode. Pressing the "s" key will toggle between move and attack mode, and pressing the number keys 1-5 will select Slimelord abilities and active ability mode. The player may end their turn at any time with the "e" key.
 
-Every slime can move and attack once every turn, and each Slime Lord can use one ability each turn. The goal of a battle is to destroy the opposing Slime Lords two factories.
+Every slime can move and attack once every turn, and each Slimelord can use one ability each turn. The goal of a battle is to destroy the opposing Slimelords two factories.
 
 
 ### Prerequisites
