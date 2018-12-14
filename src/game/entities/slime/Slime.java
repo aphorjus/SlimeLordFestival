@@ -274,25 +274,46 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         }
     }
 
-    public LinkedList<String> getAvailableUpgrades(){
+    public LinkedList<String> getAvailableUpgrades(LinkedList<String> specialSlimes){
 
         LinkedList<String> availableUpgrades = new LinkedList<>();
+
 
         if ( isUpgraded() ){
             availableUpgrades.add("basic");
             return availableUpgrades;
         }
         if ( size >= 2 ){
-            availableUpgrades.add("Striker");
-            availableUpgrades.add("lancer");
+            if(specialSlimes.contains("striker")){
+                availableUpgrades.add("striker");
+            }
+            if(specialSlimes.contains("lancer")){
+                availableUpgrades.add("lancer");
+            }
         }
         if ( size >= 4 ){
-            availableUpgrades.add("advancedStriker");
-            availableUpgrades.add("advancedLancer");
+            if(specialSlimes.contains("advancedStriker")) {
+                availableUpgrades.add("advancedStriker");
+            }
+            if(specialSlimes.contains("advancedLancer")) {
+                availableUpgrades.add("advancedLancer");
+            }
         }
         if ( size >= 6 ){
-            availableUpgrades.add("mortar");
+            if(specialSlimes.contains("mortar")) {
+                availableUpgrades.add("mortar");
+            }
         }
+
+//        System.out.println(specialSlimes.toString());
+//        System.out.println(availableUpgrades.toString());
+
+        for( int i = 0; i < specialSlimes.size(); i++ ){
+            if( !availableUpgrades.contains(specialSlimes.get(i)) ){
+                availableUpgrades.remove(specialSlimes.get(i));
+            }
+        }
+
         return availableUpgrades;
     }
 
@@ -397,6 +418,16 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
     @Override
     public boolean isAlive() {
         return currentHP > 0;
+    }
+
+    @Override
+    public int getMaxHP() {
+        return maxHP;
+    }
+
+    @Override
+    public int getCurrentHP() {
+        return currentHP;
     }
 }
 

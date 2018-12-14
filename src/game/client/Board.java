@@ -4,8 +4,10 @@ package game.client;
 import game.api.GameApi;
 import game.entities.IEntity;
 import game.entities.building.TokenTents;
+import game.entities.slime.Slime;
 import game.entities.slimelord.SlimeLord;
 import jig.Vector;
+import org.lwjgl.Sys;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -57,7 +59,6 @@ public class Board {
     SlimeLord slimeLordThree;
     SlimeLord slimeLordFour;
 
-
     LinkedList<SlimeLord> slimeLords = new LinkedList<>();
 
     public SlimeLord currentSlimelord;
@@ -106,22 +107,67 @@ public class Board {
         slimeLords.add(slimeLordThree);
         slimeLords.add(slimeLordFour);
 
-        updateSlimelord();
+//        updateSlimelord();
         switch(gameClient.myId) {
             case 0:
-                place("", 9,5);
+                place("", 9, 5);
                 break;
             case 1:
-                place("", 4,75);
+                place("", 4, 75);
                 break;
             case 2:
-                place("", 41,81);
+                place("", 41, 81);
                 break;
             case 3:
-                place("", 41,5);
+                place("", 41, 5);
                 break;
         }
-        showCurrentHighlightedPaths();
+        tents.get(0).setPosition(new Vector(8*16, 10*16));           // tent
+
+        /*
+        place("T:0", 16, 13);           // tent
+        place("T:0", 3, 31);            // tent
+        // place("T:0", 16, 31);                          // shop
+
+        // RED SLIME AREA
+        place("T:0", 27, 6);             // tent
+        place("T:0", 44, 18);            // tent
+        place("T:0", 34, 22);            // tent
+        place("T:0", 27, 31);            // tent
+        // place("T:0", 33, 31);                            // shop
+
+        // ORANGE SLIME AREA
+        place("T:0", 47, 48);           // path leading right tent DOES NOT WORK
+        //  place("T:0", 38, 54);                         // shop
+        place("T:0", 37, 66);           // tent
+        place("T:0", 29, 82);           // tent
+
+        // GREEN SLIME AREA
+        place("T:0", 15, 76);           // tent
+        place("T:0", 5, 65);            // tent
+        place("T:0", 22, 57);           // tent
+        // place("T:0", 11, 54);                          // shop
+
+         */
+
+        slimeLords.add(slimeLordOne);
+        moveSlimelordTo(slimeLordOne, 5, 10);
+
+        if (gameClient.players.length > 1) {
+            moveSlimelordTo(slimeLordTwo, 76, 4);
+            slimeLords.add(slimeLordTwo);
+        }
+
+        if (gameClient.players.length > 2) {
+            moveSlimelordTo(slimeLordThree, 81, 39);
+            slimeLords.add(slimeLordThree);
+
+        }
+
+        if (gameClient.players.length > 3) {
+            moveSlimelordTo(slimeLordFour, 5, 39);
+            slimeLords.add(slimeLordFour);
+        }
     }
 
     public void onCreateEntity(IEntity entity) {
@@ -132,40 +178,33 @@ public class Board {
         }
     }
 
-    public void onDeleteEntity(int entityId) {
-        System.out.println("entity deleted.");
+    public void onDeleteEntity(String entityId) {
     }
 
     void onCreateSlimeLord(SlimeLord slimeLord) {
-        boolean slimeLordAlreadyExists = false;
+        SlimeLord selected = null;
 
-        for (SlimeLord s : slimeLords) {
-            if (s.id.equals(slimeLord.id)) {
-                slimeLordAlreadyExists = true;
-            }
+        for (SlimeLord lord : slimeLords) {
+            if (lord.id.equals(slimeLord.id)) selected = lord;
         }
 
-        System.out.println(slimeLord.xpos + " " + slimeLord.ypos);
 
-        if (!slimeLordAlreadyExists) {                   // Clay, i changed this from slimeLordAlreadyExists to !slimeLordAlreadyExists
-            move(slimeLord.clientID, slimeLord.xpos, slimeLord.ypos);
+        int tileX = (int)slimeLord.tilePosition.getX();
+        int tileY = (int)slimeLord.tilePosition.getY();
+
+        if (selected != null) {
+            tiles[(int)selected.tilePosition.getY()][(int)selected.tilePosition.getX()].heldSlimeLord = null;
+            moveSlimelordTo(selected, tileX, tileY);
         } else {
+            moveSlimelordTo(slimeLord, tileX, tileY);
             slimeLords.add(slimeLord);
         }
-
     }
 
-    public void updateSlimelord() {
-        switch(gameClient.myId){
-            case 0: currentSlimelord = slimeLordOne;
-                break;
-            case 1: currentSlimelord = slimeLordTwo;
-                break;
-            case 2: currentSlimelord = slimeLordThree;
-                break;
-            case 3: currentSlimelord = slimeLordFour;
-                break;
-        }
+    public void moveSlimelordTo(SlimeLord lord, int row, int col) {
+        tiles[col][row].heldSlimeLord = lord;
+        lord.setPosition(tiles[col][row].getPosition());
+        lord.tilePosition = new Vector(row, col);
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -185,16 +224,9 @@ public class Board {
             for(int col = 0; col < NUMCOLS; col++) {
                 if(tiles[row][col] != null) {
                     tiles[row][col].setOffsets(xoffset, yoffset);
-                    tiles[row][col].render(g);
+                    tiles[row][col].render(g, new Vector(xoffset, yoffset));
                 }
             }
-        }
-
-        for (SlimeLord slimeLord : slimeLords) {
-            slimeLord.setCameraOffset(new Vector(xoffset, yoffset));
-            slimeLord.positionForCamera();
-            slimeLord.render(g);
-            slimeLord.positionToOrigin();
         }
 
         for(TokenTents tent: tents){
@@ -491,13 +523,13 @@ public class Board {
 
     public void endTurn(GameClient gc){
         turn.turnHasEnded(gc);
-        showCurrentHighlightedPaths();
-        //System.out.println(current.getRow() + " " + current.getCol() + " " + tiles[current.getRow()][current.getCol()]);
-        System.out.println(current.getRow() + " " + current.getCol() + " " + tiles[current.getRow()][current.getCol()]);
 
         if (gc.myId == turn.turnID) {
+            for (SlimeLord lord : slimeLords) {
+                lord.hasMoved = false;
+            }
+
             for (TokenTents tent : tents) {
-                System.out.println(tent.owner);
                 if (tent.owner == gameClient.myId) {
                     gameClient.setTokens(gameClient.tokens + tent.TOKEN_AMOUNT);
                 }
@@ -507,7 +539,6 @@ public class Board {
     }
 
     public void move(int id, float xpos, float ypos) {
-        // System.out.println(gameClient.myId + " " + id + " " + xpos + " " + ypos);
         if(gameClient.myId != id && id == 0){
             slimeLordOne.moveTo(xpos, ypos);
         }
@@ -531,29 +562,82 @@ public class Board {
         return false;
     }
 
-    public boolean moveTo(int x, int y){
 
-        if(x >= 0 && x <= 1000 && y >= 0 && y <= 500 && turn.isMyMove()){
+    public boolean click(int x, int y){
+        if(x >= 0 && x <= 1392 && y >= 0 && y <= 800 && turn.isMyMove()){
             int row = y/16;
             int col = x/16;
-            if(row < NUMROWS && col < NUMCOLS && tiles[row][col] != null){
-                x = col * 16;
-                y = row * 16;
-                int numMoves = Math.abs(row - current.getRow()) + Math.abs(col - current.getCol());
-                if(numMoves <= (Turn.NUM_MOVES - turn.getMove())){
-                    gameApi.deleteEntity(gameClient.myId);
-                    currentSlimelord.setPosition(new Vector(x,y));
-                    gameApi.createEntity(currentSlimelord);
-                    current = tiles[row][col];
-                    turn.updateMoves(numMoves);
-                    showCurrentHighlightedPaths();
-                    return true;
+
+            Tile tile = tiles[row][col];
+
+            if (tile == null) return false;
+
+            if (currentSlimelord != null) { // where i have selected a slime lord ready to move
+                dehighlightMovement((int)currentSlimelord.tilePosition.getY(), (int)currentSlimelord.tilePosition.getX(), currentSlimelord.totalMovement);
+                currentSlimelord.tilePosition = new Vector(col, row);
+                currentSlimelord.hasMoved = true;
+                gameApi.createEntity(currentSlimelord);
+                currentSlimelord = null;
+            } else { // select a slime lord if available
+                currentSlimelord = (tile.heldSlimeLord != null && !tile.heldSlimeLord.hasMoved) ? tile.heldSlimeLord : null;
+
+                if (currentSlimelord != null) {
+                    highlightMovement((int)currentSlimelord.tilePosition.getY(), (int)currentSlimelord.tilePosition.getX(), currentSlimelord.remainingMovement);
                 }
-                return false;
             }
         }
-        reset();
+
         return false;
+    }
+
+    public void highlightMovement(int col, int row, int rmvmt) {
+        if (rmvmt <= 0 ||
+                col <= 0 || col >= NUMCOLS ||
+                row <= 0 || row >= NUMROWS ||
+                currentSlimelord == null ||
+                tiles[col][row] == null ||
+                tiles[col][row].visited) return;
+
+        tiles[col][row].isHighlighted = true;
+
+        highlightMovement(col + 1, row + 1, rmvmt - 1);
+        highlightMovement(col + 1, row, rmvmt - 1);
+        highlightMovement(col + 1, row - 1, rmvmt - 1);
+
+        highlightMovement(col, row + 1, rmvmt - 1);
+        highlightMovement(col, row, rmvmt - 1);
+        highlightMovement(col, row - 1, rmvmt - 1);
+
+        highlightMovement(col - 1, row + 1, rmvmt - 1);
+        highlightMovement(col - 1, row, rmvmt - 1);
+        highlightMovement(col - 1, row - 1, rmvmt - 1);
+
+        tiles[col][row].visited = false;
+    }
+
+    public void dehighlightMovement(int col, int row, int rmvmt) {
+        if (rmvmt <= 0 ||
+                col <= 0 || col >= NUMCOLS ||
+                row <= 0 || row >= NUMROWS ||
+                tiles[col][row] == null ||
+                tiles[col][row].visited) return;
+
+        tiles[col][row].visited = true;
+        tiles[col][row].isHighlighted = false;
+
+        dehighlightMovement(col + 1, row + 1, rmvmt - 1);
+        dehighlightMovement(col + 1, row, rmvmt - 1);
+        dehighlightMovement(col + 1, row - 1, rmvmt - 1);
+
+        dehighlightMovement(col, row + 1, rmvmt - 1);
+        dehighlightMovement(col, row, rmvmt - 1);
+        dehighlightMovement(col, row - 1, rmvmt - 1);
+
+        dehighlightMovement(col - 1, row + 1, rmvmt - 1);
+        dehighlightMovement(col - 1, row, rmvmt - 1);
+        dehighlightMovement(col - 1, row - 1, rmvmt - 1);
+
+        tiles[col][row].visited = false;
     }
 
     public void showCurrentHighlightedPaths(){
@@ -565,8 +649,7 @@ public class Board {
     }
 
     public void showHighlightedPaths(int x, int y){
-       // System.out.println(x + " " + y);
-        if(x >= 0 && x <= 1000 && y >= 0 && y <= 500 && turn.isMyMove()){
+        if(x >= 0 && x <= 1392 && y >= 0 && y <= 800 && turn.isMyMove()){
 //            int row = y/16;
 //            int col = x/16;
             int row = current.getRow();
@@ -762,6 +845,7 @@ public class Board {
 
     private boolean isTent() {
         boolean isTent = current.getContents().startsWith("T");
+
         if(isTent){
             String[] split = current.getContents().split(":");
             int owner = Integer.parseInt(split[1]);

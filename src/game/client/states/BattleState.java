@@ -1,6 +1,6 @@
 package game.client.states;
 
-import game.Battles.BattleEntity;
+import game.Battles.*;
 import game.IGameState;
 import game.api.GameApi;
 import game.api.GameApiListener;
@@ -9,9 +9,8 @@ import game.entities.IEntity;
 import game.entities.slime.Slime;
 import game.entities.slimefactory.SlimeFactory;
 import game.entities.slimelord.SlimeLord;
+import jig.ResourceManager;
 import jig.Vector;
-import game.Battles.BattleGrid;
-import game.Battles.BattleGridTile;
 import game.InputManager;
 import game.client.GameClient;
 import org.json.JSONObject;
@@ -31,16 +30,18 @@ public class BattleState extends BasicGameState implements GameApiListener {
     SlimeLord slimeLordOne;
     SlimeLord slimeLordTwo;
     SlimeLord activeSlimeLord;
+    Music battleMusic = null;
+    SlimBox slimeBox = new SlimBox();
 
     int playerOne;
     int playerTwo;
     int activePlayer;
-
+    int winner;
 
 
     public static int[][] PLAIN_MAP =
             {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-             {1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,1},
+             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
              {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
              {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
              {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -73,10 +74,16 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) {
+
         GameClient game = (GameClient)sbg;
         gameClient = (GameClient)sbg;
         inputManager = game.inputManager;
         gameApi = new GameApi((GameClient) sbg, this);
+        try{
+            battleMusic = new Music("game/client/resource/battle.wav");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         this.battleGrid = new BattleGrid((int)(game.ScreenHeight/1.2), game.ScreenWidth,
                 30, gameApi, BattleState.PLAIN_MAP);
@@ -86,6 +93,8 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void enter(GameContainer gc, StateBasedGame sbg) {
         this.gameApi = new GameApi(gameClient, this);
         this.battleGrid.setGameApi(gameApi);
+        this.winner = -1;
+        battleMusic.loop();
 //        System.out.println(gameClient.myId);
         //TEIMP
 
@@ -94,10 +103,20 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
         this.slimeLordOne.addAbility("summonBasicSlime");
         this.slimeLordOne.addAbility("slimeBall");
-        this.slimeLordOne.addAbility("damage");
+//        this.slimeLordOne.addAbility("damage");
 
         this.slimeLordTwo.addAbility("slimeStrike");
         this.slimeLordTwo.addAbility("summonLancer");
+
+        this.slimeLordOne.specialSlimes.add("lancer");
+        this.slimeLordOne.specialSlimes.add("striker");
+        this.slimeLordOne.specialSlimes.add("advancedStriker");
+        this.slimeLordOne.specialSlimes.add("advancedLancer");
+
+        this.slimeLordTwo.specialSlimes.add("lancer");
+        this.slimeLordTwo.specialSlimes.add("striker");
+        this.slimeLordTwo.specialSlimes.add("advancedStriker");
+        this.slimeLordTwo.specialSlimes.add("advancedLancer");
 
         spawnInFactories();
 
@@ -170,6 +189,12 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
         if ( input.isMousePressed(Input.MOUSE_LEFT_BUTTON) ){
             Vector mousePosition = new Vector(input.getMouseX(), input.getMouseY());
+
+            if(slimeBox.isActive()){
+                slimeBox.update(input.getMouseX(), input.getMouseY());
+                slimeBox.setActive(false);
+            }
+
             if( battleGrid.tileSelected()){
                 if( activePlayer != gameClient.myId ||
                         ((Slime)battleGrid.getSelectedTile().getOccupent()).clientID != gameClient.myId ){
@@ -183,31 +208,47 @@ public class BattleState extends BasicGameState implements GameApiListener {
                 this.battleGrid.selectTile(mousePosition);
             }
         }
-        if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)){
+        if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
             this.battleGrid.deselectTile();
+
+            Vector mousePosition = new Vector(input.getMouseX(), input.getMouseY());
+            BattleEntity occupent = battleGrid.getTile(mousePosition).getOccupent();
+
+            if (occupent instanceof Slime) {
+                slimeBox.updateBox((Slime) occupent, activeSlimeLord);
+                slimeBox.setActive(true);
+            }
         }
 
-//        if (input.isKeyPressed(Input.KEY_E) && isMyTurn()){
-//            gameApi.endTurn();
-//        }
-
-        if (input.isKeyPressed(Input.KEY_E)){
+        if (input.isKeyPressed(Input.KEY_E) && isMyTurn()){
             gameApi.endTurn();
         }
+
+//        if (input.isKeyPressed(Input.KEY_E)){
+//            gameApi.endTurn();
+//        }
 
         if (input.isKeyPressed(Input.KEY_S)){
             battleGrid.switchMode();
         }
-        if ( input.isKeyPressed(Input.KEY_1) ){// && isMyTurn()){
+        if ( input.isKeyPressed(Input.KEY_1) && isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(0));
         }
-        if ( input.isKeyPressed(Input.KEY_2) ){// && isMyTurn()){
+        if ( input.isKeyPressed(Input.KEY_2) && isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(1));
         }
-        if ( input.isKeyPressed(Input.KEY_3) ){// && isMyTurn()){
+        if ( input.isKeyPressed(Input.KEY_3) && isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(2));
         }
+        battleGrid.update(delta);
         gameApi.update();
+
+        if( battleGrid.getWinner() != winner ){
+            winner = battleGrid.getWinner();
+            // DO SOMETHING?!?
+            // Enter overworld and tell it who won somehow
+            //
+        }
     }
 
     public void displayCoolDown(Graphics g, BattleGridTile tile){
@@ -221,6 +262,22 @@ public class BattleState extends BasicGameState implements GameApiListener {
         }
     }
 
+    public void displayBasicInfo(Graphics g, BattleGridTile tile){
+
+        if( tile.hasOccupent() ){
+
+            HealthBar healthBar = new HealthBar(30, 5, tile.getOccupent());
+            healthBar.render(g);
+
+            if( tile.getOccupent() instanceof Slime && ((Slime) tile.getOccupent()).onCooldown() ) {
+
+                String cooldown = String.valueOf(((Slime) tile.getOccupent()).getCurrentCooldown());
+                g.drawString(cooldown, healthBar.xpos-9, healthBar.ypos-7);
+            }
+        }
+
+    }
+
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         GameClient bg = (GameClient)sbg;
@@ -229,15 +286,14 @@ public class BattleState extends BasicGameState implements GameApiListener {
         g.setBackground(Color.green);
         battleGrid.render(g);
 
-//        g.setColor(Color.black);
         Vector mousePosition = new Vector(input.getMouseX(), input.getMouseY());
 
         if(this.battleGrid.getTile(mousePosition) != null){
             this.battleGrid.mouseoverHighlight(mousePosition, g);
-            if( this.battleGrid.getTile(mousePosition).hasOccupent() ) {
-                displayCoolDown(g, this.battleGrid.getTile(mousePosition));
-            }
+            displayBasicInfo(g, battleGrid.getTile(mousePosition));
         }
+
+        slimeBox.render(g);
     }
 
     @Override
