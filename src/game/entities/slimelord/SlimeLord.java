@@ -31,8 +31,8 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     public String id;
     public Vector tilePosition = new Vector(0, 0);
     String name = "";
-    int totalMovement;
-    int remainingMovement;
+    public int totalMovement;
+    public int remainingMovement;
     LinkedList<BattleAbility> battleAbilities;
     LinkedList<String> abilities;
     public LinkedList<SlimeFactory> factories;
