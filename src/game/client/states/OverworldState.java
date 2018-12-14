@@ -152,8 +152,6 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             } else {
                 board.click(input.getMouseX(), input.getMouseY());
             }
-        } else if (gameClient.myId == board.turn.turnID && input.isKeyDown(Input.KEY_Q)) {
-            gameApi.endTurn();
         }
 
         gameApi.update();
@@ -197,7 +195,9 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     public void onMessage(int senderId, String message) {
     }
 
-    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {}
+    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {
+        gameClient.startBattle(lordOne, lordTwo);
+    }
 
     public void onSetStateToOverworld() {}
 
