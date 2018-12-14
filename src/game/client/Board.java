@@ -559,7 +559,7 @@ public class Board {
             if (tile == null) return false;
 
             if (currentSlimelord != null) { // where i have selected a slime lord ready to move
-                if (tile.isHighlighted) {
+                if (tile.isHighlighted && tile.heldSlimeLord == null) {
                     dehighlightMovement((int)currentSlimelord.tilePosition.getX(), (int)currentSlimelord.tilePosition.getY(), currentSlimelord.totalMovement);
                     currentSlimelord.tilePosition = new Vector(row, col);
                     currentSlimelord.hasMoved = true;
