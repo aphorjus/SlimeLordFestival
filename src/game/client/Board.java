@@ -112,13 +112,13 @@ public class Board {
                 place("", 9,5);
                 break;
             case 1:
-                place("", 4,76);
+                place("", 4,75);
                 break;
             case 2:
                 place("", 41,81);
                 break;
             case 3:
-                place("", 39,5);
+                place("", 41,5);
                 break;
         }
         showCurrentHighlightedPaths();
