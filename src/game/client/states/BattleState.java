@@ -117,6 +117,9 @@ public class BattleState extends BasicGameState implements GameApiListener {
             this.slimeLordTwo.addAbility("slimeStrike");
             this.slimeLordTwo.addAbility("summonLancer");
 
+            this.slimeLordTwo.addAbility("massHeal");
+            this.slimeLordOne.addAbility("massHeal");
+
             this.slimeLordOne.addAbility("damage");
             this.slimeLordTwo.addAbility("damage");
 

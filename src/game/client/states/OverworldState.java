@@ -191,9 +191,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         if (input.isKeyDown(Input.KEY_S)) {
             board.shiftDown();
         }
-//        if (input.isKeyDown(Input.KEY_B)) {
-//            bg.enterState(GameClient.BATTLE_STATE);
-//        }
+        if (input.isKeyDown(Input.KEY_B)) {
+            BattleState.testBattle = true;
+            bg.enterState(GameClient.BATTLE_STATE);
+        }
         
         if (input.isKeyDown(Input.KEY_X)) {
             SlimeLord shopSlimeLord = null;
