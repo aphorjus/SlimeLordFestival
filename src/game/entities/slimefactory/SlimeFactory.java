@@ -54,12 +54,13 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
         maxHP = data.getInt("maxHP");
         currentHP = data.getInt("currentHP");
 
-        JSONArray jsonTiles = data.getJSONArray("spawnableTiles");
+        if(data.has("spawnableTiles")) {
+            JSONArray jsonTiles = data.getJSONArray("spawnableTiles");
+            spawnableTiles = new ArrayList<>();
 
-        spawnableTiles = new ArrayList<>();
-
-        for(int i = 0; i < jsonTiles.length(); i++) {
-            spawnableTiles.add(new BattleGridTile(jsonTiles.getJSONObject(i)));
+            for (int i = 0; i < jsonTiles.length(); i++) {
+                spawnableTiles.add(new BattleGridTile(jsonTiles.getJSONObject(i)));
+            }
         }
 
         initializeAnimation();
@@ -98,8 +99,10 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
 
         JSONArray jsonTiles = new JSONArray();
 
-        for(BattleGridTile tile : spawnableTiles){
-            jsonTiles.put(tile.toJson());
+        if(spawnableTiles != null) {
+            for (BattleGridTile tile : spawnableTiles) {
+                jsonTiles.put(tile.toJson());
+            }
         }
 
         data.put("spawnableTiles", jsonTiles);
