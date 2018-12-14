@@ -59,6 +59,7 @@ public class Turn {
         move = 0;
 
         boolean isLoser = false;
+
         for (int id : loserIds) {
             if (id == turnID) isLoser = true;
         }
