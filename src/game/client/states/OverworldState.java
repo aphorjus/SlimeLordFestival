@@ -41,6 +41,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     String BLUE_ATTACK = "game/client/resource/blue-slime-attack.png";
     String BLUE_DEATH = "game/client/resource/blue-slime-death.png";
 
+    String FIGHT_POPUP = "game/client/resource/fight-popup.png";
+
     InputManager inputManager;
     TextField textField;
     GameApi gameApi;
@@ -93,12 +95,22 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         ResourceManager.loadImage(BLUE_ATTACK);
         ResourceManager.loadImage(BLUE_DEATH);
 
+        ResourceManager.loadImage(FIGHT_POPUP);
+
         gameApi = new GameApi((GameClient)sbg, this);
         GameClient bg = (GameClient)sbg;
-        currentShop = new Shop(bg);
+        currentShop = new Shop(bg,gameApi);
         Board board = bg.getBoard();
         board.setUp(gameApi, gameClient);
         this.board = board;
+
+        if (gameClient.battleStateWinner != -1 && gameClient.battleStateWinner == gameClient.myId) {
+            battleWon();
+        }
+    }
+
+    void battleWon() {
+        gameClient.setTokens(gameClient.getTokens() + 600);
     }
 
     @Override
@@ -112,7 +124,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         // board.showHighlightedPaths(input.getMouseX(), input.getMouseY());
 
 
-        board.update(delta);
+        board.update(delta, input);
         if (input.isKeyDown(Input.KEY_A)) {
             board.shiftLeft();
         }
@@ -125,26 +137,43 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         if (input.isKeyDown(Input.KEY_S)) {
             board.shiftDown();
         }
-        if (input.isKeyDown(Input.KEY_B)) {
-            bg.enterState(GameClient.BATTLE_STATE);
-        }
+//        if (input.isKeyDown(Input.KEY_B)) {
+//            bg.enterState(GameClient.BATTLE_STATE);
+//        }
+        
         if (input.isKeyDown(Input.KEY_X)) {
-            SlimeLord testSlimeLord = new SlimeLord(0);
-            currentShop.setCurrentSlimeLord(testSlimeLord);
+            SlimeLord shopSlimeLord = null;
+            for (int i = 0; i < board.slimeLords.size(); i++) {
+                if(board.slimeLords.get(i).clientID == gameClient.myId){
+                    shopSlimeLord = board.slimeLords.get(i);
+                    break;
+                }
+            }
+            currentShop.setCurrentSlimeLord(shopSlimeLord);
+            currentShop.setAPI(gameApi);
             inShop = true;
             overworldMusic.pause();
             shopMusic.loop();
         }
+
+        if (input.isKeyDown(Input.KEY_P)){
+            currentShop.viewPrices = true;
+        }else{
+            currentShop.viewPrices = false;
+        }
+
 
         if(input.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
             if(inShop == true){
                 currentShop.checkClick(input.getMouseX(), input.getMouseY());
                 if(exitButton.checkClick(input.getMouseX(),input.getMouseY())){
                     inShop = false;
+                    currentShop.exitShop();
                     shopMusic.stop();
                     overworldMusic.loop();
                 }
-            } else if (gameClient.myId == board.turn.turnID && endButton.checkClick(input.getMouseX(), input.getMouseY())) {
+            } else if (gameClient.myId == board.turn.turnID &&
+                    endButton.checkClick(input.getMouseX(), input.getMouseY())) {
                 gameApi.endTurn();
             } else {
                 board.click(input.getMouseX(), input.getMouseY());
@@ -192,7 +221,9 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     public void onMessage(int senderId, String message) {
     }
 
-    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {}
+    public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {
+        gameClient.startBattle(lordOne, lordTwo);
+    }
 
     public void onSetStateToOverworld() {}
 

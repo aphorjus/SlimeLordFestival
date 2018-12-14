@@ -32,8 +32,8 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     public Vector tilePosition = new Vector(0, 0);
     String name = "";
     public boolean hasMoved;
-    public int totalMovement;
-    public int remainingMovement;
+    public int totalMovement = 15;
+    public int remainingMovement = 15;
     LinkedList<BattleAbility> battleAbilities;
     public LinkedList<String> abilities;
     public LinkedList<SlimeFactory> factories;
@@ -65,8 +65,6 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
         }
 
         this.id = UUID.randomUUID().toString();
-        this.totalMovement = 10;
-        this.remainingMovement = totalMovement;
         this.specialSlimes = new LinkedList<>();
         this.abilities = new LinkedList<>();
         this.factories = new LinkedList<>();
@@ -158,6 +156,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     public SlimeLord(JSONObject data) {
         abilities = new LinkedList<>();
         factories = new LinkedList<>();
+        specialSlimes = new LinkedList<>();
 
         entityType = data.getString("entityType");
         clientID = data.getInt("clientID");
@@ -184,6 +183,14 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
 
             for (int i = 0; i < jsonFactories.length(); i++) {
                 factories.add(new SlimeFactory(jsonFactories.getJSONObject(i)));
+            }
+        }
+
+        if (data.has("specialSlimes")){
+            JSONArray jsonSlimes = data.getJSONArray("specialSlimes");
+
+            for (int i = 0; i < jsonSlimes.length(); i++){
+                specialSlimes.add(jsonSlimes.getString(i));
             }
         }
     }
@@ -224,6 +231,16 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
             }
 
             data.put("factories", jsonFactories);
+        }
+
+        if (specialSlimes.size() > 0) {
+            JSONArray jsonSlimes = new JSONArray();
+
+            for (String slime : specialSlimes) {
+                jsonSlimes.put(slime);
+            }
+
+            data.put("specialSlimes", jsonSlimes);
         }
 
         return data;

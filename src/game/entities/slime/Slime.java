@@ -278,7 +278,6 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
 
         LinkedList<String> availableUpgrades = new LinkedList<>();
 
-
         if ( isUpgraded() ){
             availableUpgrades.add("basic");
             return availableUpgrades;
@@ -305,8 +304,8 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
             }
         }
 
-//        System.out.println(specialSlimes.toString());
-//        System.out.println(availableUpgrades.toString());
+        System.out.println(specialSlimes.toString());
+        System.out.println(availableUpgrades.toString());
 
         for( int i = 0; i < specialSlimes.size(); i++ ){
             if( !availableUpgrades.contains(specialSlimes.get(i)) ){

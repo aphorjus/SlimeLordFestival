@@ -29,7 +29,7 @@ public class GameClient extends StateBasedGame {
     String name;
     int width;
     int height;
-    int tokens = 5000;
+    int tokens = 0;
     LinkedList<SlimeLord> slimeLords;
     public Player[] players;
 
@@ -48,9 +48,12 @@ public class GameClient extends StateBasedGame {
     public static int ImageWidth = 1392;
     public static int ImageHeight = 800;
 
+    public int battleStateWinner = -1;
+
     public int myId = -1;
 
     private Board board;
+    private BattleState battleState;
 
     // For the Board class, which contains the overworld map
     public Board getBoard() {
@@ -81,6 +84,10 @@ public class GameClient extends StateBasedGame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setBattleStateWinner(int id) {
+        battleStateWinner = id;
     }
 
     public int getTokens(){
@@ -140,9 +147,15 @@ public class GameClient extends StateBasedGame {
         };
 
         inputManager = new InputManager(gc, keys);
+        battleState = new BattleState();
         addState(new StartUpState());
         addState(new OverworldState());
-        addState(new BattleState());
+        addState(battleState);
+    }
+
+    public void startBattle(SlimeLord one, SlimeLord two) {
+        battleState.onSetStateToBattle(one, two);
+        enterState(battleState.getID());
     }
 
     public static void main(String[] args) {
@@ -153,6 +166,7 @@ public class GameClient extends StateBasedGame {
         try {
             app = new AppGameContainer(new GameClient("SlimeLordFestival", width, height));
             app.setDisplayMode(width, height, false);
+            app.setVSync(true);
             app.start();
         } catch (SlickException e) {
             e.printStackTrace();

@@ -1,8 +1,11 @@
 package game.entities.building;
 
+import game.api.GameApi;
 import game.client.Button;
 import game.client.GameClient;
+import game.entities.ShopkeepAnimation;
 import game.entities.slimelord.SlimeLord;
+import jig.Vector;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.*;
@@ -41,8 +44,10 @@ public class Shop{
     Button buyMassHeal = null;
     Button buySummonBasicSlime = null;
     Button buySummonLancer = null;
-
+    ShopkeepAnimation idleA = new ShopkeepAnimation(new Vector(290, 345));
+    GameApi currentGA = null;
     SlimeLord currentSlimeLord = null;
+    public Boolean viewPrices = null;
     String currentMessage = "Welcome to my shop Slime Lord!";
     public static final String LOBBYBOARD = "game/client/resource/LobbyBoard.png";
     public static final String BUYIMAGE = "game/client/resource/BuyButton.png";
@@ -65,8 +70,9 @@ public class Shop{
     GameClient currentG = null;
 
 
-    public Shop(GameClient bg){
+    public Shop(GameClient bg, GameApi ga){
         currentG = bg;
+        currentGA = ga;
         try{
             currentImage = new Image(LOBBYBOARD);
             buyImage = new Image(BUYIMAGE);
@@ -108,9 +114,14 @@ public class Shop{
         currentSlimeLord = nsl;
     }
 
+    public void setAPI(GameApi nA){
+        currentGA = nA;
+    }
+
     public void exitShop(){
         currentMessage = "Welcome back slime lord, did ya miss me?";
         currentShopkeeper = 1;
+        //currentGA.createEntity(currentSlimeLord);
     }
 
     public void checkClick(int x, int y) {
@@ -293,7 +304,8 @@ public class Shop{
         g.drawString("Abilities",455,215);
 
         if(currentShopkeeper == 1){
-            g.drawImage(shopkeeper,230,300);
+            //g.drawImage(shopkeeper,230,300);
+            idleA.render(g);
         }else{
             g.drawImage(shopkeeper2,230,300);
         }
@@ -324,17 +336,33 @@ public class Shop{
 
 
         g.drawString(currentMessage,355,350);
-        buyStriker.render(g);
-        buyLancer.render(g);
-        buyAdvancedStriker.render(g);
-        buyAdvancedLancer.render(g);
-        buyMortar.render(g);
+        g.drawString("(hold \"P\" to view prices)", 392,374);
+        if(viewPrices == true){
+            g.drawString("$100",265,180);
+            g.drawString("$100",365,180);
+            g.drawString("$300",465,180);
+            g.drawString("$300",565,180);
+            g.drawString("$600",665,180);
 
-        buySlimeStrike.render(g);
-        buySlimeBall.render(g);
-        buyMassHeal.render(g);
-        buySummonLancer.render(g);
-        buySummonBasicSlime.render(g);
+            g.drawString("$500",265,280);
+            g.drawString("$500",365,280);
+            g.drawString("$500",465,280);
+            g.drawString("$500",565,280);
+            g.drawString("$500",665,280);
+
+        }else{
+            buyStriker.render(g);
+            buyLancer.render(g);
+            buyAdvancedStriker.render(g);
+            buyAdvancedLancer.render(g);
+            buyMortar.render(g);
+
+            buySlimeStrike.render(g);
+            buySlimeBall.render(g);
+            buyMassHeal.render(g);
+            buySummonLancer.render(g);
+            buySummonBasicSlime.render(g);
+        }
 
         //g.drawString("Tokens:" + String.valueOf(currentG.getTokens()),900,480);
 

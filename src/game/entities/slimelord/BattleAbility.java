@@ -113,7 +113,7 @@ public class BattleAbility extends SlimeLordAbility {
 
         effectsEnEnemies = true;
         effectsFriendlies = true;
-        effectsFactories = false;
+        effectsFactories = true;
 
         ablityDamage = 10;
     }
@@ -209,6 +209,8 @@ public class BattleAbility extends SlimeLordAbility {
                 Slime summon = new Slime(1, currentPlayerId);
                 summon.upgradeTo(summonType);
                 effectedTile.addOccupent(summon);
+                ((Slime)effectedTile.getOccupent()).currentHP =
+                        ((Slime)effectedTile.getOccupent()).maxHP;
                 effectedTile.addSplash(currentPlayerId);
                 used = true;
             }

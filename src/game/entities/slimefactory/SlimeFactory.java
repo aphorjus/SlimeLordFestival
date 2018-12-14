@@ -9,6 +9,7 @@ import game.entities.slime.Slime;
 import jig.Entity;
 import jig.ResourceManager;
 import jig.Vector;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
@@ -53,6 +54,15 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
         maxHP = data.getInt("maxHP");
         currentHP = data.getInt("currentHP");
 
+        if(data.has("spawnableTiles")) {
+            JSONArray jsonTiles = data.getJSONArray("spawnableTiles");
+            spawnableTiles = new ArrayList<>();
+
+            for (int i = 0; i < jsonTiles.length(); i++) {
+                spawnableTiles.add(new BattleGridTile(jsonTiles.getJSONObject(i)));
+            }
+        }
+
         initializeAnimation();
     }
 
@@ -86,6 +96,16 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
         data.put("id", id);
         data.put("maxHP", maxHP);
         data.put("currentHP", currentHP);
+
+        JSONArray jsonTiles = new JSONArray();
+
+        if(spawnableTiles != null) {
+            for (BattleGridTile tile : spawnableTiles) {
+                jsonTiles.put(tile.toJson());
+            }
+        }
+
+        data.put("spawnableTiles", jsonTiles);
 
         return data;
     }

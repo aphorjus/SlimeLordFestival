@@ -32,7 +32,10 @@ public class BattleState extends BasicGameState implements GameApiListener {
     SlimeLord activeSlimeLord;
     Music battleMusic = null;
     SlimBox slimeBox = new SlimBox();
-
+    Boolean showHelp = null;
+    Image helpMenu = null;
+    Image controls = null;
+    int currentAbility = 0;
     int playerOne;
     int playerTwo;
     int activePlayer;
@@ -81,6 +84,8 @@ public class BattleState extends BasicGameState implements GameApiListener {
         gameApi = new GameApi((GameClient) sbg, this);
         try{
             battleMusic = new Music("game/client/resource/battle.wav");
+            this.helpMenu = new Image("game/client/resource/LobbyBoard.png");
+            this.controls = new Image("game/client/resource/Controls.png");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -94,36 +99,37 @@ public class BattleState extends BasicGameState implements GameApiListener {
         this.gameApi = new GameApi(gameClient, this);
         this.battleGrid.setGameApi(gameApi);
         this.winner = -1;
+        this.showHelp = false;
         battleMusic.loop();
 //        System.out.println(gameClient.myId);
         //TEIMP
 
-        this.slimeLordOne = new SlimeLord(0);
-        this.slimeLordTwo = new SlimeLord(1);
-
-        this.slimeLordOne.addAbility("summonBasicSlime");
-        this.slimeLordOne.addAbility("slimeBall");
-//        this.slimeLordOne.addAbility("damage");
-
-        this.slimeLordTwo.addAbility("slimeStrike");
-        this.slimeLordTwo.addAbility("summonLancer");
-
-        this.slimeLordOne.specialSlimes.add("lancer");
-        this.slimeLordOne.specialSlimes.add("striker");
-        this.slimeLordOne.specialSlimes.add("advancedStriker");
-        this.slimeLordOne.specialSlimes.add("advancedLancer");
-
-        this.slimeLordTwo.specialSlimes.add("lancer");
-        this.slimeLordTwo.specialSlimes.add("striker");
-        this.slimeLordTwo.specialSlimes.add("advancedStriker");
-        this.slimeLordTwo.specialSlimes.add("advancedLancer");
-
-        spawnInFactories();
-
-        playerOne = slimeLordOne.clientID;
-        playerTwo = slimeLordTwo.clientID;
-        activePlayer = playerOne;
-        activeSlimeLord = slimeLordOne;
+//        this.slimeLordOne = new SlimeLord(0);
+//        this.slimeLordTwo = new SlimeLord(1);
+//
+//        this.slimeLordOne.addAbility("summonBasicSlime");
+//        this.slimeLordOne.addAbility("slimeBall");
+////        this.slimeLordOne.addAbility("damage");
+//
+//        this.slimeLordTwo.addAbility("slimeStrike");
+//        this.slimeLordTwo.addAbility("summonLancer");
+//
+//        this.slimeLordOne.specialSlimes.add("lancer");
+//        this.slimeLordOne.specialSlimes.add("striker");
+//        this.slimeLordOne.specialSlimes.add("advancedStriker");
+//        this.slimeLordOne.specialSlimes.add("advancedLancer");
+//
+//        this.slimeLordTwo.specialSlimes.add("lancer");
+//        this.slimeLordTwo.specialSlimes.add("striker");
+//        this.slimeLordTwo.specialSlimes.add("advancedStriker");
+//        this.slimeLordTwo.specialSlimes.add("advancedLancer");
+//
+//        spawnInFactories();
+//
+//        playerOne = slimeLordOne.clientID;
+//        playerTwo = slimeLordTwo.clientID;
+//        activePlayer = playerOne;
+//        activeSlimeLord = slimeLordOne;
 
         //END TEMP
 
@@ -223,22 +229,36 @@ public class BattleState extends BasicGameState implements GameApiListener {
         if (input.isKeyPressed(Input.KEY_E) && isMyTurn()){
             gameApi.endTurn();
         }
-
 //        if (input.isKeyPressed(Input.KEY_E)){
 //            gameApi.endTurn();
 //        }
-
         if (input.isKeyPressed(Input.KEY_S)){
             battleGrid.switchMode();
         }
         if ( input.isKeyPressed(Input.KEY_1) && isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(0));
+            this.currentAbility = 0;
         }
         if ( input.isKeyPressed(Input.KEY_2) && isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(1));
+            this.currentAbility = 1;
         }
         if ( input.isKeyPressed(Input.KEY_3) && isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(2));
+            this.currentAbility = 2;
+        }
+        if ( input.isKeyPressed(Input.KEY_4) && isMyTurn()){
+            battleGrid.enterAblityMode(activeSlimeLord.getAbility(3));
+            this.currentAbility = 2;
+        }
+        if ( input.isKeyPressed(Input.KEY_5) && isMyTurn()){
+            battleGrid.enterAblityMode(activeSlimeLord.getAbility(4));
+            this.currentAbility = 2;
+        }
+        if (input.isKeyDown(Input.KEY_C)){
+            this.showHelp = true;
+        }else{
+            this.showHelp = false;
         }
         battleGrid.update(delta);
         gameApi.update();
@@ -248,6 +268,8 @@ public class BattleState extends BasicGameState implements GameApiListener {
             // DO SOMETHING?!?
             // Enter overworld and tell it who won somehow
             //
+            gameClient.setBattleStateWinner(winner);
+            gameClient.enterState(GameClient.OVERWORLD_STATE);
         }
     }
 
@@ -282,17 +304,45 @@ public class BattleState extends BasicGameState implements GameApiListener {
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         GameClient bg = (GameClient)sbg;
         Input input = gc.getInput();
-
         g.setBackground(Color.green);
         battleGrid.render(g);
 
         Vector mousePosition = new Vector(input.getMouseX(), input.getMouseY());
-
         if(this.battleGrid.getTile(mousePosition) != null){
             this.battleGrid.mouseoverHighlight(mousePosition, g);
             displayBasicInfo(g, battleGrid.getTile(mousePosition));
         }
+        g.setColor(Color.white);
+        g.drawString("Current Mode:",375,385);
+        if(isMyTurn() == false){
+            g.setColor(Color.orange);
+            g.drawString("Enemies Turn",495,385);
+        }else if(battleGrid.mode == 1){
+            g.setColor(Color.green);
+            g.drawString("Movement Mode",495,385);
+        }else if(battleGrid.mode == 2){
+            g.setColor(Color.red);
+            g.drawString("Attack Mode",495,385);
+        }else{
+            g.drawString("Current Ability:",375,410);
+            g.setColor(Color.blue);
+            g.drawString("Ability Mode",495,385);
+            g.setColor(Color.cyan);
+            g.drawString(activeSlimeLord.getAbility(this.currentAbility),520,410);
+        }
 
+        g.setColor(Color.white);
+        g.drawString("(Hold \"C\" to view controls)",375,480);
+        if(this.showHelp == true){
+
+            g.drawImage(helpMenu,0,0);
+            g.drawImage(controls,365,107);
+            g.drawString("Press \"E\" to end your turn.",250,150);
+            g.drawString("Press \"S\" to switch between attack mode and move mode.",250,180);
+            g.drawString("Press \"1\",\"2\",or \"3\" to access different abilities",250,210);
+            g.drawString("Right click a slime to upgrade it",250,240);
+            g.drawString("Left click a slime to move/attack (based on current mode)",250,270);
+        }
         slimeBox.render(g);
     }
 
@@ -335,12 +385,13 @@ public class BattleState extends BasicGameState implements GameApiListener {
         this.slimeLordOne = lordOne;
         this.slimeLordTwo = lordTwo;
 
-        spawnInFactories();
-
         this.playerOne = slimeLordOne.clientID;
         this.playerTwo = slimeLordTwo.clientID;
 
+        this.activeSlimeLord = slimeLordOne;
         this.activePlayer = slimeLordOne.clientID;
+
+        spawnInFactories();
     }
 
     public void onSetStateToOverworld() {}
