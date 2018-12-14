@@ -181,6 +181,7 @@ public class Board {
             selected.specialSlimes = slimeLord.specialSlimes;
             selected.abilities = slimeLord.abilities;
             moveSlimelordTo(selected, tileX, tileY);
+            checkForTent(selected);
         } else {
             moveSlimelordTo(slimeLord, tileX, tileY);
             slimeLords.add(slimeLord);
@@ -551,7 +552,6 @@ public class Board {
                     currentSlimelord.hasMoved = true;
                     gameApi.createEntity(currentSlimelord);
 
-                    checkForTent(currentSlimelord);
                     checkForBattle(currentSlimelord);
 
                     currentSlimelord = null;
