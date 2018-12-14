@@ -202,7 +202,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     public void onEndTurn() {
         System.out.println("end turn detected.");
-        board.endTurn();
+        board.endTurn(gameClient);
     }
 
     public void onLobbyClientListUpdate(String[] clientNames) {}

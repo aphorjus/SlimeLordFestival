@@ -47,8 +47,9 @@ public class Turn {
     }
 
     // called by gameApi to let players know that the current turn has ended.
-    public void turnHasEnded() {
-        turnID = (turnID + 1) % NUM_PLAYERS;
+    public void turnHasEnded(GameClient gc) {
+        turnID = (turnID + 1) % gc.players.length;
+        System.out.println(gc.players.length);
         move = 0;
     }
 

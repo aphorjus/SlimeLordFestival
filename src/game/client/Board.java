@@ -513,9 +513,8 @@ public class Board {
         return false;
     }
 
-    public void endTurn(){
-
-        turn.turnHasEnded();
+    public void endTurn(GameClient gc){
+        turn.turnHasEnded(gc);
         showCurrentHighlightedPaths();
         System.out.println(current.getRow() + " " + current.getCol() + " " + tiles[current.getRow()][current.getCol()]);
 
