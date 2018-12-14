@@ -99,7 +99,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
         gameApi = new GameApi((GameClient)sbg, this);
         GameClient bg = (GameClient)sbg;
-        currentShop = new Shop(bg);
+        currentShop = new Shop(bg,gameApi);
         Board board = bg.getBoard();
         board.setUp(gameApi, gameClient);
         this.board = board;
@@ -136,6 +136,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         if (input.isKeyDown(Input.KEY_X)) {
             SlimeLord testSlimeLord = new SlimeLord(0);
             currentShop.setCurrentSlimeLord(testSlimeLord);
+            currentShop.setAPI(gameApi);
             inShop = true;
             overworldMusic.pause();
             shopMusic.loop();
