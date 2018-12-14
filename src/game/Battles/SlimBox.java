@@ -89,7 +89,6 @@ public class SlimBox {
             this.availableUpgrades = slime.getAvailableUpgrades(slimeLord.specialSlimes);
         }
         initButtons();
-
     }
 
     public void updateBox( Slime slime, SlimeLord slimeLord ){
@@ -108,8 +107,8 @@ public class SlimBox {
 
         if( slime.clientID == slimeLord.clientID ) {
             this.availableUpgrades = slime.getAvailableUpgrades(slimeLord.specialSlimes);
+            initButtons();
         }
-        initButtons();
     }
 
     public void initButtons(){
