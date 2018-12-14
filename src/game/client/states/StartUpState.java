@@ -54,7 +54,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     int currentDelta = 0;
     double backgroundTwoX = -1000;
     int forground = 1;
-    int state = 0; // 0 is title screen, 1 is HostGame screen, 2 is JoinGame screen, 3 is join lobby
+    public static int state = 0; // 0 is title screen, 1 is HostGame screen, 2 is JoinGame screen, 3 is join lobby
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {

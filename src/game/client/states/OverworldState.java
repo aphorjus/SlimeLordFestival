@@ -18,6 +18,9 @@ import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import java.awt.image.LookupOp;
+import java.util.LongSummaryStatistics;
+
 public class OverworldState extends BasicGameState implements GameApiListener {
     String GREEN_SLIMELORD_IDLE = "game/client/resource/slime-lord-green.png";
     String BLUE_SLIMELORD_IDLE = "game/client/resource/slime-lord-blue.png";
@@ -43,11 +46,17 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     String FIGHT_POPUP = "game/client/resource/fight-popup.png";
 
+    String BOARD = "game/client/resource/LobbyBoard.png";
+    String WINNER = "game/client/resource/Win.png";
+    String LOOSER = "game/client/resource/Lose.png";
+
     InputManager inputManager;
     TextField textField;
     GameApi gameApi;
     GameClient gameClient;
     Shop currentShop = null;
+    boolean lost = false;
+    boolean won = false;
     boolean inShop = false;
     Button endButton;
     Button exitButton;
@@ -98,6 +107,9 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
         ResourceManager.loadImage(FIGHT_POPUP);
 
+        ResourceManager.loadImage(BOARD);
+        ResourceManager.loadImage(WINNER);
+        ResourceManager.loadImage(LOOSER);
         gameApi = new GameApi((GameClient)sbg, this);
         GameClient bg = (GameClient)sbg;
         currentShop = new Shop(bg,gameApi);
@@ -142,10 +154,13 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
     void callMeALoser() {
         // This is where you set all the logic to call the player a loser
+        lost = true;
     }
 
     void callMeAWinner() {
+        won = true;
         // this is wher you set all the logic to call the player a winner
+
     }
 
     void battleWon() {
@@ -219,6 +234,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             }
         }
 
+        if(input.isKeyPressed(Input.KEY_ENTER) && (won || lost)){
+            StartUpState.state = 0;
+            gameClient.enterState(GameClient.STARTUP_STATE);
+        }
         gameApi.update();
     }
 
@@ -233,6 +252,19 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             exitButton.render(g);
         }
 
+        if(lost == true){
+            g.setBackground(Color.black);
+            g.drawImage(ResourceManager.getImage(BOARD),0,0);
+            g.drawImage(ResourceManager.getImage(LOOSER),355,107);
+            g.drawString("Better luck next time!",300,200);
+            g.drawString("(press \"ENTER\" to exit)", 392,374);
+        }else if(won == true){
+            g.setBackground(Color.black);
+            g.drawImage(ResourceManager.getImage(BOARD),0,0);
+            g.drawImage(ResourceManager.getImage(WINNER),355,107);
+            g.drawString("You are the winner of this Slime Lord Festival!",300,200);
+            g.drawString("(press \"ENTER\" to exit)", 392,374);
+        }
         if (!inShop && gameClient.myId == board.turn.turnID) {
             endButton.render(g);
         }
