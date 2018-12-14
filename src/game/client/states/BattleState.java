@@ -124,11 +124,13 @@ public class BattleState extends BasicGameState implements GameApiListener {
             this.slimeLordOne.specialSlimes.add("striker");
             this.slimeLordOne.specialSlimes.add("advancedStriker");
             this.slimeLordOne.specialSlimes.add("advancedLancer");
+            this.slimeLordOne.specialSlimes.add("mortar");
 
             this.slimeLordTwo.specialSlimes.add("lancer");
             this.slimeLordTwo.specialSlimes.add("striker");
             this.slimeLordTwo.specialSlimes.add("advancedStriker");
             this.slimeLordTwo.specialSlimes.add("advancedLancer");
+            this.slimeLordOne.specialSlimes.add("mortar");
 
             spawnInFactories();
 
