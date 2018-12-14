@@ -106,4 +106,9 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
     public boolean isAlive() {
         return currentHP > 0;
     }
+
+    @Override
+    public int getClientID() {
+        return clientID;
+    }
 }

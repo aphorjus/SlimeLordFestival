@@ -1,5 +1,6 @@
 package game.entities.slime;
 
+import game.Battles.AttackPattern;
 import game.Battles.BattleEntity;
 import game.Battles.BattleGridTile;
 import game.IntVector;
@@ -64,75 +65,26 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
 
     public String myType;
 
-    private boolean hasDirectionAttak;
+    private AttackPattern attackPattern = new AttackPattern();
 
-    private final static int DOWN = 0;
-    private final static int UP = 1;
-    private final static int RIGHT = 2;
-    private final static int LEFT = 3;
-    private final static int DOWN_RIGHT = 4;
-    private final static int DOWN_LEFT = 5;
-    private final static int UP_RIGHT = 6;
-    private final static int UP_LEFT = 7;
-
-    private IntVector[][] attackPattern;
-
-    private IntVector[][] basicAttackPattern = {{
-            new IntVector(0,0)
-    }};
-
-    private static IntVector[][] mortar = {{
-            new IntVector(0,0),
-            new IntVector(0,-1),
-            new IntVector(0,1),
-            new IntVector(-1,0),
-            new IntVector(1,0)
-    }};
-
-    private static IntVector[][] line = {
-            { new IntVector(0,0), new IntVector( 0, 1), new IntVector( 0, 2)},
-            { new IntVector(0,0), new IntVector( 0,-1), new IntVector( 0,-2)},
-            { new IntVector(0,0), new IntVector( 1, 0), new IntVector( 2, 0)},
-            { new IntVector(0,0), new IntVector(-1, 0), new IntVector(-2, 0)}
-    };
-
-    private static IntVector[][] shortLine = {
-            { new IntVector(0,0), new IntVector( 0, 1) },
-            { new IntVector(0,0), new IntVector( 0,-1) },
-            { new IntVector(0,0), new IntVector( 1, 0) },
-            { new IntVector(0,0), new IntVector(-1, 0) }
-    };
-
-    private static IntVector[][] shotgun = {
-            { new IntVector(0,0), new IntVector( 0, 1), new IntVector( 1, 1), new IntVector(-1, 1) },
-            { new IntVector(0,0), new IntVector( 0,-1), new IntVector(-1,-1), new IntVector( 1,-1) },
-            { new IntVector(0,0), new IntVector( 1, 0), new IntVector( 1,-1), new IntVector( 1, 1) },
-            { new IntVector(0,0), new IntVector(-1, 0), new IntVector(-1, 1), new IntVector(-1,-1) }
-    };
-
-    private static IntVector[][] spread = {
-            { new IntVector(0,0), new IntVector( 1, 1), new IntVector( 2, 2), new IntVector( 0, 2), new IntVector(-2, 2), new IntVector(-1, 1) },
-            { new IntVector(0,0), new IntVector(-1,-1), new IntVector(-2,-2), new IntVector( 0,-2), new IntVector( 2,-2), new IntVector( 1,-1) },
-            { new IntVector(0,0), new IntVector( 1,-1), new IntVector( 2,-2), new IntVector( 2, 0), new IntVector( 2, 2), new IntVector( 1, 1) },
-            { new IntVector(0,0), new IntVector(-1, 1), new IntVector(-2, 2), new IntVector(-2, 0), new IntVector(-2,-2), new IntVector(-1,-1) }
-    };
-
-    String color = "red";
+    String color;
 
     public Slime(int size, int id){
 
-        this.initializeAnimations();
+//        setRec();
+//        this.initializeAnimations();
         this.clientID = id;
         this.id = UUID.randomUUID().toString();
 
         this.size = size;
 
-        this.makeAdvancedStriker();
-//        this.makeBasic();
+//        this.makeAdvancedStriker();
+        this.makeBasic();
+//        this.makeLancer();
+//        this.upgradeTo("lancer");
         this.currentHP = maxHP;
-        this.initializeAnimations();
-
         setRec();
+        this.initializeAnimations();
     }
 
     public Slime(JSONObject jsonSlime){
@@ -217,16 +169,21 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
     }
 
     private void setRec(){
-//        switch(clientID) {
-//            case 0: this.addImage(ResourceManager.getImage(Board.SLIME1_RSC)); break;
-//            case 1: this.addImage(ResourceManager.getImage(Board.SLIME2_RSC)); break;
-//            case 2: this.addImage(ResourceManager.getImage(Board.SLIME3_RSC)); break;
-//            case 3: this.addImage(ResourceManager.getImage(Board.SLIME4_RSC)); break;
-//        }
+        switch(clientID) {
+            case 0: this.color = "blue"; break;
+            case 1: this.color = "green"; break;
+            case 2: this.color = "red"; break;
+            case 3: this.color = "yellow"; break;
+        }
     }
 
     public void setMyType(String myType) {
         this.myType = myType;
+    }
+
+    @Override
+    public int getClientID() {
+        return clientID;
     }
 
     public void makeBasic(){
@@ -239,8 +196,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         this.damage = 4+3*size;
         this.setAttackRange(0, 1.5);
 
-        this.attackPattern = basicAttackPattern;
-        this.hasDirectionAttak = false;
+        this.attackPattern.set(AttackPattern.SINGLE_TARGET, false);
 
     }
 
@@ -253,8 +209,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         this.damage = 20;
         this.setAttackRange(6, 10.5);
 
-        this.attackPattern = mortar;
-        this.hasDirectionAttak = false;
+        this.attackPattern.set(AttackPattern.MORTAR, false);
     }
 
     public void makeStriker(){
@@ -266,8 +221,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         this.damage = 6;
         this.setAttackRange(0,1);
 
-        this.attackPattern = shotgun;
-        this.hasDirectionAttak = true;
+        this.attackPattern.set(AttackPattern.SHOTGUN, true);
     }
 
     public void makeAdvancedStriker(){
@@ -279,8 +233,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         this.damage = 8;
         this.setAttackRange(0,1.5);
 
-        this.attackPattern = shotgun;
-        this.hasDirectionAttak = true;
+        this.attackPattern.set(AttackPattern.SHOTGUN, true);
     }
 
     public void makeLancer(){
@@ -292,8 +245,7 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         this.damage = 8;
         this.setAttackRange(0,1.5);
 
-        this.attackPattern = shortLine;
-        this.hasDirectionAttak = true;
+        this.attackPattern.set(AttackPattern.SHORT_LINE, true);
     }
 
     public void makeAdvancedLancer(){
@@ -303,10 +255,9 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
         setMaxHP(25);
         this.speed = 8;
         this.damage = 10;
+        this.setAttackRange(0,1.5);
 
-        this.attackPattern = line;
-        this.hasDirectionAttak = true;
-
+        this.attackPattern.set(AttackPattern.LINE, true);
     }
 
     public void upgradeTo(String type){
@@ -331,7 +282,6 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
             availableUpgrades.add("basic");
             return availableUpgrades;
         }
-
         if ( size >= 2 ){
             availableUpgrades.add("Striker");
             availableUpgrades.add("lancer");
@@ -344,6 +294,10 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
             availableUpgrades.add("mortar");
         }
         return availableUpgrades;
+    }
+
+    public ArrayList<IntVector> getAttackPattern(int x, int y) {
+        return attackPattern.getAttackPattern(x, y, xIndex, yIndex);
     }
 
     @Override
@@ -414,91 +368,6 @@ public class Slime extends AnimatedEntity implements IEntity, BattleEntity {
 
         return currentCooldown > 0;
     }
-
-    private int getDirection(int x, int y){
-
-        if(y > yIndex){
-            if(x > xIndex){
-                return DOWN_RIGHT;
-            }
-            if(x < xIndex){
-                return DOWN_LEFT;
-            }
-            return DOWN;
-        }
-        if(y < yIndex){
-            if(x > xIndex){
-                return UP_RIGHT;
-            }
-            if(x < xIndex){
-                return UP_LEFT;
-            }
-            return UP;
-        }
-        if(x > xIndex){
-            return RIGHT;
-        }
-        if(x < xIndex){
-            return LEFT;
-        }
-        return 0;
-    }
-
-    public ArrayList<IntVector> calculatePattern(int direction1, int direction2, IntVector position){
-
-        ArrayList<IntVector> pattern = new ArrayList<>();
-        IntVector[] ap = attackPattern[direction1];
-
-        if(direction2 == -1){
-
-            for (int i = 0; i < ap.length; i++) {
-                pattern.add(new IntVector(position.x + ap[i].x, position.y + ap[i].y));
-            }
-        }
-        else {
-            IntVector[] other_ap = attackPattern[direction2];
-
-            for (int i = 0; i < ap.length; i++) {
-                pattern.add(new IntVector(position.x + ap[i].x + other_ap[i].x,
-                        position.y + ap[i].y + other_ap[i].y));
-            }
-        }
-        return pattern;
-
-    }
-
-    public ArrayList<IntVector> getAttackPattern(int x, int y){
-        ArrayList<IntVector> pattern = new ArrayList<>();
-        IntVector position = new IntVector(x,y);
-
-        if(hasDirectionAttak) {
-            int direction = getDirection(x, y);
-
-            switch (direction) {
-                case (UP_LEFT): { pattern = calculatePattern(UP, LEFT, position);
-                    break;
-                }
-                case (UP_RIGHT): { pattern = calculatePattern(UP, RIGHT, position);
-                    break;
-                }
-                case (DOWN_LEFT): { pattern = calculatePattern(DOWN, LEFT, position);
-                    break;
-                }
-                case (DOWN_RIGHT): { pattern = calculatePattern(DOWN, RIGHT, position);
-                    break;
-                }
-                default: { //( UP || DOWN || LEFT || RIGHT )
-                    pattern = calculatePattern(direction, -1, position);
-                    break;
-                }
-            }
-        }
-        else {
-            pattern = calculatePattern(0, -1, position);
-        }
-        return pattern;
-    }
-
 
     public void onMove() {
         setHasMoved(true);

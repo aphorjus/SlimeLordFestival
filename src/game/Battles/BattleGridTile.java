@@ -2,6 +2,7 @@ package game.Battles;
 
 import game.client.Board;
 import game.entities.IEntity;
+import game.entities.SplashAnimation;
 import game.entities.slime.Slime;
 import game.entities.slimefactory.SlimeFactory;
 import jig.Entity;
@@ -18,10 +19,12 @@ public class BattleGridTile extends Entity implements IEntity {
     private int xIndex;
     private int yIndex;
     private boolean shaded;
+    SplashAnimation splash;
+    int maxSplashTime = 1000;
+    int splashRemainingTime = 0;
 
     public BattleGridTile(Vector position, int x, int y){
         super(position);
-//        this.position = position;
         this.xIndex = x;
         this.yIndex = y;
         this.occupent = null;
@@ -49,7 +52,24 @@ public class BattleGridTile extends Entity implements IEntity {
                 System.err.println(((IEntity)occupent).getEntityType()+" is not a valid type for 'occupent'");
             }
         }
+
+        if (jsonTile.has("playSplashAnimation")) {
+            splash = new SplashAnimation(getPosition(), jsonTile.getString("playSplashAnimation"));
+            splashRemainingTime = maxSplashTime;
+        }
+
 //        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
+    }
+
+    public void update(int delta) {
+        if (splash == null) return;
+
+        splashRemainingTime -= delta;
+
+        if (splashRemainingTime <= 0) {
+            splashRemainingTime = maxSplashTime;
+            splash = null;
+        }
     }
 
     @Override
@@ -125,9 +145,22 @@ public class BattleGridTile extends Entity implements IEntity {
         this.addOccupent( newOccupent );
     }
 
+    public void damageOccupent(int amount) {
+        this.getOccupent().takeDamage(amount);
+        if (!this.getOccupent().isAlive()) {
+            this.removeOccupent();
+        }
+    }
+
     public boolean hasOccupent(){
 
         return this.occupent != null;
+    }
+
+    public void render(Graphics g) {
+        renderOccupent(g);
+
+        if (splash != null) splash.render(g);
     }
 
     public void renderOccupent(Graphics g){
