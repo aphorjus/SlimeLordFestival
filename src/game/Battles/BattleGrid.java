@@ -2,12 +2,14 @@ package game.Battles;
 
 import game.DijkstraGrid;
 import game.IntVector;
+import game.client.GameClient;
 import game.entities.IEntity;
 import game.entities.slime.Slime;
 import game.api.GameApi;
 import game.entities.slimefactory.SlimeFactory;
 import game.entities.slimelord.BattleAbility;
 import jig.Entity;
+import jig.ResourceManager;
 import jig.Vector;
 import org.lwjgl.Sys;
 import org.newdawn.slick.Color;
@@ -18,10 +20,13 @@ import java.util.LinkedList;
 
 public class BattleGrid {
 
+
     public static final int MOVMENT_MODE = 1;
     public static final int ATTACK_MODE = 2;
     public static final int ABILITY_MODE = 3;
     public int mode = MOVMENT_MODE;
+
+    private int winner = -1;
 
     public BattleAbility ability = new BattleAbility();
 
@@ -50,6 +55,7 @@ public class BattleGrid {
 
     private Color shaded = new Color(0,0,0,50);
     private Color highlight = new Color(0,0,0,75);
+    AnimatedBattleBackground background = new AnimatedBattleBackground();
 
     public BattleGrid(final int screenHeight, final int screenWidth,
                       int yBuffer, GameApi gameApi, final int[][] map){
@@ -248,9 +254,37 @@ public class BattleGrid {
         return this.currentlySelectedTile != null;
     }
 
+    public int getWinner() {
+        return winner;
+    }
+
+    private void setWinner(int winner) {
+        this.winner = winner;
+    }
+
+    public void checkSetWinner(){
+
+        LinkedList<BattleEntity> entities = getEntityList();
+        int playerOne = -1;
+
+        for( int i = 0; i < entities.size(); i++ ){
+            if(entities.get(i) instanceof  SlimeFactory){
+                if( playerOne != -1 && playerOne != entities.get(i).getClientID() ){
+                    return;
+                }
+                else if( playerOne != entities.get(i).getClientID() ){
+                    playerOne = entities.get(i).getClientID();
+                }
+            }
+        }
+        setWinner(playerOne);
+        background.cheer();
+    }
+
     public void selectTile(Vector position){
 
         BattleGridTile tile = getTile(position);
+        boolean attackOccured = false;
 
         if(tile != null) {
 
@@ -260,9 +294,11 @@ public class BattleGrid {
             if( !tileSelected() ){
                 if(mode == ABILITY_MODE){
                     abilitySelect(x, y);
-                    return;
+                    attackOccured = true;
                 }
-                selectTile(x,y);
+                else {
+                    selectTile(x, y);
+                }
             }
             else {
                 if (currentlySelectedTile == tile) {
@@ -271,8 +307,12 @@ public class BattleGrid {
                     moveSelect(x,y);
                 } else if (mode == ATTACK_MODE) {
                     attackSelect(x,y);
+                    attackOccured = true;
                 }
             }
+        }
+        if( attackOccured ){
+            checkSetWinner();
         }
     }
 
@@ -315,6 +355,7 @@ public class BattleGrid {
 
                 if(effectedTile != null) {
                     effectedTile.damageOccupent(attackingSlime.damage);
+                    effectedTile.addSplash(attackingSlime.getClientID());
                     gameApi.createEntity(effectedTile);
                 }
             }
@@ -337,6 +378,7 @@ public class BattleGrid {
 
                 if(effectedTile != null) {
                     effectedTiles.add(effectedTile);
+//                    effectedTile.addSplash(ability.getCurrentPlayerId());
                 }
             }
             ability.activateAbility(effectedTiles);
@@ -516,6 +558,7 @@ public class BattleGrid {
         else if(this.mode == ABILITY_MODE){
             if (ability.getTargetingType() == BattleAbility.TARGETED_EFFECT && !ability.used()){
                 highlightAbilityPattern(position, g);
+//                background.cheer();
             }
         }
         else{
@@ -544,6 +587,8 @@ public class BattleGrid {
     }
 
     public void render(Graphics g){
+        background.render(g);
+
         for(int i = 0; i < this.gridWidth; i++){
             for( int j = 0; j < this.gridHeight; j++){
                 BattleGridTile tile = this.tileGrid[i][j];
@@ -561,5 +606,13 @@ public class BattleGrid {
             }
         }
         this.drawGrid(g);
+    }
+
+    public void update(int delta){
+        for( int i = 0; i < gridWidth; i++){
+            for( int j = 0; j < gridHeight; j++){
+                tileGrid[i][j].update(delta);
+            }
+        }
     }
 }

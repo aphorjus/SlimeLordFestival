@@ -20,7 +20,7 @@ public class BattleGridTile extends Entity implements IEntity {
     private int yIndex;
     private boolean shaded;
     SplashAnimation splash;
-    int maxSplashTime = 1000;
+    int maxSplashTime = 1050;
     int splashRemainingTime = 0;
 
     public BattleGridTile(Vector position, int x, int y){
@@ -59,6 +59,11 @@ public class BattleGridTile extends Entity implements IEntity {
         }
 
 //        this.addImage(ResourceManager.getImage(Board.TILE_RSC));
+    }
+
+    public void addSplash(int clientID){
+        splash = new SplashAnimation(this.getPosition(), clientID);
+        splashRemainingTime = maxSplashTime;
     }
 
     public void update(int delta) {
@@ -146,6 +151,9 @@ public class BattleGridTile extends Entity implements IEntity {
     }
 
     public void damageOccupent(int amount) {
+        if(!hasOccupent()){
+            return;
+        }
         this.getOccupent().takeDamage(amount);
         if (!this.getOccupent().isAlive()) {
             this.removeOccupent();
