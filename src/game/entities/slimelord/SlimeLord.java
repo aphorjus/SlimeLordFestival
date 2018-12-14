@@ -237,7 +237,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
             JSONArray jsonSlimes = new JSONArray();
 
             for (String slime : specialSlimes) {
-                jsonSlimes.put(slime);cc
+                jsonSlimes.put(slime);
             }
 
             data.put("specialSlimes", jsonSlimes);
