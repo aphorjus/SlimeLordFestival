@@ -84,13 +84,12 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
             case "green":
                 imageName = GREEN_SLIMELORD_IDLE;
                 break;
-            case "yellow":
-                imageName = YELLOW_SLIMELORD_IDLE;
-                break;
             case "red":
                 imageName = RED_SLIMELORD_IDLE;
                 break;
-
+            case "yellow":
+                imageName = YELLOW_SLIMELORD_IDLE;
+                break;
         }
 
         Image idle = ResourceManager.getImage(imageName);

@@ -41,6 +41,8 @@ public class BattleState extends BasicGameState implements GameApiListener {
     int activePlayer;
     int winner;
 
+    public static boolean testBattle = false;
+
 
     public static int[][] PLAIN_MAP =
             {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -102,37 +104,39 @@ public class BattleState extends BasicGameState implements GameApiListener {
         this.showHelp = false;
         battleMusic.loop();
 
-        this.slimeLordOne.addAbility("damage");
-        this.slimeLordTwo.addAbility("damage");
 //        System.out.println(gameClient.myId);
         //TEIMP
+        if(testBattle) {
+            this.slimeLordOne = new SlimeLord(0);
+            this.slimeLordTwo = new SlimeLord(1);
 
-//        this.slimeLordOne = new SlimeLord(0);
-//        this.slimeLordTwo = new SlimeLord(1);
-//
-//        this.slimeLordOne.addAbility("summonBasicSlime");
-//        this.slimeLordOne.addAbility("slimeBall");
-////        this.slimeLordOne.addAbility("damage");
-//
-//        this.slimeLordTwo.addAbility("slimeStrike");
-//        this.slimeLordTwo.addAbility("summonLancer");
-//
-//        this.slimeLordOne.specialSlimes.add("lancer");
-//        this.slimeLordOne.specialSlimes.add("striker");
-//        this.slimeLordOne.specialSlimes.add("advancedStriker");
-//        this.slimeLordOne.specialSlimes.add("advancedLancer");
-//
-//        this.slimeLordTwo.specialSlimes.add("lancer");
-//        this.slimeLordTwo.specialSlimes.add("striker");
-//        this.slimeLordTwo.specialSlimes.add("advancedStriker");
-//        this.slimeLordTwo.specialSlimes.add("advancedLancer");
-//
-//        spawnInFactories();
-//
-//        playerOne = slimeLordOne.clientID;
-//        playerTwo = slimeLordTwo.clientID;
-//        activePlayer = playerOne;
-//        activeSlimeLord = slimeLordOne;
+            this.slimeLordOne.addAbility("summonBasicSlime");
+            this.slimeLordOne.addAbility("slimeBall");
+//        this.slimeLordOne.addAbility("damage");
+
+            this.slimeLordTwo.addAbility("slimeStrike");
+            this.slimeLordTwo.addAbility("summonLancer");
+
+            this.slimeLordOne.addAbility("damage");
+            this.slimeLordTwo.addAbility("damage");
+
+            this.slimeLordOne.specialSlimes.add("lancer");
+            this.slimeLordOne.specialSlimes.add("striker");
+            this.slimeLordOne.specialSlimes.add("advancedStriker");
+            this.slimeLordOne.specialSlimes.add("advancedLancer");
+
+            this.slimeLordTwo.specialSlimes.add("lancer");
+            this.slimeLordTwo.specialSlimes.add("striker");
+            this.slimeLordTwo.specialSlimes.add("advancedStriker");
+            this.slimeLordTwo.specialSlimes.add("advancedLancer");
+
+            spawnInFactories();
+
+            playerOne = slimeLordOne.clientID;
+            playerTwo = slimeLordTwo.clientID;
+            activePlayer = playerOne;
+            activeSlimeLord = slimeLordOne;
+        }
 
         //END TEMP
 
@@ -234,9 +238,6 @@ public class BattleState extends BasicGameState implements GameApiListener {
         if (input.isKeyPressed(Input.KEY_E) && isMyTurn()){
             gameApi.endTurn();
         }
-//        if (input.isKeyPressed(Input.KEY_E)){
-//            gameApi.endTurn();
-//        }
         if (input.isKeyPressed(Input.KEY_S)){
             battleGrid.switchMode();
         }
