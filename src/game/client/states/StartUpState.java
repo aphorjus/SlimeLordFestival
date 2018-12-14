@@ -49,6 +49,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
     String[] clientList;
     double backgroundX;
     double backgroundOneX = 0;
+    boolean failedToHost;
     double backgroundTwoX = -1000;
     int state = 0; // 0 is title screen, 1 is HostGame screen, 2 is JoinGame screen, 3 is join lobby
 
@@ -79,6 +80,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
         failedConnect = false;
         connected = false;
         host = false;
+        failedToHost = false;
         backgroundX = 0;
         //Creating text field for IP address
         ipAdd = new TextField(gc, gc.getDefaultFont(), 417, 252, 150, 20);
@@ -170,7 +172,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
                     connected = true;
                     state = 3;
                 }catch (Exception e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     failedConnect = true;
                     connected = false;
                     state = 2;
@@ -179,11 +181,17 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             //If in host state attempt to host server with given inputs
             else if(state == 4){
                 System.out.println("Creating Server");
-                currentGameServer = gameClient.hostGame(Integer.parseInt(portNum.getText()), Integer.parseInt(ipAdd.getText()));
-                host = true;
-                state = 3;
-                connected = true;
-                gameApi =  new GameApi(gameClient, this);
+                try{
+                    currentGameServer = gameClient.hostGame(Integer.parseInt(portNum.getText()), Integer.parseInt(ipAdd.getText()));
+                    host = true;
+                    state = 3;
+                    connected = true;
+                    gameApi =  new GameApi(gameClient, this);
+                    failedToHost = false;
+                }catch( Exception e){
+                    failedToHost = true;
+                }
+
             }
 
         }
@@ -255,6 +263,11 @@ public class StartUpState extends BasicGameState implements GameApiListener {
             //g.drawString("Enter Port Number and Player Count then press enter to host", 233, 114);
             g.drawString("Player Count", 417, 230);
             g.drawString("Port Number", 417, 170);
+            if(failedToHost == true){
+                g.setColor(Color.red);
+                g.drawString("Could not host please try again",354,354);
+                g.setColor(Color.white);
+            }
             ipAdd.render(gc, g);
             portNum.render(gc, g);
         }
