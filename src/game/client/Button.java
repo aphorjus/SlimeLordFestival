@@ -1,5 +1,6 @@
 package game.client;
 
+import org.lwjgl.Sys;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Rectangle;
 import game.InputManager;
