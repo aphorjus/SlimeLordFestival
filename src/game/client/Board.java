@@ -178,6 +178,8 @@ public class Board {
 
         if (selected != null) {
             tiles[(int)selected.tilePosition.getX()][(int)selected.tilePosition.getY()].heldSlimeLord = null;
+            selected.specialSlimes = slimeLord.specialSlimes;
+            selected.abilities = slimeLord.abilities;
             moveSlimelordTo(selected, tileX, tileY);
         } else {
             moveSlimelordTo(slimeLord, tileX, tileY);
