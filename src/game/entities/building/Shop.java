@@ -336,19 +336,19 @@ public class Shop{
 
 
         g.drawString(currentMessage,355,350);
-
+        g.drawString("(hold \"P\" to view prices)", 392,374);
         if(viewPrices == true){
-            g.drawString("$100",260,180);
-            g.drawString("$100",360,180);
-            g.drawString("$300",460,180);
-            g.drawString("$300",560,180);
-            g.drawString("$600",660,180);
+            g.drawString("$100",265,180);
+            g.drawString("$100",365,180);
+            g.drawString("$300",465,180);
+            g.drawString("$300",565,180);
+            g.drawString("$600",665,180);
 
-            g.drawString("$500",260,280);
-            g.drawString("$500",360,280);
-            g.drawString("$500",460,280);
-            g.drawString("$500",560,280);
-            g.drawString("$500",660,280);
+            g.drawString("$500",265,280);
+            g.drawString("$500",365,280);
+            g.drawString("$500",465,280);
+            g.drawString("$500",565,280);
+            g.drawString("$500",665,280);
 
         }else{
             buyStriker.render(g);
