@@ -51,6 +51,7 @@ public class GameClient extends StateBasedGame {
     public int myId = -1;
 
     private Board board;
+    private BattleState battleState;
 
     // For the Board class, which contains the overworld map
     public Board getBoard() {
@@ -140,14 +141,14 @@ public class GameClient extends StateBasedGame {
         };
 
         inputManager = new InputManager(gc, keys);
+        battleState = new BattleState();
         addState(new StartUpState());
         addState(new OverworldState());
-        addState(new BattleState());
+        addState(battleState);
     }
 
     public void startBattle(SlimeLord one, SlimeLord two) {
-        System.out.println(one.id);
-        System.out.println(two.id);
+        battleState.onSetStateToBattle(one, two);
     }
 
     public static void main(String[] args) {
