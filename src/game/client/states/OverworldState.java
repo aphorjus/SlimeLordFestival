@@ -53,6 +53,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     Button exitButton;
     TokenAnimation tokenAnimation = new TokenAnimation(new Vector(25, 480));
 
+    boolean alreadySetUp = false;
     private Board board;
 
     @Override
@@ -101,7 +102,12 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         GameClient bg = (GameClient)sbg;
         currentShop = new Shop(bg,gameApi);
         Board board = bg.getBoard();
-        board.setUp(gameApi, gameClient);
+
+        if (!alreadySetUp) {
+            board.setUp(gameApi, gameClient);
+        }
+
+        alreadySetUp = true;
         this.board = board;
 
         if (gameClient.battleStateWinner != -1 && gameClient.battleStateWinner == gameClient.myId) {
@@ -109,7 +115,10 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             battleWon();
         }
 
-        removeLoser(gameClient.battleStateLoser);
+        if (gameClient.battleStateLoser != -1) {
+            removeLoser(gameClient.battleStateLoser);
+            gameClient.battleStateLoser = -1;
+        }
     }
 
     void removeLoser(int loserId) {
