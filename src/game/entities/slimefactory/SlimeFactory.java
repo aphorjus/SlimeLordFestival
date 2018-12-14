@@ -113,6 +113,10 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
 
         BattleGridTile tile = null;
 
+        if(spawnableTiles == null){
+            System.out.println("THEFUCK");
+        }
+
         for( int i = 0; i < spawnableTiles.size(); i++ ){
             if( !spawnableTiles.get(i).hasOccupent() ){
                 spawnableTiles.get(i).addOccupent( new Slime(1, clientID) );
