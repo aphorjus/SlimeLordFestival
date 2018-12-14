@@ -553,7 +553,6 @@ public class Board {
                     gameApi.createEntity(currentSlimelord);
 
                     checkForBattle(currentSlimelord);
-
                     currentSlimelord = null;
                 }
             } else { // select a slime lord if available
@@ -673,19 +672,13 @@ public class Board {
 
     private boolean isTent(Tile tile, int clientId) {
         boolean isTent = tile.getContents().startsWith("T");
-        
+
         if(isTent){
             String[] split = tile.getContents().split(":");
             int owner = Integer.parseInt(split[1]);
             int id = Integer.parseInt(split[2]);
-            if(owner == 4){
-                tile.setContents("T:" + clientId + ":" + id);
-                tents.get(id).owner = clientId;
-            } else if(owner == gameClient.myId){
-                //JOptionPane.showMessageDialog(null, "You own this tent.");
-            } else {
-                //JOptionPane.showMessageDialog(null, "tent is already owned by " + id);
-            }
+            tile.setContents("T:" + clientId + ":" + id);
+            tents.get(id).owner = clientId;
             acceptKeyboard = false;
         }
 
