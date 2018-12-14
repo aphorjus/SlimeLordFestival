@@ -517,6 +517,14 @@ public class Board {
         turn.turnHasEnded();
         showCurrentHighlightedPaths();
         System.out.println(current.getRow() + " " + current.getCol() + " " + tiles[current.getRow()][current.getCol()]);
+
+        if (isMyTurn()) {
+            for (TokenTents tent : tents) {
+                if (tent.owner == gameClient.myId) {
+                    gameClient.setTokens(gameClient.tokens + tent.TOKEN_AMOUNT);
+                }
+            }
+        }
     }
 
     public void move(int id, float xpos, float ypos) {

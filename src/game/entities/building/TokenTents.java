@@ -8,7 +8,7 @@ import jig.Entity;
 import jig.ResourceManager;
 
 public class TokenTents extends Entity {
-
+    public int TOKEN_AMOUNT = 100;
     public int owner;
     public Vector cameraOffset = new Vector(0, 0);
 
