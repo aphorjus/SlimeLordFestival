@@ -93,10 +93,14 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         Board board = bg.getBoard();
         // board.setUp(gameApi, gameClient);
         board.updateSlimelord();
-        board.showHighlightedPaths(input.getMouseX(), input.getMouseY());
+        // board.showHighlightedPaths(input.getMouseX(), input.getMouseY());
+
+        /*
         if(input.isMousePressed(input.MOUSE_LEFT_BUTTON)){
             board.moveTo(input.getMouseX(), input.getMouseY());
         }
+        */
+
         if (input.isKeyDown(Input.KEY_LEFT)){
             board.moveLeft();
         }
@@ -109,6 +113,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         if (input.isKeyDown(Input.KEY_DOWN)){
             board.moveDown();
         }
+
         board.update(delta);
         if (input.isKeyDown(Input.KEY_A)) {
             board.shiftLeft();
