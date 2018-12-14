@@ -31,7 +31,7 @@ public class SlimBox {
     public Image advancedlancer_ub;
 
     int width = 100;
-    int height = 70;
+    int height = 130;
     Vector position;
 
     int damage;
@@ -192,6 +192,11 @@ public class SlimBox {
         for( int i = 0; i < upgradeButtons.size(); i++ ){
             upgradeButtons.get(i).render(g);
         }
+
+        g.drawString("dmg:"+damage,healthBar.xpos-2, healthBar.ypos+20);
+        g.drawString("size:"+size,healthBar.xpos-2, healthBar.ypos+40);
+        g.drawString("size:"+size,healthBar.xpos-2, healthBar.ypos+40);
+
         g.setColor(c);
     }
 }
