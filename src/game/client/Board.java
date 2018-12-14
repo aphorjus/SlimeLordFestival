@@ -46,7 +46,6 @@ public class Board {
     private Tile current;
     private float xoffset = 0;
     private float yoffset = 0;
-    private int slimeID = 0;
     public Turn turn;
     GameClient gameClient;
     GameApi gameApi;
@@ -565,6 +564,7 @@ public class Board {
                     currentSlimelord.hasMoved = true;
                     gameApi.createEntity(currentSlimelord);
 
+                    checkForTent(currentSlimelord);
                     checkForBattle(currentSlimelord);
 
                     currentSlimelord = null;
@@ -607,6 +607,29 @@ public class Board {
 
         if (opponent != null) {
             gameApi.startBattle(lord, opponent);
+        }
+    }
+
+    void checkForTent(SlimeLord lord) {
+        int x = (int)lord.tilePosition.getX();
+        int y = (int)lord.tilePosition.getY();
+
+        if (tiles[x][y] != null) isTent(tiles[x][y], lord.clientID);
+
+        if (x > 0) {
+            if (tiles[x - 1][y] != null) isTent(tiles[x - 1][y], lord.clientID);
+        }
+
+        if (x < NUMROWS) {
+            if (tiles[x + 1][y] != null) isTent(tiles[x + 1][y], lord.clientID);
+        }
+
+        if (y > 0) {
+            if (tiles[x][y - 1] != null) isTent(tiles[x][y - 1], lord.clientID);
+        }
+
+        if (y < NUMCOLS) {
+            if (tiles[x][y + 1] != null) isTent(tiles[x][y + 1], lord.clientID);
         }
     }
 
@@ -660,218 +683,15 @@ public class Board {
         tiles[row][col].visited = false;
     }
 
-    public void showCurrentHighlightedPaths(){
-        int row = current.getRow();
-        int col = current.getCol();
-        if(row < NUMROWS && col < NUMCOLS && tiles[row][col] != null){
-            showHighlighted(row, col);
-        }
-    }
-
-    public void showHighlightedPaths(int x, int y){
-        if(x >= 0 && x <= 1392 && y >= 0 && y <= 800 && turn.isMyMove()){
-//            int row = y/16;
-//            int col = x/16;
-            int row = current.getRow();
-            int col = current.getCol();
-            if(row < NUMROWS && col < NUMCOLS && tiles[row][col] != null){
-                showHighlighted(row, col);
-            }
-        }
-    }
-    private void showHighlighted(int row, int col){
-        reset();
-        Tile tile = tiles[row][col];
-        List<String> paths = pathfinding.showAllPaths(tile,Turn.NUM_MOVES - turn.getMove());
-        Tile last = tile;
-
-        //System.out.println(tile.getRow() + " " + tile.getCol() + " " + turn.getMove() + " " + paths.size());
-
-        tile.isHighlighted = true;
-        for(String path: paths){
-            for(char c: path.toCharArray()){
-                if(c == 'd'){
-                    tile = tile.down;
-                } else if(c == 'u'){
-                    tile = tile.up;
-                } else if(c == 'l'){
-                    tile = tile.left;
-                } else if(c == 'r'){
-                    tile = tile.right;
-                }
-                tile.isHighlighted = true;
-            }
-            tile = last;
-        }
-    }
-
-    public void reset() {
-        if(tiles == null){
-            return;
-        }
-        for (int row = 0; row < tiles.length; row++) {
-            for (int col = 0; tiles[row] != null && col < tiles[row].length; col++) {
-                if(tiles[row][col] != null){
-                    tiles[row][col].isHighlighted = false;
-                }
-            }
-        }
-    }
-
-    public boolean isBattle() {
-        if(gameClient.myId == 0){
-            return currentSlimelord.getX() == slimeLordTwo.getX() && currentSlimelord.getY() == slimeLordTwo.getY() ||
-                    currentSlimelord.getX() == slimeLordThree.getX() && currentSlimelord.getY() == slimeLordThree.getY() ||
-                    currentSlimelord.getX() == slimeLordFour.getX() && currentSlimelord.getY() == slimeLordFour.getY();
-        }
-        if(gameClient.myId == 1){
-            return currentSlimelord.getX() == slimeLordOne.getX() && currentSlimelord.getY() == slimeLordOne.getY() ||
-                    currentSlimelord.getX() == slimeLordThree.getX() && currentSlimelord.getY() == slimeLordThree.getY() ||
-                    currentSlimelord.getX() == slimeLordFour.getX() && currentSlimelord.getY() == slimeLordFour.getY();
-        }
-        if(gameClient.myId == 2){
-            return currentSlimelord.getX() == slimeLordOne.getX() && currentSlimelord.getY() == slimeLordOne.getY() ||
-                    currentSlimelord.getX() == slimeLordTwo.getX() && currentSlimelord.getY() == slimeLordTwo.getY() ||
-                    currentSlimelord.getX() == slimeLordFour.getX() && currentSlimelord.getY() == slimeLordFour.getY();
-        }
-        if(gameClient.myId == 3){
-            return currentSlimelord.getX() == slimeLordOne.getX() && currentSlimelord.getY() == slimeLordOne.getY() ||
-                    currentSlimelord.getX() == slimeLordTwo.getX() && currentSlimelord.getY() == slimeLordTwo.getY() ||
-                    currentSlimelord.getX() == slimeLordThree.getX() && currentSlimelord.getY() == slimeLordThree.getY();
-        }
-       return false;
-    }
-
-    public boolean moveLeft() {
-        if(!acceptKeyboard) {
-            return false;
-        }
-        acceptKeyboard = false;
-        if(current.getLeft() != null) {
-            if(!isMyTurn()){
-                return false;
-            }
-            current.setContents("");
-            current = current.getLeft();
-            if(isTent()) {
-                current = current.getRight();
-            } else {
-                if(isBattle()){
-                    // System.out.println("contents: " + current.getContents());
-                    gameApi.setGameState(GameApi.SetGameStateBattle);
-                }
-                current.setContents("" + slimeID);
-            }
-            gameApi.deleteEntity(currentSlimelord.clientID);
-            currentSlimelord.moveLeft();
-            gameApi.createEntity(currentSlimelord);
-            showCurrentHighlightedPaths();
-            return true;
-        }
-        return false;
-
-    }
-
-    public boolean moveRight() {
-        if(!acceptKeyboard) {
-            return false;
-        }
-        acceptKeyboard = false;
-        if(current.getRight() != null) {
-            if(!isMyTurn()){
-                return false;
-            }
-            current.setContents("");
-            current = current.getRight();
-            if(isTent()) {
-                current = current.getLeft();
-            } else {
-                if(isBattle()){
-                    //System.out.println("contents: " + current.getContents());
-
-                    gameApi.setGameState(GameApi.SetGameStateBattle);
-                }
-                current.setContents("" + slimeID);
-            }
-            gameApi.deleteEntity(currentSlimelord.clientID);
-            currentSlimelord.moveRight();
-            gameApi.createEntity(currentSlimelord);
-            showCurrentHighlightedPaths();
-            return true;
-        }
-        return false;
-
-    }
-    public boolean moveUp() {
-        if(!acceptKeyboard) {
-            return false;
-        }
-        acceptKeyboard = false;
-        if(current.getUp() != null) {
-            if(!isMyTurn()){
-                return false;
-            }
-            current.setContents("");
-            current = current.getUp();
-            //System.out.println(current.getContents());
-            if(isTent()) {
-                current = current.getDown();
-            } else {
-                if(isBattle()){
-                    //System.out.println("contents: " + current.getContents());
-                    gameApi.setGameState(GameApi.SetGameStateBattle);
-                }
-                current.setContents("" + slimeID);
-            }
-            gameApi.deleteEntity(currentSlimelord.clientID);
-            currentSlimelord.moveUp();
-            gameApi.createEntity(currentSlimelord);
-            showCurrentHighlightedPaths();
-            return true;
-        }
-        return false;
-
-    }
-
-    public boolean moveDown() {
-        if(!acceptKeyboard) {
-            return false;
-        }
-        acceptKeyboard = false;
-        if(current.getDown() != null) {
-            if(!isMyTurn()){
-                return false;
-            }
-            current.setContents("");
-            current = current.getDown();
-            if(isTent()) {
-                current = current.getUp();
-            } else {
-                if(isBattle()){
-                    //System.out.println("contents: " + current.getContents());
-                    gameApi.setGameState(GameApi.SetGameStateBattle);
-                }
-                current.setContents("" + slimeID);
-            }
-            gameApi.deleteEntity(gameClient.myId);
-            currentSlimelord.moveDown();
-            gameApi.createEntity(currentSlimelord);
-            showCurrentHighlightedPaths();
-            return true;
-        }
-        return false;
-
-    }
-
-    private boolean isTent() {
-        boolean isTent = current.getContents().startsWith("T");
+    private boolean isTent(Tile tile, int clientId) {
+        boolean isTent = tile.getContents().startsWith("T");
 
         if(isTent){
-            String[] split = current.getContents().split(":");
+            String[] split = tile.getContents().split(":");
             int owner = Integer.parseInt(split[1]);
             int id = Integer.parseInt(split[2]);
             if(owner == 4){
-                current.setContents("T:" + slimeID + ":" + id);
+                tile.setContents("T:" + clientId + ":" + id);
                 tents.get(id).owner = gameClient.myId;
             } else if(owner == gameClient.myId){
                 //JOptionPane.showMessageDialog(null, "You own this tent.");
