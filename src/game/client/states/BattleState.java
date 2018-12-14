@@ -270,11 +270,19 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
         if( battleGrid.getWinner() != winner ){
             winner = battleGrid.getWinner();
+            int looser;
+            if(slimeLordTwo.clientID != winner){
+                looser = slimeLordTwo.clientID;
+            }
+            else{
+                looser = slimeLordOne.clientID;
+            }
             // DO SOMETHING?!?
             // Enter overworld and tell it who won somehow
             //
             gameApi.sendMessage("I win");
             gameClient.setBattleStateWinner(winner);
+            gameClient.setBattleStateLoser(looser);
             gameClient.enterState(GameClient.OVERWORLD_STATE);
         }
     }
