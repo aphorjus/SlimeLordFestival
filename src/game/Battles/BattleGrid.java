@@ -295,6 +295,7 @@ public class BattleGrid {
                 if(mode == ABILITY_MODE){
                     abilitySelect(x, y);
                     attackOccured = true;
+//                    mode = MOVMENT_MODE;
                 }
                 else {
                     selectTile(x, y);
@@ -314,6 +315,8 @@ public class BattleGrid {
         if( attackOccured ){
             checkSetWinner();
         }
+        System.out.println("I'm okay, mode: "+mode );
+
     }
 
     public void selectTile(int x, int y){

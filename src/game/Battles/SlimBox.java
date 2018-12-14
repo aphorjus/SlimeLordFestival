@@ -1,6 +1,5 @@
 package game.Battles;
 
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import game.client.Button;
 import game.client.states.BattleState;
 import game.entities.slime.Slime;
@@ -11,7 +10,6 @@ import org.lwjgl.Sys;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import sun.awt.image.ImageWatched;
 
 import java.util.LinkedList;
 

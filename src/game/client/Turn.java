@@ -4,7 +4,7 @@ import game.api.GameApi;
 import org.newdawn.slick.Game;
 
 public class Turn {
-    public static int NUM_MOVES = 60;
+    public static int NUM_MOVES = 10;
     public static int NUM_PLAYERS = 4;
     private int currentID;
     public int turnID;
@@ -47,8 +47,8 @@ public class Turn {
     }
 
     // called by gameApi to let players know that the current turn has ended.
-    public void turnHasEnded() {
-        turnID = (turnID + 1) % NUM_PLAYERS;
+    public void turnHasEnded(GameClient gc) {
+        turnID = (turnID + 1) % gc.players.length;
         move = 0;
     }
 

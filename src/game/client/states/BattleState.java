@@ -30,7 +30,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
     SlimeLord slimeLordOne;
     SlimeLord slimeLordTwo;
     SlimeLord activeSlimeLord;
-
+    Music battleMusic = null;
     SlimBox slimeBox = new SlimBox();
 
     int playerOne;
@@ -41,7 +41,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
     public static int[][] PLAIN_MAP =
             {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-             {1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,1},
+             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
              {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
              {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
              {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -79,6 +79,11 @@ public class BattleState extends BasicGameState implements GameApiListener {
         gameClient = (GameClient)sbg;
         inputManager = game.inputManager;
         gameApi = new GameApi((GameClient) sbg, this);
+        try{
+            battleMusic = new Music("game/client/resource/battle.wav");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         this.battleGrid = new BattleGrid((int)(game.ScreenHeight/1.2), game.ScreenWidth,
                 30, gameApi, BattleState.PLAIN_MAP);
@@ -89,6 +94,7 @@ public class BattleState extends BasicGameState implements GameApiListener {
         this.gameApi = new GameApi(gameClient, this);
         this.battleGrid.setGameApi(gameApi);
         this.winner = -1;
+        battleMusic.loop();
 //        System.out.println(gameClient.myId);
         //TEIMP
 
@@ -214,24 +220,23 @@ public class BattleState extends BasicGameState implements GameApiListener {
             }
         }
 
-        if (input.isKeyPressed(Input.KEY_E) && isMyTurn()){
-            gameApi.endTurn();
-        }
-
-//        if (input.isKeyPressed(Input.KEY_E)){
+//        if (input.isKeyPressed(Input.KEY_E) && isMyTurn()){
 //            gameApi.endTurn();
 //        }
 
+        if (input.isKeyPressed(Input.KEY_E)){
+            gameApi.endTurn();
+        }
         if (input.isKeyPressed(Input.KEY_S)){
             battleGrid.switchMode();
         }
-        if ( input.isKeyPressed(Input.KEY_1) && isMyTurn()){
+        if ( input.isKeyPressed(Input.KEY_1) ){//&& isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(0));
         }
-        if ( input.isKeyPressed(Input.KEY_2) && isMyTurn()){
+        if ( input.isKeyPressed(Input.KEY_2) ){//&& isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(1));
         }
-        if ( input.isKeyPressed(Input.KEY_3) && isMyTurn()){
+        if ( input.isKeyPressed(Input.KEY_3) ){//&& isMyTurn()){
             battleGrid.enterAblityMode(activeSlimeLord.getAbility(2));
         }
         battleGrid.update(delta);
