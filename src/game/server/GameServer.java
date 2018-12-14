@@ -99,6 +99,7 @@ public class GameServer extends Thread {
                         handleRequest(clients[i], new GameApiRequest(res), i);
                     }
                 }
+                sleep(15);
             }
         } catch (Exception e) {
             e.printStackTrace();

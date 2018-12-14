@@ -41,6 +41,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     String BLUE_ATTACK = "game/client/resource/blue-slime-attack.png";
     String BLUE_DEATH = "game/client/resource/blue-slime-death.png";
 
+    String FIGHT_POPUP = "game/client/resource/fight-popup.png";
+
     InputManager inputManager;
     TextField textField;
     GameApi gameApi;
@@ -93,6 +95,8 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         ResourceManager.loadImage(BLUE_ATTACK);
         ResourceManager.loadImage(BLUE_DEATH);
 
+        ResourceManager.loadImage(FIGHT_POPUP);
+
         gameApi = new GameApi((GameClient)sbg, this);
         GameClient bg = (GameClient)sbg;
         currentShop = new Shop(bg);
@@ -112,7 +116,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         // board.showHighlightedPaths(input.getMouseX(), input.getMouseY());
 
 
-        board.update(delta);
+        board.update(delta, input);
         if (input.isKeyDown(Input.KEY_A)) {
             board.shiftLeft();
         }

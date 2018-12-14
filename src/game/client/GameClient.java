@@ -160,6 +160,7 @@ public class GameClient extends StateBasedGame {
         try {
             app = new AppGameContainer(new GameClient("SlimeLordFestival", width, height));
             app.setDisplayMode(width, height, false);
+            app.setVSync(true);
             app.start();
         } catch (SlickException e) {
             e.printStackTrace();

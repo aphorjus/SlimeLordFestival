@@ -156,6 +156,7 @@ public class SlimeLord extends AnimatedEntity implements IEntity {
     public SlimeLord(JSONObject data) {
         abilities = new LinkedList<>();
         factories = new LinkedList<>();
+        specialSlimes = new LinkedList<>();
 
         entityType = data.getString("entityType");
         clientID = data.getInt("clientID");
