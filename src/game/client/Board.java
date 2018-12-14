@@ -32,13 +32,6 @@ public class Board {
     public static final String YELLOW_TOKENTENT = "game/client/resource/orange-tokentent.png";
     public static final String BLUE_TOKENTENT = "game/client/resource/blue-tokentent.png";
 
-    // Arenas
-    public static final String OPEN_ARENA = "game/client/resource/arena.png";           // unconquered
-    public static final String GREEN_ARENA= "game/client/resource/green-arena.png";
-    public static final String RED_ARENA = "game/client/resource/red-arena.png";
-    public static final String YELLOW_ARENA = "game/client/resource/orange-arena.png";
-    public static final String BLUE_ARENA= "game/client/resource/blue-arena.png";
-
     // Factories
     public static final String GREEN_FACTORY_RSC = "game/client/resource/slime-factory-green.png";
     public static final String RED_FACTORY_RSC = "game/client/resource/slime-factory-red.png";
@@ -235,12 +228,6 @@ public class Board {
         ResourceManager.loadImage(RED_TOKENTENT);
         ResourceManager.loadImage(YELLOW_TOKENTENT);
         ResourceManager.loadImage(BLUE_TOKENTENT);
-
-        ResourceManager.loadImage(OPEN_ARENA);
-        ResourceManager.loadImage(GREEN_ARENA);
-        ResourceManager.loadImage(RED_ARENA);
-        ResourceManager.loadImage(YELLOW_ARENA);
-        ResourceManager.loadImage(BLUE_ARENA);
 
         ResourceManager.loadImage(GREEN_FACTORY_RSC);
         ResourceManager.loadImage(BLUE_FACTORY_RSC);

@@ -76,10 +76,10 @@ public class SlimeFactory extends Entity implements IEntity, BattleEntity {
                 color = GREEN_FACTORY_RSC;
                 break;
             case 2:
-                color = YELLOW_FACTORY_RSC;
+                color = RED_FACTORY_RSC;
                 break;
             case 3:
-                color = RED_FACTORY_RSC;
+                color = YELLOW_FACTORY_RSC;
                 break;
         }
 
