@@ -172,7 +172,7 @@ public class StartUpState extends BasicGameState implements GameApiListener {
                     connected = true;
                     state = 3;
                 }catch (Exception e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     failedConnect = true;
                     connected = false;
                     state = 2;
