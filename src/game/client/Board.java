@@ -163,6 +163,7 @@ public class Board {
             selected.abilities = slimeLord.abilities;
             moveSlimelordTo(selected, tileX, tileY);
             checkForTent(selected);
+            ResourceManager.getSound("game/client/resource/sfx_ui_move.wav").play();
         } else {
             moveSlimelordTo(slimeLord, tileX, tileY);
             slimeLords.add(slimeLord);
@@ -668,9 +669,15 @@ public class Board {
             String[] split = tile.getContents().split(":");
             int owner = Integer.parseInt(split[1]);
             int id = Integer.parseInt(split[2]);
+
+            if (owner == gameClient.myId && clientId != gameClient.myId) {
+                ResourceManager.getSound("game/client/resource/sfx_ailment.wav").play();
+            } else {
+                ResourceManager.getSound("game/client/resource/sfx_bubble.wav").play();
+            }
+
             tile.setContents("T:" + clientId + ":" + id);
             tents.get(id).owner = clientId;
-            ResourceManager.getSound("game/client/resource/sfx_bubble.wav").play();
             acceptKeyboard = false;
         }
 
