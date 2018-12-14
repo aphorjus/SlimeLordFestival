@@ -47,10 +47,10 @@ public class TokenTents extends Entity {
             g.drawImage(ResourceManager.getImage(Board.GREEN_TOKENTENT), x, y);
         }
         if(owner == 2) {
-            g.drawImage(ResourceManager.getImage(Board.YELLOW_TOKENTENT), x, y);
+            g.drawImage(ResourceManager.getImage(Board.RED_TOKENTENT), x, y);
         }
         if(owner == 3) {
-            g.drawImage(ResourceManager.getImage(Board.RED_TOKENTENT), x, y);
+            g.drawImage(ResourceManager.getImage(Board.YELLOW_TOKENTENT), x, y);
         }
         if(owner == 4) {
             g.drawImage(ResourceManager.getImage(Board.OPEN_TOKENTENT), x, y);

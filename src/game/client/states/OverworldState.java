@@ -49,11 +49,11 @@ public class OverworldState extends BasicGameState implements GameApiListener {
     GameClient gameClient;
     Shop currentShop = null;
     boolean inShop = false;
-    boolean winState = false;
     Button endButton;
     Button exitButton;
     TokenAnimation tokenAnimation = new TokenAnimation(new Vector(25, 480));
 
+    boolean alreadySetUp = false;
     private Board board;
 
     @Override
@@ -102,17 +102,23 @@ public class OverworldState extends BasicGameState implements GameApiListener {
         GameClient bg = (GameClient)sbg;
         currentShop = new Shop(bg,gameApi);
         Board board = bg.getBoard();
-        board.setUp(gameApi, gameClient);
+
+        if (!alreadySetUp) {
+            board.setUp(gameApi, gameClient);
+        }
+
+        alreadySetUp = true;
         this.board = board;
 
         if (gameClient.battleStateWinner != -1 && gameClient.battleStateWinner == gameClient.myId) {
             gameClient.battleStateWinner = -1;
             battleWon();
-        }else{
-            //batteLoss();
         }
 
-        removeLoser(gameClient.battleStateLoser);
+        if (gameClient.battleStateLoser != -1) {
+            removeLoser(gameClient.battleStateLoser);
+            gameClient.battleStateLoser = -1;
+        }
     }
 
     void removeLoser(int loserId) {
@@ -120,25 +126,30 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 
         board.turn.addLoser(loserId);
         board.removeLoser(loserId);
-        for (int i = 0; i < board.slimeLords.size(); i++) {
-            if(board.slimeLords.get(i).clientID == gameClient.myId){
-                board.slimeLords.remove(i);
-                break;
-            }
+
+        boolean iAmALoser = false;
+
+        for (int i : board.turn.loserIds) {
+            if (i == gameClient.myId) iAmALoser = true;
         }
 
+        if (iAmALoser) callMeALoser();
+
+        if (!iAmALoser && board.turn.loserIds.size() == gameClient.players.length - 1) {
+            callMeAWinner();
+        }
     }
 
-    void battleLoss() {
-        gameClient.setTokens(gameClient.getTokens() + 600);
+    void callMeALoser() {
+        // This is where you set all the logic to call the player a loser
+    }
+
+    void callMeAWinner() {
+        // this is wher you set all the logic to call the player a winner
     }
 
     void battleWon() {
-
         gameClient.setTokens(gameClient.getTokens() + 600);
-        if(board.slimeLords.size() == 2){
-            winState = true;
-        }
     }
 
     @Override
@@ -169,7 +180,7 @@ public class OverworldState extends BasicGameState implements GameApiListener {
 //            bg.enterState(GameClient.BATTLE_STATE);
 //        }
         
-        if (input.isKeyDown(Input.KEY_X) && winState == false) {
+        if (input.isKeyDown(Input.KEY_X)) {
             SlimeLord shopSlimeLord = null;
             for (int i = 0; i < board.slimeLords.size(); i++) {
                 if(board.slimeLords.get(i).clientID == gameClient.myId){
@@ -206,10 +217,6 @@ public class OverworldState extends BasicGameState implements GameApiListener {
             } else {
                 board.click(input.getMouseX(), input.getMouseY());
             }
-        }
-
-        if (input.isKeyPressed(Input.KEY_ENTER) && winState == true){
-            gameApi.setGameState("StartUpState");
         }
 
         gameApi.update();

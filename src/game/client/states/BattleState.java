@@ -394,6 +394,15 @@ public class BattleState extends BasicGameState implements GameApiListener {
 
     public void onMessage(int senderId, String message) {
         winner = senderId;
+        int looser;
+        if(slimeLordTwo.clientID != winner){
+            looser = slimeLordTwo.clientID;
+        }
+        else{
+            looser = slimeLordOne.clientID;
+        }
+        gameClient.setBattleStateWinner(winner);
+        gameClient.setBattleStateLoser(looser);
     }
 
     public void onSetStateToBattle(SlimeLord lordOne, SlimeLord lordTwo) {
