@@ -12,7 +12,7 @@ public class Turn {
     public int turnID;
     private int move;
     private GameApi gameApi;
-    LinkedList<Integer> loserIds = new LinkedList<>();
+    public LinkedList<Integer> loserIds = new LinkedList<>();
 
     public Turn(GameApi gameApi, int currentID) {
         this.gameApi = gameApi;

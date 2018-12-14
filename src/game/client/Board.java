@@ -157,9 +157,6 @@ public class Board {
             moveSlimelordTo(selected, tileX, tileY);
             checkForTent(selected);
             ResourceManager.getSound("game/client/resource/sfx_ui_move.wav").play();
-        } else {
-            moveSlimelordTo(slimeLord, tileX, tileY);
-            slimeLords.add(slimeLord);
         }
     }
 
