@@ -591,7 +591,7 @@ public class Board {
             if (tiles[x][y + 1] != null && tiles[x][y + 1].heldSlimeLord != null) opponent = tiles[x][y + 1].heldSlimeLord;
         }
 
-        if (opponent != null) {
+        if (opponent != null && !opponent.equals(lord)) {
             fightPopup = new FightPopup(new Vector(500, 250), lord, opponent);
         }
     }
